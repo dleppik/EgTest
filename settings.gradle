@@ -1,1 +1,3 @@
-rootProject.name = 'EGTest'
+include 'annotations', 'annotation-examples'
+
+rootProject.name = 'EgTest'
