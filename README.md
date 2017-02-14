@@ -25,7 +25,6 @@ big method into several small private pieces, you can test each private piece in
 
 EgTest provides the annotations, not the code generators for the unit tests. The annotations are independent of any
 particular test or build tool.
-**INSERT LINK TO GRADLE/JUNIT EGTEST PROJECT, WHEN IT EXISTS.**
 
 ### Examples
 
