@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.style1.annotation;
+package com.vocalabs.egtest.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

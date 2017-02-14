@@ -1,7 +1,7 @@
-package com.vocalabs.egtest.style1.example;
+package com.vocalabs.egtest.example;
 
-import com.vocalabs.egtest.style1.annotation.EgMatches;
-import com.vocalabs.egtest.style1.annotation.EgNoMatch;
+import com.vocalabs.egtest.annotation.EgMatches;
+import com.vocalabs.egtest.annotation.EgNoMatch;
 
 import java.util.regex.Pattern;
 

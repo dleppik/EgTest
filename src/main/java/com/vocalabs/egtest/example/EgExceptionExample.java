@@ -1,6 +1,6 @@
-package com.vocalabs.egtest.style1.example;
+package com.vocalabs.egtest.example;
 
-import com.vocalabs.egtest.style1.annotation.EgException;
+import com.vocalabs.egtest.annotation.EgException;
 
 public class EgExceptionExample {
 
