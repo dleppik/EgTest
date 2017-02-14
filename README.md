@@ -34,6 +34,7 @@ See [The example source code](https://github.com/dleppik/EgTest/tree/master/src/
 ```Java
 import java.util.regex.Pattern;
 import com.vocalabs.egtest.annotation.*;
+
 public class ExampleForReadme {
 
     /**
@@ -42,31 +43,36 @@ public class ExampleForReadme {
      */
     @EgMatches("dleppik@vocalabs.com")
     @EgMatches("dleppik@vocalabs.example.com")
-    
+
     @EgNoMatch("dleppik")
     @EgNoMatch("dleppik@vocalabs@example.com")
     @EgNoMatch("David Leppik <dleppik@vocalabs.com>")
-    public static final Pattern SIMPLE_EMAIL = Pattern.compile("...");
-    
+    public static final Pattern
+            SIMPLE_EMAIL_RE = Pattern.compile("^[\\w+.\\-=&|/?!#$*]+@[\\w.\\-]+\\.[\\w]+$");
+
     @Eg(given = {"1", "2"}, returns = "3")
     @Eg(given = {"1", "Integer.MIN_VALUE"}, returns = "Integer.MAX_VALUE")
     public static int add(int a, int b) {
         return a + b;
     }
-    
+
     @EgException(value = {"null"}, willThrow = NullPointerException.class)
     public static String methodWhichCannotHandleNulls(Object thing1) {
         return thing1.toString();
     }
-    
-    @EgException({"null", "hello"})
-    @EgException({"hello", "null"})
+
+    @Eg(given = {"\"World\""}, returns = "\"Hello, World!\"")
+    public static String greet(String target) {
+        return "Hello, "+target+"!";
+    }
+
+    @EgException({"null", "\"hello\""})
+    @EgException({"\"hello\"", "null"})
     public static String anotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
         return thing1.toString() + thing2.toString();
     }
 }
 ```
-
 
 ##Generating Unit Tests
 
@@ -78,6 +84,4 @@ hand-written tests. For example, a class `org.example.MyExample.class` might yie
 Method parameters and return types should be constants, but they can be of any type import from anywhere, so long as 
 it is visible to the test. Thus `java.time.Instant.EPOCH`, with the full package name, may be used.
 
-##Open questions
-
-* We have a few proposed syntaxes; it's not clear which one to go with.
+While there's no reason we can't support any JVM language, the assertions are written in Java.

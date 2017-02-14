@@ -10,7 +10,7 @@ public class EgExample {
         return a + b;
     }
 
-    @Eg(given = {"World"}, returns = "Hello, World!")
+    @Eg(given = {"\"World\""}, returns = "\"Hello, World!\"")
     public static String greet(String target) {
         return "Hello, "+target+"!";
     }
