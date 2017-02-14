@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates an example where a regular expression matches or a method/function which takes a String and returns a
- * boolean
+ * boolean.
  */
 @Documented
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
