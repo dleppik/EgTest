@@ -1,0 +1,10 @@
+plugins {
+    id "net.ltgt.apt" version "0.9"  // Annotation processing for non-Android projects
+}
+
+dependencies {
+    apt project(':junit-gradle')     // change apt to annotationProcessor if compiling for Android
+    testApt project(':junit-gradle')
+    compile project(':junit-gradle')
+    compile project(':annotations')
+}

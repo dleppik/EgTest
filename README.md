@@ -1,10 +1,16 @@
 # EgTest
-Annotations for simple assertions in Java and other JVM languages
+Write annotations to create unit tests and documentation in Java and other JVM languages
 
 ###### Definition
 e.g., _exempli gratia:_ for the sake of an example.
 
 Not to be confused with i.e., _id et_: it is. (A definition or exhaustive list.)
+
+##Why
+
+Because unit tests should be the easiest way to test.
+
+Because code, tests, and documentation belong together.
 
 ## What it's for (and not for)
 EgTest annotations provide **testable documentation in the source code**.
@@ -74,6 +80,8 @@ public class ExampleForReadme {
 ```
 
 ##Generating Unit Tests
+
+**A JUnit 4 test generator is in progress, with Gradle integration as the initial target.**
 
 A properly formed EgTest unit test is in the same package as the class being tested, but it should have a name which
 does not conflict with typical unit test class names. That way the same test suite can simultaneously run EgTests and 
