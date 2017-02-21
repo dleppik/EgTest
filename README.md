@@ -34,7 +34,7 @@ particular test or build tool.
 
 ### Examples
 
-See [The example source code](https://github.com/dleppik/EgTest/tree/master/annotation-examples/src/main/java/com/vocalabs/egtest/example).
+See [The example source code](https://github.com/dleppik/EgTest/tree/master/annotation-example/src/main/java/com/vocalabs/egtest/example).
 
 ```Java
 import java.util.regex.Pattern;
