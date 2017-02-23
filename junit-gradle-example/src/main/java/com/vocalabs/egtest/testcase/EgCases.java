@@ -2,7 +2,7 @@ package com.vocalabs.egtest.testcase;
 
 import com.vocalabs.egtest.annotation.Eg;
 
-public class EgExample {
+public class EgCases {
 
     @Eg(given = {"2", "1"}, returns = "3")
     @Eg(given = {"-1", "Integer.MIN_VALUE"}, returns = "Integer.MAX_VALUE")
@@ -34,11 +34,11 @@ public class EgExample {
     // When testing a non-static method, the default constructor is used
     private final int decrementStep;
 
-    public EgExample() {
+    public EgCases() {
         this(1);
     }
 
-    public EgExample(int decrementStep) {
+    public EgCases(int decrementStep) {
         this.decrementStep = decrementStep;
     }
 

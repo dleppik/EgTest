@@ -3,13 +3,18 @@ package com.vocalabs.egtest.processor;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
-import com.vocalabs.egtest.annotation.*;
 
-import java.lang.annotation.Annotation;
+import com.vocalabs.egtest.annotation.*;
+import com.vocalabs.egtest.processor.data.EgMatchesPatternData;
+import com.vocalabs.egtest.processor.junit.JUnitClassWriter;
+import com.vocalabs.egtest.processor.selftest.EgSelfTest;
+
+import java.io.File;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -22,44 +27,89 @@ import java.util.stream.Stream;
         "com.vocalabs.egtest.annotation.EgMatches",
         "com.vocalabs.egtest.annotation.EgMatchesContainer",
         "com.vocalabs.egtest.annotation.EgNoMatch",
-        "com.vocalabs.egtest.annotation.EgNoMatchContainer"})
+        "com.vocalabs.egtest.annotation.EgNoMatchContainer",
+        "com.vocalabs.egtest.processor.selftest.EgSelfTest"})
 public class EgAnnotationProcessor extends AbstractProcessor {
 
-    private Messager messager = null;
     private Types typeUtils = null;
     private Elements elementUtils = null;
+    private MessageHandler messageHandler = null;
+
+    private boolean failOnUnsupported = false;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        messager = processingEnv.getMessager();
+        messageHandler = new MessageHandler(processingEnv.getMessager(), false);
+
         typeUtils = processingEnv.getTypeUtils();
         elementUtils = processingEnv.getElementUtils();
-        note("ExampleAnnotationProcessor Starting up\noptions:\n"+processingEnv.getOptions());
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        note("ExampleAnnotationProcessor got annotations "+annotations);
+        try {
+            AnnotationCollector collector = new AnnotationCollector(messageHandler);
 
-        Stream.of(
-                Eg.class,
-                EgContainer.class,
-                EgException.class,
-                EgExceptionContainer.class,
-                EgMatches.class,
-                EgMatchesContainer.class,
-                EgNoMatch.class,
-                EgNoMatchContainer.class)
-                .forEach(cl -> {
-            for (Element element: roundEnv.getElementsAnnotatedWith(cl)) {
-                note("Annotation of type "+cl+" for "+element+" is "+element.getAnnotation(cl));
+            for (Element el: roundEnv.getElementsAnnotatedWith(EgMatches.class)) {
+                handleMatch(el.getAnnotation(EgMatches.class), el, collector);
             }
-        });
+
+            for (Element el: roundEnv.getElementsAnnotatedWith(EgMatchesContainer.class)) {
+                EgMatchesContainer egc = el.getAnnotation(EgMatchesContainer.class);
+                for (EgMatches egMatches: egc.value()) {
+                    handleMatch(egMatches, el, collector);
+                }
+            }
+
+            new JUnitClassWriter(new File("/tmp/junit-items"), true).write(collector);
+
+            // Unsupported as of yet
+            Stream.of(
+                    Eg.class,
+                    EgContainer.class,
+                    EgException.class,
+                    EgExceptionContainer.class,
+                    EgNoMatch.class,
+                    EgNoMatchContainer.class,
+                    EgSelfTest.class)
+                    .forEach(cl -> {
+                        for (Element element: roundEnv.getElementsAnnotatedWith(cl)) {
+                            messageHandler.notYetSupported(element.getAnnotation(cl), element);
+                        }
+                    });
+        }
+        catch (Exception ex) {
+            messageHandler.error(ex);
+        }
         return true;
     }
 
-    private void note(String message) {
-        messager.printMessage(Diagnostic.Kind.NOTE, message);
+    private void handleMatch(EgMatches egMatches, Element el, AnnotationCollector collector) throws Exception {
+        if (el.getKind().equals(ElementKind.FIELD)) {
+            messageHandler.note("###### Got field ("+el.getSimpleName()+") for "+egMatches);
+            if (el.getModifiers().contains(Modifier.STATIC)) {
+                if (visible(el)) {
+                    collector.add(new EgMatchesPatternData(egMatches, el)); // TODO confirm it's a Pattern
+                    // TODO
+                }
+                else
+                    messageHandler.notYetSupported(egMatches, el);
+            }
+            else {
+                messageHandler.notYetSupported(egMatches, el); // TODO
+            }
+        }
+        else {
+            messageHandler.unsupported(egMatches, el); // TODO
+        }
     }
+
+
+    private boolean visible(Element el) {
+        Set<Modifier> modifiers = el.getModifiers();
+        return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
+    }
+
+
 }

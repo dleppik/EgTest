@@ -24,7 +24,7 @@ public class EgExample {
     }
 
 
-    // When testing a non-static method, the default constructor is used
+    // When testing a non-static method, the public default constructor is used
     private final int decrementStep;
 
     public EgExample() {

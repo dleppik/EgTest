@@ -22,7 +22,7 @@ public class EgMatchExample {
     @EgMatches("-0.77E77")
     @EgNoMatch("-.Infinity")
     private static final Pattern
-            NUMBER_REGEX = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
+            NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
 
 
     /** Method wrapper for {@link EgMatchExample#SIMPLE_EMAIL_RE}. */
@@ -35,5 +35,5 @@ public class EgMatchExample {
 
     @EgMatches("-0.77E77")
     @EgNoMatch("-.Infinity")
-    private boolean isNumber(String num) { return NUMBER_REGEX.matcher(num).matches(); }
+    private boolean isNumber(String num) { return NUMBER_RE.matcher(num).matches(); }
 }
