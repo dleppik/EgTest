@@ -2,12 +2,7 @@ package com.vocalabs.egtest.processor;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.annotation.*;
 import com.vocalabs.egtest.processor.data.EgMatchesPatternData;
@@ -29,21 +24,17 @@ import java.util.stream.Stream;
         "com.vocalabs.egtest.annotation.EgNoMatch",
         "com.vocalabs.egtest.annotation.EgNoMatchContainer",
         "com.vocalabs.egtest.processor.selftest.EgSelfTest"})
+@SupportedOptions("egtest.targetDirectory")
 public class EgAnnotationProcessor extends AbstractProcessor {
 
-    private Types typeUtils = null;
-    private Elements elementUtils = null;
     private MessageHandler messageHandler = null;
-
-    private boolean failOnUnsupported = false;
+    private boolean firstPass = true;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         messageHandler = new MessageHandler(processingEnv.getMessager(), false);
-
-        typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
+        firstPass = true;
     }
 
     @Override
@@ -62,7 +53,11 @@ public class EgAnnotationProcessor extends AbstractProcessor {
                 }
             }
 
-            new JUnitClassWriter(new File("/tmp/junit-items"), true).write(collector);
+            File targetDir = new File(processingEnv.getOptions().get("egtest.targetDirectory"));
+            EgTestWriter.AlreadyExistsBehavior onExists = (firstPass)
+                    ? EgTestWriter.AlreadyExistsBehavior.DELETE
+                    : EgTestWriter.AlreadyExistsBehavior.OVERWRITE;
+            new JUnitClassWriter(targetDir, onExists).write(collector);
 
             // Unsupported as of yet
             Stream.of(
@@ -82,27 +77,30 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         catch (Exception ex) {
             messageHandler.error(ex);
         }
+        firstPass = false;
         return true;
     }
 
-    private void handleMatch(EgMatches egMatches, Element el, AnnotationCollector collector) throws Exception {
-        if (el.getKind().equals(ElementKind.FIELD)) {
-            messageHandler.note("###### Got field ("+el.getSimpleName()+") for "+egMatches);
-            if (el.getModifiers().contains(Modifier.STATIC)) {
-                if (visible(el)) {
-                    collector.add(new EgMatchesPatternData(egMatches, el)); // TODO confirm it's a Pattern
-                    // TODO
-                }
-                else
-                    messageHandler.notYetSupported(egMatches, el);
-            }
-            else {
+    private void handleMatch(EgMatches egMatches, Element element, AnnotationCollector collector) throws Exception {
+        if (isPattern(element)) {
+            VariableElement el = (VariableElement) element;
+            if (el.getModifiers().contains(Modifier.STATIC) && visible(el))
+                    collector.add(new EgMatchesPatternData(egMatches, el));
+            else
                 messageHandler.notYetSupported(egMatches, el); // TODO
-            }
+        }
+        if (element instanceof ExecutableElement) {
+            messageHandler.notYetSupported(egMatches, element); // TODO
         }
         else {
-            messageHandler.unsupported(egMatches, el); // TODO
+            messageHandler.unsupported(egMatches, element); // TODO
         }
+    }
+
+    private boolean isPattern(Element element) {
+        return element instanceof VariableElement
+            && element.getKind().equals(ElementKind.FIELD)
+            && element.asType().toString().equals("java.util.regex.Pattern");
     }
 
 

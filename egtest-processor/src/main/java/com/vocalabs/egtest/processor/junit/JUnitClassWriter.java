@@ -8,10 +8,8 @@ import com.vocalabs.egtest.processor.data.AnnotationData;
 import com.vocalabs.egtest.processor.data.EgMatchesPatternData;
 
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,17 +22,23 @@ public class JUnitClassWriter implements EgTestWriter {
     private final AnnotationSpec testAnnotation = AnnotationSpec.builder(ClassName.bestGuess("org.junit.Test")).build();
 
     private final File directoryToFill;
-    private final boolean clearDirectoryOnWrite;
+    private final AlreadyExistsBehavior directoryExistsBehavior;
 
-    public JUnitClassWriter(File directoryToFill, boolean clearDirectoryOnWrite) {
+    public JUnitClassWriter(File directoryToFill, AlreadyExistsBehavior directoryExistsBehavior) {
         this.directoryToFill = directoryToFill;
-        this.clearDirectoryOnWrite = clearDirectoryOnWrite;
+        this.directoryExistsBehavior = directoryExistsBehavior;
     }
 
     @Override
     public void write(AnnotationCollector annotationCollector) throws Exception {
+        if (AlreadyExistsBehavior.FAIL.equals(directoryExistsBehavior) && directoryToFill.exists()) {
+            annotationCollector.getMessageHandler()
+                    .error("EgTest target directory exists ("+directoryToFill.getAbsolutePath()+")");
+            return;
+        }
+
         boolean didCreateDir = directoryToFill.mkdirs();
-        if (clearDirectoryOnWrite  &&  ! didCreateDir) {
+        if (AlreadyExistsBehavior.DELETE.equals(directoryExistsBehavior) &&  ! didCreateDir) {
             File[] files = directoryToFill.listFiles();
             if (files == null)
                 throw new IOException("Location for writing EgTest source is not a directory: "+directoryToFill);
@@ -57,25 +61,22 @@ public class JUnitClassWriter implements EgTestWriter {
 
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-                //.addMethod(createEgMatchPatternTest(Arrays.asList("dleppik@vocalabs.com", "dleppik@vocalabs.example.com")));
 
         addEgMatchPatternTests(items, typeSpecBuilder);
 
-
         TypeSpec helloWorld = typeSpecBuilder.build();
-
 
         PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
         if (packageElement == null) {
             throw new IllegalArgumentException("EgTest does not support classes without packages. ("+classElement+")");
         }
 
+        messageHandler.note("Got package "+packageElement.getQualifiedName());
+
         JavaFile javaFile = JavaFile.builder(packageElement.getQualifiedName().toString(), helloWorld)
                 .build();
 
-        messageHandler.note("Writing to "+dir);
         javaFile.writeTo(dir);
-        javaFile.writeTo(System.out); // XXX
     }
 
     private void addEgMatchPatternTests(List<AnnotationData<?>> examples, TypeSpec.Builder toAddTo) {
@@ -98,7 +99,7 @@ public class JUnitClassWriter implements EgTestWriter {
                 ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
                 String patternName = element.getSimpleName().toString();
                 specBuilder.addCode(
-                        "$T($S, $T.$L.matcher($S).matches();\n",
+                        "$L($S, $T.$L.matcher($S).matches());\n",
                         assertTrue, s, className, patternName, s);
             }
 

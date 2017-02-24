@@ -18,7 +18,8 @@ public class MessageHandler {
     }
 
     public void notYetSupported(Annotation annotation, Element el) {
-        note("Not yet supported: " + annotation + " on " + el.getSimpleName());
+        // FIXME  removed for clarity
+        // note("Not yet supported: " + annotation + " on " + el.getSimpleName());
     }
 
     public void unsupported(Annotation annotation, Element el) {
