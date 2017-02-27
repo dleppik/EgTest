@@ -13,66 +13,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** Matches and NoMatch. */
-public abstract class MatchExample<A extends Annotation> implements Example<A> {
-    public static final AnnotationReader<MatchExample<?>> FACTORY = new AnnotationReader<MatchExample<?>>() {
+public abstract class MatchExample implements Example<Annotation> {
+    private final Element element;
+    private final Annotation annotation;
 
-        @Override
-        public Set<Class<? extends Annotation>> supportedAnnotationClasses() {
-            return Stream.of(
-                    EgMatches.class,
-                    EgNoMatch.class,
-                    EgMatchesContainer.class,
-                    EgNoMatchContainer.class)
-                .collect(Collectors.toSet());
-        }
+    MatchExample(Annotation annotation, Element element) {
+        this.element = element;
+        this.annotation = annotation;
+    }
 
-        @Override
-        public List<MatchExample<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
-            if (annotation instanceof EgMatches || annotation instanceof EgNoMatch) {
-                return example(annotation, element, messageHandler);
-            }
-            if (annotation instanceof EgMatchesContainer) {
-                return Arrays.stream(((EgMatchesContainer) annotation).value())
-                        .flatMap(egMatches -> example(egMatches, element, messageHandler).stream())
-                        .collect(Collectors.toList());
-            }
-            if (annotation instanceof EgNoMatchContainer) {
-                return Arrays.stream(((EgNoMatchContainer) annotation).value())
-                        .flatMap(egMatches -> example(egMatches, element, messageHandler).stream())
-                        .collect(Collectors.toList());
-            }
-            throw new IllegalArgumentException("Unsupported annotation: "+annotation);
-        }
+    public String toMatch() {
+        if (annotation instanceof EgMatches)
+            return ((EgMatches) annotation).value();
+        if (annotation instanceof EgNoMatch)
+            return ((EgNoMatch) annotation).value();
+        throw new IllegalArgumentException("Wrong class for "+annotation);
+    }
 
-        private List<MatchExample<?>> example(Annotation annotation, Element element, MessageHandler messageHandler) {
+    @Override
+    public Annotation annotation() { return annotation; }
 
-            if (isPattern(element)) {
-                VariableElement el = (VariableElement) element;
-                if (el.getModifiers().contains(Modifier.STATIC) && visible(el))
-                    return Collections.singletonList(new PatternMatchExample(annotation, element));
-                else
-                    messageHandler.notYetSupported(annotation, el); // TODO
-            }
-            if (element instanceof ExecutableElement) {
-                messageHandler.notYetSupported(annotation, element); // TODO
-            }
-            else {
-                messageHandler.unsupported(annotation, element); // TODO
-            }
-            return Collections.emptyList();
-        }
-
-        private boolean isPattern(Element element) {
-            return element instanceof VariableElement
-                    && element.getKind().equals(ElementKind.FIELD)
-                    && element.asType().toString().equals("java.util.regex.Pattern");
-        }
-
-
-        private boolean visible(Element el) {
-            Set<Modifier> modifiers = el.getModifiers();
-            return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
-        }
-    };
+    @Override
+    public Element element() { return element; }
 
 }
