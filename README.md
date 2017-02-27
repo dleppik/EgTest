@@ -21,16 +21,13 @@ By removing the excuses for writing tests, you may find yourself writing tests f
 Rather than testing in a REPL, it is easier to write a permanent unit test. Even simple one-line functions are worth a 
 unit test when it's this quick and easy!
 
-EgTest is **not** an excuse to avoid writing complete unit tests! In some cases, especially
+EgTest is **not an excuse to avoid writing full unit tests!** In some cases, especially
 with functional programming, you might be able to avoid writing a test file. EgTest should encourage you to 
 break your complex code into small, simple, easily tested functions. With EgTest, you don't need to write several lines
 of unit test boilerplate for a one-line test-- but you still need that boilerplate for more complicated tests.
 
 Because EgTest encourages you to think small, **private methods and regular expressions are fair game.** If you break a 
 big method into several small private pieces, you can test each private piece individually.
-
-EgTest provides the annotations, not the code generators for the unit tests. The annotations are independent of any
-particular test or build tool.
 
 ### Examples
 
