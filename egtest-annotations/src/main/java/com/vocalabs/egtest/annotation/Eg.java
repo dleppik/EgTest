@@ -1,9 +1,6 @@
 package com.vocalabs.egtest.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Asserts that the given arguments return the specified value.
@@ -15,6 +12,7 @@ import java.lang.annotation.Target;
  * </p>
  */
 @Documented
+@Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
 @Repeatable(EgContainer.class)
 public @interface Eg {

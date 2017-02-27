@@ -5,8 +5,8 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
-
-public interface AnnotationData <T extends Annotation> {
+/** Describes one example from an annotation.  */
+public interface Example<T extends Annotation> {
     T annotation();
     Element element();
 

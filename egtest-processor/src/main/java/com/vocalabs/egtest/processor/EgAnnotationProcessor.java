@@ -4,14 +4,12 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 
-import com.vocalabs.egtest.annotation.*;
-import com.vocalabs.egtest.processor.data.EgMatchesPatternData;
+import com.vocalabs.egtest.processor.data.*;
 import com.vocalabs.egtest.processor.junit.JUnitClassWriter;
-import com.vocalabs.egtest.processor.selftest.EgSelfTest;
 
 import java.io.File;
-import java.util.Set;
-import java.util.stream.Stream;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes({
@@ -27,6 +25,12 @@ import java.util.stream.Stream;
 @SupportedOptions("egtest.targetDirectory")
 public class EgAnnotationProcessor extends AbstractProcessor {
 
+    /** These do the work of pulling examples out of annotations. */
+    private static final List<AnnotationReader<?>> EXAMPLE_HANDLERS = Arrays.asList(
+            MatchExample.FACTORY,
+            NotSupportedReader.INSTANCE,
+            IgnoredReader.INSTANCE);
+
     private MessageHandler messageHandler = null;
     private boolean firstPass = true;
 
@@ -37,42 +41,19 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         firstPass = true;
     }
 
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
             AnnotationCollector collector = new AnnotationCollector(messageHandler);
-
-            for (Element el: roundEnv.getElementsAnnotatedWith(EgMatches.class)) {
-                handleMatch(el.getAnnotation(EgMatches.class), el, collector);
-            }
-
-            for (Element el: roundEnv.getElementsAnnotatedWith(EgMatchesContainer.class)) {
-                EgMatchesContainer egc = el.getAnnotation(EgMatchesContainer.class);
-                for (EgMatches egMatches: egc.value()) {
-                    handleMatch(egMatches, el, collector);
-                }
-            }
+            checkFactories();  // Eventually we'll want to do this only on self-test
+            EXAMPLE_HANDLERS.forEach(f -> f.addExamples(roundEnv, collector));
 
             File targetDir = new File(processingEnv.getOptions().get("egtest.targetDirectory"));
             EgTestWriter.AlreadyExistsBehavior onExists = (firstPass)
                     ? EgTestWriter.AlreadyExistsBehavior.DELETE
                     : EgTestWriter.AlreadyExistsBehavior.OVERWRITE;
             new JUnitClassWriter(targetDir, onExists).write(collector);
-
-            // Unsupported as of yet
-            Stream.of(
-                    Eg.class,
-                    EgContainer.class,
-                    EgException.class,
-                    EgExceptionContainer.class,
-                    EgNoMatch.class,
-                    EgNoMatchContainer.class,
-                    EgSelfTest.class)
-                    .forEach(cl -> {
-                        for (Element element: roundEnv.getElementsAnnotatedWith(cl)) {
-                            messageHandler.notYetSupported(element.getAnnotation(cl), element);
-                        }
-                    });
         }
         catch (Exception ex) {
             messageHandler.error(ex);
@@ -81,33 +62,27 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void handleMatch(EgMatches egMatches, Element element, AnnotationCollector collector) throws Exception {
-        if (isPattern(element)) {
-            VariableElement el = (VariableElement) element;
-            if (el.getModifiers().contains(Modifier.STATIC) && visible(el))
-                    collector.add(new EgMatchesPatternData(egMatches, el));
-            else
-                messageHandler.notYetSupported(egMatches, el); // TODO
+    private void checkFactories() {
+        Map<String,AnnotationReader<?>> found = new HashMap<>();
+        for (AnnotationReader<?> factory: EXAMPLE_HANDLERS) {
+            Set<Class<? extends Annotation>> current = factory.supportedAnnotationClasses();
+            for (Class<? extends Annotation> a : current) {
+                String name = a.getCanonicalName();
+                if (found.containsKey(name))
+                    messageHandler.error("Bug: Redundant support for "+name+": in "+found.get(name)+" and "+factory);
+                found.put(name, factory);
+            }
         }
-        if (element instanceof ExecutableElement) {
-            messageHandler.notYetSupported(egMatches, element); // TODO
+
+        for (String annotated: getClass().getAnnotation(SupportedAnnotationTypes.class).value()) {
+            if (! found.containsKey(annotated)) {
+                messageHandler.error("Bug: EgTest has no handler for "+annotated);
+            }
+            found.remove(annotated);
         }
-        else {
-            messageHandler.unsupported(egMatches, element); // TODO
+
+        for (String unhandled: found.keySet()) {
+            messageHandler.error("Bug: EgTest claims to support '"+unhandled+"' but it has no handler");
         }
     }
-
-    private boolean isPattern(Element element) {
-        return element instanceof VariableElement
-            && element.getKind().equals(ElementKind.FIELD)
-            && element.asType().toString().equals("java.util.regex.Pattern");
-    }
-
-
-    private boolean visible(Element el) {
-        Set<Modifier> modifiers = el.getModifiers();
-        return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
-    }
-
-
 }

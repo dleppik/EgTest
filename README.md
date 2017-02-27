@@ -79,16 +79,21 @@ public class ExampleForReadme {
 }
 ```
 
-##Generating Unit Tests
-
-**A JUnit 4 test generator is in progress, with Gradle integration as the initial target.**
-
-A properly formed EgTest unit test is in the same package as the class being tested, but it should have a name which
-does not conflict with typical unit test class names. That way the same test suite can simultaneously run EgTests and 
-hand-written tests. For example, a class `org.example.MyExample.class` might yield a test class named 
-`org.example.MyExample$EgTest.class`.
+##Details
 
 Method parameters and return types should be constants, but they can be of any type import from anywhere, so long as 
 it is visible to the test. Thus `java.time.Instant.EPOCH`, with the full package name, may be used.
 
 While there's no reason we can't support any JVM language, the assertions are written in Java.
+
+##Generating JUnit Tests
+
+A JUnit 4 test generator is **in progress, with many features missing.** Keep an eye on the compiler warnings to see
+what's not yet implemented.
+
+Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
+`$EgTest`, so they do not conflict with other JUnit tests.
+
+To try it out, run `./gradlew ':example'` from the EgTest directory. (Windows: use `gradle.bat`.) Generated source code 
+will be in `junit-example/build/generated/egTest` while JUnit test results will be at 
+`junit-example/build/reports/tests/test/index.html`.
