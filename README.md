@@ -26,9 +26,6 @@ with functional programming, you might be able to avoid writing a test file. EgT
 break your complex code into small, simple, easily tested functions. With EgTest, you don't need to write several lines
 of unit test boilerplate for a one-line test-- but you still need that boilerplate for more complicated tests.
 
-Because EgTest encourages you to think small, **private methods and regular expressions are fair game.** If you break a 
-big method into several small private pieces, you can test each private piece individually.
-
 ### Examples
 
 See [The example source code](https://github.com/dleppik/EgTest/tree/master/annotation-example/src/main/java/com/vocalabs/egtest/example).
