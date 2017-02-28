@@ -19,21 +19,23 @@ public class EgMatchExample {
     public static final Pattern
             SIMPLE_EMAIL_RE = Pattern.compile("^[\\w+.\\-=&|/?!#$*]+@[\\w.\\-]+\\.[\\w]+$");
 
-    @EgMatches("-0.77E77")
-    @EgNoMatch("-.Infinity")
-    private static final Pattern
-            NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
-
-
     /** Method wrapper for {@link EgMatchExample#SIMPLE_EMAIL_RE}. */
     @EgMatches("dleppik@vocalabs.com")
     @EgMatches("dleppik@vocalabs.example.com")
     @EgNoMatch("dleppik")
     @EgNoMatch("dleppik@vocalabs@example.com")
     @EgNoMatch("David Leppik <dleppik@vocalabs.com>")
-    public boolean isEmail(String email) { return SIMPLE_EMAIL_RE.matcher(email).matches(); }
+    public static boolean isEmail(String email) { return SIMPLE_EMAIL_RE.matcher(email).matches(); }
+
 
     @EgMatches("-0.77E77")
     @EgNoMatch("-.Infinity")
-    private boolean isNumber(String num) { return NUMBER_RE.matcher(num).matches(); }
+    public final Pattern
+            numberRe = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
+
+    @EgMatches("-0.77E77")
+    @EgNoMatch("-.Infinity")
+    public boolean isNumber(String s) {
+        return numberRe.matcher(s).matches();
+    }
 }

@@ -25,24 +25,6 @@ public class EgMatchExampleTest {
     }
 
     @Test
-    public void numberReEgMatches() throws Exception {
-        assertTrue("-0.77E77", matchSimpleEmailRe("-0.77E77"));
-    }
-
-    @Test
-    public void numberReEgNoMatch() throws Exception {
-        assertFalse("-.Infinity", matchSimpleEmailRe("-.Infinity"));
-    }
-
-
-    private boolean matchSimpleEmailRe(String s) throws Exception {
-        Field f = EgMatchExample.class.getDeclaredField("NUMBER_RE");
-        f.setAccessible(true);
-        Pattern p = (Pattern) f.get(null);
-        return p.matcher(s).matches();
-    }
-
-    @Test
     public void isEmailEgMatches() throws Exception {
         assertTrue("dleppik@vocalabs.com", instance().isEmail("dleppik@vocalabs.com"));
         assertTrue("dleppik@vocalabs.example.com",instance().isEmail("dleppik@vocalabs.example.com"));

@@ -21,13 +21,27 @@ public class MessageHandler {
         this.failOnUnsupported = failOnUnsupported;
     }
 
-    public void notYetSupported(Annotation annotation, Element el) {
-        messager.printMessage(WARNING, "EgTest does not yet support " + annotation + " on "+elStr(el));
+    /** This will be removed once we support all the cases promised in README.md. */
+    @Deprecated
+    public void notYetSupported(Element el, Annotation a) { notYetSupported(el, a.toString()); }
+
+    /** This will be removed once we support all the cases promised in README.md. */
+    @Deprecated
+    public void notYetSupported(Element el, Annotation a, String description) { notYetSupported(el, description+" "+a); }
+
+    /** This will be removed once we support all the cases promised in README.md. */
+    @Deprecated
+    public void notYetSupported(Element el, String description) {
+        messager.printMessage(WARNING, "EgTest does not yet support "+description + " on "+elStr(el));
     }
 
-    public void unsupported(Annotation annotation, Element el) {
+    @Deprecated
+    public void unsupported(Element el, Annotation a, String description) { unsupported(el, description+" "+a);}
+
+    /** This includes all cases not promised in README.md or other documentation. */
+    public void unsupported(Element el, String description) {
         Kind kind = (failOnUnsupported) ? ERROR : WARNING;
-        messager.printMessage(kind, "EgTest does not support " + annotation + " on " + elStr(el));
+        messager.printMessage(kind, "EgTest does not support " + description + " on " + elStr(el));
     }
 
     private String elStr(Element el) {

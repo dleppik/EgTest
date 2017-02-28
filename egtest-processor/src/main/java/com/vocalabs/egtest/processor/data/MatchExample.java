@@ -1,24 +1,15 @@
 package com.vocalabs.egtest.processor.data;
 
 import com.vocalabs.egtest.annotation.EgMatches;
-import com.vocalabs.egtest.annotation.EgMatchesContainer;
 import com.vocalabs.egtest.annotation.EgNoMatch;
-import com.vocalabs.egtest.annotation.EgNoMatchContainer;
-import com.vocalabs.egtest.processor.MessageHandler;
 
-import javax.lang.model.element.*;
 import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /** Matches and NoMatch. */
 public abstract class MatchExample implements Example<Annotation> {
-    private final Element element;
     private final Annotation annotation;
 
-    MatchExample(Annotation annotation, Element element) {
-        this.element = element;
+    MatchExample(Annotation annotation) {
         this.annotation = annotation;
     }
 
@@ -32,8 +23,4 @@ public abstract class MatchExample implements Example<Annotation> {
 
     @Override
     public Annotation annotation() { return annotation; }
-
-    @Override
-    public Element element() { return element; }
-
 }

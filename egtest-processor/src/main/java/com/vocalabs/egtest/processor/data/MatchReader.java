@@ -48,17 +48,10 @@ public class MatchReader implements AnnotationReader<MatchExample> {
 
     private List<MatchExample> example(Annotation annotation, Element element, MessageHandler messageHandler) {
         if (isPattern(element)) {
-            VariableElement el = (VariableElement) element;
-            if (el.getModifiers().contains(Modifier.STATIC) && visible(el))
-                return Collections.singletonList(new PatternMatchExample(annotation, element));
-            else
-                messageHandler.notYetSupported(annotation, el); // TODO
+            return Collections.singletonList(new PatternMatchExample(annotation, (VariableElement) element));
         }
-        if (element instanceof ExecutableElement) {
-            messageHandler.notYetSupported(annotation, element); // TODO
-        }
-        else {
-            messageHandler.unsupported(annotation, element); // TODO
+        else if (element instanceof ExecutableElement) {
+            return Collections.singletonList(new FunctionMatchExample(annotation, (ExecutableElement) element));
         }
         return Collections.emptyList();
     }

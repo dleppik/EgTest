@@ -2,6 +2,7 @@ package com.vocalabs.egtest.processor;
 
 
 import com.vocalabs.egtest.processor.data.Example;
+import com.vocalabs.egtest.processor.junit.JavaModelUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -19,7 +20,7 @@ public class AnnotationCollector {
     }
 
     public void add(Example<?> data) {
-        Element classEl = data.element().getEnclosingElement();
+        Element classEl = JavaModelUtil.topLevelClass(data.element());
         if (classEl.getKind().equals(ElementKind.CLASS)) {
             String name = className(classEl);
             itemsByClassName.computeIfAbsent(name, x -> new ArrayList<>())

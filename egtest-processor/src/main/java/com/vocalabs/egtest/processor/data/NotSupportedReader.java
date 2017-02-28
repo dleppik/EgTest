@@ -29,7 +29,7 @@ public class NotSupportedReader implements AnnotationReader<Example<?>> {
 
     @Override
     public List<Example<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
-        messageHandler.notYetSupported(annotation, element);
+        messageHandler.notYetSupported(element, annotation);
         return Collections.emptyList();
     }
 }

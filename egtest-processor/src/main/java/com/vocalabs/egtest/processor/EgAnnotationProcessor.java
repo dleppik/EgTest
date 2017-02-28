@@ -5,7 +5,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
-import com.vocalabs.egtest.processor.junit.JUnitClassWriter;
+import com.vocalabs.egtest.processor.junit.JUnitWriter;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -53,7 +53,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             EgTestWriter.AlreadyExistsBehavior onExists = (firstPass)
                     ? EgTestWriter.AlreadyExistsBehavior.DELETE
                     : EgTestWriter.AlreadyExistsBehavior.OVERWRITE;
-            new JUnitClassWriter(targetDir, onExists).write(collector);
+            new JUnitWriter(targetDir, onExists).write(collector);
         }
         catch (Exception ex) {
             messageHandler.error(ex);
