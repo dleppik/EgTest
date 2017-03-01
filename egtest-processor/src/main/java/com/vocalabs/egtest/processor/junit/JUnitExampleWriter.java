@@ -92,14 +92,17 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
         return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
     }
 
-
-    protected ClassName booleanAssertion(Annotation annotation) {
-        final String boolStr;
-        if (annotation instanceof EgMatch)
-            boolStr = "True";
-        else if (annotation instanceof EgNoMatch)
-            boolStr = "False";
-        else throw new IllegalArgumentException(this + " doesn't handle " + annotation);
-        return ClassName.get("org.junit.Assert", "assert" + boolStr);
+    protected String testMethodName() {
+        List<Element> nameCollisions =
+                element.getEnclosingElement()
+                .getEnclosedElements().stream()
+                        .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
+                        .collect(Collectors.toList());
+        if (nameCollisions.size() > 0)                                            // TODO
+            this.messageHandler.notYetSupported(element, "Operator overloading"); // Build the test anyway, it will fail
+        return "test"+baseName()+"$"+element.getSimpleName();
     }
+
+    /** The distinctive portion of the name constructed by {@link #testMethodName()}.  */
+    protected abstract String baseName();
 }

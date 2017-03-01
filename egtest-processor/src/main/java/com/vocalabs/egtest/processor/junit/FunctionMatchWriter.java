@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 
-class FunctionMatchWriter extends JUnitExampleWriter<Element, FunctionMatchExample> {
+class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
     FunctionMatchWriter(Element e, List<FunctionMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);
@@ -21,7 +21,7 @@ class FunctionMatchWriter extends JUnitExampleWriter<Element, FunctionMatchExamp
         if (!checkSupport())
             return;
 
-        String newMethodName = "testMatch$"+element.getSimpleName();
+        String newMethodName = testMethodName();
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(testAnnotation)

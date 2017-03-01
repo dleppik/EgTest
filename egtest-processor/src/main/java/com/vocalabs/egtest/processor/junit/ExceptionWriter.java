@@ -12,6 +12,11 @@ public class ExceptionWriter extends JUnitExampleWriter<ExecutableElement, Excep
     }
 
     @Override
+    protected String baseName() {
+        return "Exception";
+    }
+
+    @Override
     public void addTests() {
         if ( ! checkSupport())
             return;

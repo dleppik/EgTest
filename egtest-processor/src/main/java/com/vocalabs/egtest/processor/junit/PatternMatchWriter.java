@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 
-class PatternMatchWriter extends JUnitExampleWriter<Element, PatternMatchExample> {
+class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
 
     PatternMatchWriter(Element e, List<PatternMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);

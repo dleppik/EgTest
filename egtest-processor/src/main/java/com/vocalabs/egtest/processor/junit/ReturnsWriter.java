@@ -5,6 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.processor.data.ReturnsExample;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -16,11 +17,16 @@ public class ReturnsWriter extends JUnitExampleWriter<ExecutableElement, Returns
     }
 
     @Override
+    protected String baseName() {
+        return "Returns";
+    }
+
+    @Override
     public void addTests() {
         if ( ! checkSupport())
             return;
 
-        String newMethodName = "testMatch$"+element.getSimpleName();
+        String newMethodName = testMethodName();
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(testAnnotation)
