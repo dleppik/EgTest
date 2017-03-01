@@ -1,18 +1,18 @@
 package com.vocalabs.egtest.testcase;
 
-import com.vocalabs.egtest.annotation.EgMatches;
+import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 
 import java.util.regex.Pattern;
 
 public class EgMatchesStatic {
 
-    @EgMatches("-0.77E77")
+    @EgMatch("-0.77E77")
     @EgNoMatch("-.Infinity")
     public static final Pattern
             NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
 
-    @EgMatches("-0.77E77")
+    @EgMatch("-0.77E77")
     @EgNoMatch("-.Infinity")
     public static boolean isNumber(String s) { return NUMBER_RE.matcher(s).matches(); }
 

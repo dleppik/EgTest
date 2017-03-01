@@ -1,7 +1,7 @@
 package com.vocalabs.egtest.testcase;
 
 
-import com.vocalabs.egtest.annotation.EgMatches;
+import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.processor.selftest.EgSelfTest;
 import com.vocalabs.egtest.processor.selftest.ExpectedBehavior;
@@ -9,13 +9,13 @@ import com.vocalabs.egtest.processor.selftest.ExpectedBehavior;
 import java.util.regex.Pattern;
 
 public class EgMatchesCase {
-    @EgMatches("-0.77E77")
+    @EgMatch("-0.77E77")
     @EgNoMatch("-.Infinity")
     private static final Pattern
             NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
 
     public static final Object AN_OBJECT = new Object() {
-        @EgMatches("-0.77E77")
+        @EgMatch("-0.77E77")
         @EgNoMatch("-.Infinity")
         public final Pattern
                 numberRe = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
@@ -28,7 +28,7 @@ public class EgMatchesCase {
      */
     public static class InnerStaticClass {
         @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
-        @EgMatches("-0.77E77")
+        @EgMatch("-0.77E77")
         @EgNoMatch("-.Infinity")
         private static final Pattern
                 NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
@@ -36,7 +36,7 @@ public class EgMatchesCase {
 
         public static class InnerInnerStaticClass {
             @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
-            @EgMatches("-0.77E77")
+            @EgMatch("-0.77E77")
             @EgNoMatch("-.Infinity")
             private static final Pattern
                     NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
@@ -49,7 +49,7 @@ public class EgMatchesCase {
      */
     public class InnerClass {
         @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
-        @EgMatches("-0.77E77")
+        @EgMatch("-0.77E77")
         @EgNoMatch("-.Infinity")
         public final Pattern
                 numberRe = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");

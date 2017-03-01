@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
-@Repeatable(EgMatchesContainer.class)
-public @interface EgMatches {
+@Repeatable(EgMatchContainer.class)
+public @interface EgMatch {
     String value();
 }

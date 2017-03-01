@@ -1,7 +1,7 @@
 package com.vocalabs.egtest.processor.junit;
 
 import com.squareup.javapoet.*;
-import com.vocalabs.egtest.annotation.EgMatches;
+import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.processor.AnnotationCollector;
 import com.vocalabs.egtest.processor.EgTestWriter;
@@ -178,7 +178,7 @@ public class JUnitWriter implements EgTestWriter {
 
     private ClassName booleanAssertion(Annotation annotation) {
         final String boolStr;
-        if (annotation instanceof EgMatches)
+        if (annotation instanceof EgMatch)
             boolStr = "True";
         else if (annotation instanceof EgNoMatch)
             boolStr = "False";

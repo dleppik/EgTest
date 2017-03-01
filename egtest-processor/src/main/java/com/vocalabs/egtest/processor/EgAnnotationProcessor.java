@@ -17,8 +17,8 @@ import java.util.*;
         "com.vocalabs.egtest.annotation.EgContainer",
         "com.vocalabs.egtest.annotation.EgException",
         "com.vocalabs.egtest.annotation.EgExceptionContainer",
-        "com.vocalabs.egtest.annotation.EgMatches",
-        "com.vocalabs.egtest.annotation.EgMatchesContainer",
+        "com.vocalabs.egtest.annotation.EgMatch",
+        "com.vocalabs.egtest.annotation.EgMatchContainer",
         "com.vocalabs.egtest.annotation.EgNoMatch",
         "com.vocalabs.egtest.annotation.EgNoMatchContainer",
         "com.vocalabs.egtest.processor.selftest.EgSelfTest"})

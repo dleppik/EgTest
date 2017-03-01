@@ -1,7 +1,7 @@
 package com.vocalabs.egtest.processor.data;
 
-import com.vocalabs.egtest.annotation.EgMatches;
-import com.vocalabs.egtest.annotation.EgMatchesContainer;
+import com.vocalabs.egtest.annotation.EgMatch;
+import com.vocalabs.egtest.annotation.EgMatchContainer;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.annotation.EgNoMatchContainer;
 import com.vocalabs.egtest.processor.MessageHandler;
@@ -21,20 +21,20 @@ public class MatchReader implements AnnotationReader<MatchExample> {
     @Override
     public Set<Class<? extends Annotation>> supportedAnnotationClasses() {
         return Stream.of(
-                EgMatches.class,
+                EgMatch.class,
                 EgNoMatch.class,
-                EgMatchesContainer.class,
+                EgMatchContainer.class,
                 EgNoMatchContainer.class)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public List<MatchExample> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
-        if (annotation instanceof EgMatches || annotation instanceof EgNoMatch) {
+        if (annotation instanceof EgMatch || annotation instanceof EgNoMatch) {
             return example(annotation, element, messageHandler);
         }
-        if (annotation instanceof EgMatchesContainer) {
-            return Arrays.stream(((EgMatchesContainer) annotation).value())
+        if (annotation instanceof EgMatchContainer) {
+            return Arrays.stream(((EgMatchContainer) annotation).value())
                     .flatMap(egMatches -> example(egMatches, element, messageHandler).stream())
                     .collect(Collectors.toList());
         }

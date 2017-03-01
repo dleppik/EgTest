@@ -33,6 +33,8 @@ See [The example source code](https://github.com/dleppik/EgTest/tree/master/anno
 EgTest relies on repeatable annotations, which are a Java 8 feature.
 
 ```Java
+package com.vocalabs.egtest.example;
+
 import java.util.regex.Pattern;
 import com.vocalabs.egtest.annotation.*;
 
@@ -42,9 +44,8 @@ public class ExampleForReadme {
      * Regular expression to match address portions of typical real-world email addresses.
      * It does NOT attempt to match all valid RFC 2822 addresses.
      */
-    @EgMatches("dleppik@vocalabs.com")
-    @EgMatches("dleppik@vocalabs.example.com")
-
+    @EgMatch("dleppik@vocalabs.com")
+    @EgMatch("dleppik@vocalabs.example.com")
     @EgNoMatch("dleppik")
     @EgNoMatch("dleppik@vocalabs@example.com")
     @EgNoMatch("David Leppik <dleppik@vocalabs.com>")
@@ -52,7 +53,7 @@ public class ExampleForReadme {
             SIMPLE_EMAIL_RE = Pattern.compile("^[\\w+.\\-=&|/?!#$*]+@[\\w.\\-]+\\.[\\w]+$");
 
     @Eg(given = {"1", "2"}, returns = "3")
-    @Eg(given = {"1", "Integer.MIN_VALUE"}, returns = "Integer.MAX_VALUE")
+    @Eg(given = {"1", "Integer.MAX_VALUE"}, returns = "Integer.MIN_VALUE")
     public static int add(int a, int b) {
         return a + b;
     }

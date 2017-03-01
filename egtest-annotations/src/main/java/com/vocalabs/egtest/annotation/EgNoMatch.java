@@ -3,7 +3,7 @@ package com.vocalabs.egtest.annotation;
 import java.lang.annotation.*;
 
 /**
- * Indicates that {@link EgMatches} would fail.
+ * Indicates that {@link EgMatch} would fail.
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
