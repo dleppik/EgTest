@@ -1,0 +1,26 @@
+plugins {
+    id "net.ltgt.apt" version "0.9"  // Annotation processing for non-Android projects
+}
+
+dependencies {
+    apt project(':egtest-processor')     // change apt to annotationProcessor if compiling for Android
+    testApt project(':egtest-processor')
+    compile project(':egtest-processor')
+    compile project(':egtest-annotations')
+}
+
+// Debugging:
+// I've been unable to create a debugger process on the compiler, since Gradle appears to use the compiler API.
+// However, with --debug, it prints the javac arguments so you can run it by hand and add
+// -J-agentlib:jdwp=transport=dt_socket,server=y,address=5005
+
+compileJava.options.compilerArgs.add("-Aegtest.targetDirectory=$buildDir/generated/egTest")
+
+sourceSets {
+    test {
+        java {
+            srcDir 'build/generated/egTest'
+        }
+    }
+}
+
