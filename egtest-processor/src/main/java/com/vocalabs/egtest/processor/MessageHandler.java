@@ -35,7 +35,6 @@ public class MessageHandler {
         messager.printMessage(WARNING, "EgTest does not yet support "+description + " on "+elStr(el));
     }
 
-    @Deprecated
     public void unsupported(Element el, Annotation a, String description) { unsupported(el, description+" "+a);}
 
     /** This includes all cases not promised in README.md or other documentation. */

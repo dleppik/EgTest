@@ -53,6 +53,7 @@ public class MatchReader implements AnnotationReader<MatchExample> {
         else if (element instanceof ExecutableElement) {
             return Collections.singletonList(new FunctionMatchExample(annotation, (ExecutableElement) element));
         }
+        messageHandler.unsupported(element, "neither Pattern nor method");
         return Collections.emptyList();
     }
 
@@ -60,11 +61,5 @@ public class MatchReader implements AnnotationReader<MatchExample> {
         return element instanceof VariableElement
                 && element.getKind().equals(ElementKind.FIELD)
                 && element.asType().toString().equals("java.util.regex.Pattern");
-    }
-
-
-    private boolean visible(Element el) {
-        Set<Modifier> modifiers = el.getModifiers();
-        return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
     }
 }

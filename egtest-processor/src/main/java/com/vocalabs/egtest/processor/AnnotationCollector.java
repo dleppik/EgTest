@@ -20,14 +20,14 @@ public class AnnotationCollector {
     }
 
     public void add(Example<?> data) {
-        Element classEl = JavaModelUtil.topLevelClass(data.element());
+        Element classEl = JavaModelUtil.topLevelClass(data.getElement());
         if (classEl.getKind().equals(ElementKind.CLASS)) {
             String name = className(classEl);
             itemsByClassName.computeIfAbsent(name, x -> new ArrayList<>())
                     .add(data);
         }
         else {
-            messageHandler.error("Container is not a class: "+data.element());
+            messageHandler.error("Container is not a class: "+data.getElement());
         }
     }
 

@@ -64,7 +64,7 @@ public class JUnitWriter implements EgTestWriter {
     }
 
     private void createFile(File dir, List<Example<?>> items, MessageHandler messageHandler) throws Exception {
-        TypeElement classElement = JavaModelUtil.topLevelClass(items.get(0).element());
+        TypeElement classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
 
         String className = classElement.getSimpleName() +"$EgTest";
 
@@ -92,7 +92,7 @@ public class JUnitWriter implements EgTestWriter {
         final Map<Element, List<PatternMatchExample>> byElement = examples.stream()
                 .filter(it -> it instanceof PatternMatchExample)
                 .map(it -> (PatternMatchExample) it)
-                .collect(Collectors.groupingBy(PatternMatchExample::element));
+                .collect(Collectors.groupingBy(PatternMatchExample::getElement));
         addPatternMatchTests(toAddTo, byElement, messageHandler);
     }
 
@@ -108,16 +108,16 @@ public class JUnitWriter implements EgTestWriter {
 
             for (PatternMatchExample example: entry.getValue()) {
                 if ( ! element.getModifiers().contains(Modifier.STATIC)) {
-                    messageHandler.notYetSupported(element, example.annotation(), "non-public"); // TODO
+                    messageHandler.notYetSupported(element, example.getAnnotation(), "non-public"); // TODO
                     continue; // TODO
                 }
                 if (! visible(element) ) {
-                    messageHandler.notYetSupported(element, example.annotation(), "non-visible"); // TODO
+                    messageHandler.notYetSupported(element, example.getAnnotation(), "non-visible"); // TODO
                     continue; // TODO
                 }
 
-                ClassName assertion = booleanAssertion(example.annotation());
-                String description = example.annotation().annotationType().getSimpleName()+" "+example.toMatch();
+                ClassName assertion = booleanAssertion(example.getAnnotation());
+                String description = example.getAnnotation().annotationType().getSimpleName()+" "+example.toMatch();
 
                 ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
                 String patternName = element.getSimpleName().toString();
@@ -134,7 +134,7 @@ public class JUnitWriter implements EgTestWriter {
         final Map<Element, List<FunctionMatchExample>> byElement = examples.stream()
                 .filter(it -> it instanceof FunctionMatchExample)
                 .map(it -> (FunctionMatchExample) it)
-                .collect(Collectors.groupingBy(FunctionMatchExample::element));
+                .collect(Collectors.groupingBy(FunctionMatchExample::getElement));
         addFunctionMatchTests(toAddTo, byElement, messageHandler);
     }
 
@@ -149,16 +149,16 @@ public class JUnitWriter implements EgTestWriter {
 
             for (FunctionMatchExample example: entry.getValue()) {
                 if ( ! element.getModifiers().contains(Modifier.STATIC)) {
-                    messageHandler.notYetSupported(element, example.annotation(), "non-public"); // TODO
+                    messageHandler.notYetSupported(element, example.getAnnotation(), "non-public"); // TODO
                     continue; // TODO
                 }
                 if (! visible(element) ) {
-                    messageHandler.notYetSupported(element, example.annotation(), "non-visible"); // TODO
+                    messageHandler.notYetSupported(element, example.getAnnotation(), "non-visible"); // TODO
                     continue; // TODO
                 }
 
-                ClassName assertion = booleanAssertion(example.annotation());
-                String description = example.annotation().annotationType().getSimpleName()+" "+example.toMatch();
+                ClassName assertion = booleanAssertion(example.getAnnotation());
+                String description = example.getAnnotation().annotationType().getSimpleName()+" "+example.toMatch();
 
                 ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
                 String patternName = element.getSimpleName().toString();

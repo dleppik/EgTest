@@ -12,7 +12,7 @@ public class FunctionMatchExample extends MatchExample {
     }
 
     @Override
-    public ExecutableElement element() {
+    public ExecutableElement getElement() {
         return element;
     }
 }

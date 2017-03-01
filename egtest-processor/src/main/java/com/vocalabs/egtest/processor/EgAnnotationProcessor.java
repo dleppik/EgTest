@@ -27,6 +27,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
 
     /** These do the work of pulling examples out of annotations. */
     private static final List<AnnotationReader<?>> EXAMPLE_HANDLERS = Arrays.asList(
+            ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
             NotSupportedReader.INSTANCE,
             IgnoredReader.INSTANCE);

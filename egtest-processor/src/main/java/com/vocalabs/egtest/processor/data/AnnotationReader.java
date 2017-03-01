@@ -24,6 +24,9 @@ public interface AnnotationReader<E extends Example<?>> {
     /** Every annotation has exactly one factory to handle it. */
     Set<Class<? extends Annotation>> supportedAnnotationClasses();
 
-    /** Checks to see if this element has a matching examples. */
+    /**
+     * Checks to see if this element has a matching examples.
+     * @param annotation must be a supported annotation type
+     */
     List<E> examples(Annotation annotation, Element element, MessageHandler messageHandler);
 }

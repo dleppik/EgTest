@@ -7,16 +7,6 @@ import javax.lang.model.element.Modifier;
 
 /** Describes one example from an annotation.  */
 public interface Example<T extends Annotation> {
-    T annotation();
-    Element element();
-
-    default boolean visible() {
-        Set<Modifier> modifiers = element().getModifiers();
-        return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
-    }
-
-    default boolean isStatic() {
-       return element().getModifiers().contains(Modifier.STATIC);
-    }
-
+    T getAnnotation();
+    Element getElement();
 }

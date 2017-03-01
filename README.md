@@ -30,6 +30,8 @@ of unit test boilerplate for a one-line test-- but you still need that boilerpla
 
 See [The example source code](https://github.com/dleppik/EgTest/tree/master/annotation-example/src/main/java/com/vocalabs/egtest/example).
 
+EgTest relies on repeatable annotations, which are a Java 8 feature.
+
 ```Java
 import java.util.regex.Pattern;
 import com.vocalabs.egtest.annotation.*;

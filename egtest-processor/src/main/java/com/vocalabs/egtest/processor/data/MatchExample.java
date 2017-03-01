@@ -22,5 +22,5 @@ public abstract class MatchExample implements Example<Annotation> {
     }
 
     @Override
-    public Annotation annotation() { return annotation; }
+    public Annotation getAnnotation() { return annotation; }
 }

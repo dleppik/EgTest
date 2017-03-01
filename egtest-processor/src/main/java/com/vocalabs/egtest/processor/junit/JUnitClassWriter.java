@@ -4,14 +4,9 @@ import com.squareup.javapoet.*;
 import com.vocalabs.egtest.annotation.EgMatches;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.processor.MessageHandler;
-import com.vocalabs.egtest.processor.data.Example;
-import com.vocalabs.egtest.processor.data.FunctionMatchExample;
-import com.vocalabs.egtest.processor.data.PatternMatchExample;
+import com.vocalabs.egtest.processor.data.*;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +40,7 @@ public class JUnitClassWriter {
         this.items = items;
         if (items.isEmpty())
             throw new IllegalArgumentException("Must have at least one Example to write a test file for "+name);
-        this.classElement = JavaModelUtil.topLevelClass(items.get(0).element());
+        this.classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
         this.className = classElement.getSimpleName() +"$EgTest";
     }
 
@@ -55,6 +50,8 @@ public class JUnitClassWriter {
 
         addPatternMatchTests(items, typeSpecBuilder);
         addFunctionMatchTests(items, typeSpecBuilder);
+        addReturnsTests(items, typeSpecBuilder);
+        addExceptionTests(items, typeSpecBuilder);
 
         TypeSpec javaFileSpec = typeSpecBuilder.build();
 
@@ -70,7 +67,7 @@ public class JUnitClassWriter {
         final Map<Element, List<PatternMatchExample>> byElement = examples.stream()
                 .filter(it -> it instanceof PatternMatchExample)
                 .map(it -> (PatternMatchExample) it)
-                .collect(Collectors.groupingBy(PatternMatchExample::element));
+                .collect(Collectors.groupingBy(PatternMatchExample::getElement));
         addPatternMatchTests(toAddTo, byElement);
     }
 
@@ -90,26 +87,21 @@ public class JUnitClassWriter {
                     .returns(void.class);
 
             for (PatternMatchExample example: entry.getValue()) {
-                ClassName assertion = booleanAssertion(example.annotation());
-                String description = example.annotation().annotationType().getSimpleName()+" "+example.toMatch();
+                ClassName assertion = booleanAssertion(example.getAnnotation());
+                String description = example.getAnnotation().annotationType().getSimpleName()+" "+example.toMatch();
                 ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
+                String patternName = element.getSimpleName().toString();
                 if (element.getModifiers().contains(Modifier.STATIC)) {
-                    String patternName = element.getSimpleName().toString();
                     specBuilder.addCode(
                             "$L($S, $T.$L.matcher($S).matches());\n",
                             assertion, description, className, patternName, example.toMatch());
                 }
                 else {
-                    messageHandler.note("Creating case for non-static "
-                            +element.getSimpleName()
-                            +" in "+classUnderTestName+" with "+methodName); // XXX
-                    String patternName = element.getSimpleName().toString();
                     specBuilder.addCode(
                             "$L($S, new $T().$L.matcher($S).matches());\n",
                             assertion, description, className, patternName, example.toMatch());
                 }
             }
-            messageHandler.note("Creating method "+methodName+" for "+classUnderTestName); // XXX
             toAddTo.addMethod(specBuilder.build());
         }
     }
@@ -118,7 +110,7 @@ public class JUnitClassWriter {
         final Map<Element, List<FunctionMatchExample>> byElement = examples.stream()
                 .filter(it -> it instanceof FunctionMatchExample)
                 .map(it -> (FunctionMatchExample) it)
-                .collect(Collectors.groupingBy(FunctionMatchExample::element));
+                .collect(Collectors.groupingBy(FunctionMatchExample::getElement));
         addFunctionMatchTests(toAddTo, byElement);
     }
 
@@ -128,29 +120,103 @@ public class JUnitClassWriter {
             if ( ! checkSupport(element)) {
                 continue;
             }
-            String methodName = "testMatch$"+element.getSimpleName();
-            MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(methodName)
+            String newMethodName = "testMatch$"+element.getSimpleName();
+            MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(testAnnotation)
                     .returns(void.class);
 
             for (FunctionMatchExample example: entry.getValue()) {
-                ClassName assertion = booleanAssertion(example.annotation());
-                String description = example.annotation().annotationType().getSimpleName()+" "+example.toMatch();
+                ClassName assertion = booleanAssertion(example.getAnnotation());
+                String description = example.getAnnotation().annotationType().getSimpleName()+" "+example.toMatch();
                 ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
-                String patternName = element.getSimpleName().toString();
+                String methodName = element.getSimpleName().toString();
                 if (element.getModifiers().contains(Modifier.STATIC)) {
                     specBuilder.addCode(
                             "$L($S, $T.$L($S));\n",
-                            assertion, description, className, patternName, example.toMatch());
+                            assertion, description, className, methodName, example.toMatch());
                 }
                 else {
                     specBuilder.addCode(
                             "$L($S, new $T().$L($S));\n",
-                            assertion, description, className, patternName, example.toMatch());
+                            assertion, description, className, methodName, example.toMatch());
                 }
             }
+            toAddTo.addMethod(specBuilder.build());
+        }
+    }
 
+    private void addReturnsTests(List<Example<?>> examples, TypeSpec.Builder toAddTo) {
+        final Map<Element, List<ReturnsExample>> byElement = examples.stream()
+                .filter(it -> it instanceof ReturnsExample)
+                .map(it -> (ReturnsExample) it)
+                .collect(Collectors.groupingBy(ReturnsExample::getElement));
+        addReturnsTests(toAddTo, byElement);
+    }
+
+    private void addReturnsTests(TypeSpec.Builder toAddTo, Map<Element, List<ReturnsExample>> byElement) {
+        for (Map.Entry<Element, List<ReturnsExample>> entry: byElement.entrySet()) {
+            Element element = entry.getKey();
+
+            if ( ! checkSupport(element))
+                continue;
+
+            String newMethodName = "testMatch$"+element.getSimpleName();
+            MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addAnnotation(testAnnotation)
+                    .addException(Exception.class)
+                    .returns(void.class);
+
+            ClassName assertion = ClassName.get("org.junit.Assert", "assertEquals");
+            ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
+            for (ReturnsExample example: entry.getValue()) {
+                String arguments = String.join(", ", example.getAnnotation().given());
+                String expected  = example.getAnnotation().returns();
+                String description = element.getSimpleName()+"("+arguments+")";
+                String methodName = element.getSimpleName().toString();
+
+                if (element.getModifiers().contains(Modifier.STATIC)) {
+                    specBuilder.addCode(
+                            "$L($S, $L, $T.$L($L));\n",
+                            assertion, description, expected, className, methodName, arguments);
+                }
+                else {
+                    specBuilder.addCode(
+                            "$L($S, $L, new $T().$L($L));\n",
+                            assertion, description, expected, className, methodName, arguments);
+                }
+            }
+            toAddTo.addMethod(specBuilder.build());
+        }
+    }
+
+    private void addExceptionTests(List<Example<?>> examples, TypeSpec.Builder toAddTo) {
+        final Map<Element, List<ExceptionExample>> byElement = examples.stream()
+                .filter(it -> it instanceof ExceptionExample)
+                .map(it -> (ExceptionExample) it)
+                .collect(Collectors.groupingBy(ExceptionExample::getElement));
+        addExceptionTests(toAddTo, byElement);
+    }
+
+    private void addExceptionTests(TypeSpec.Builder toAddTo, Map<Element, List<ExceptionExample>> byElement) {
+        for (Map.Entry<Element, List<ExceptionExample>> entry: byElement.entrySet()) {
+            Element element = entry.getKey();
+
+            if ( ! checkSupport(element))
+                continue;
+
+            String methodName = "testMatch$"+element.getSimpleName();
+
+            MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(methodName)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addAnnotation(testAnnotation)
+                    .addException(Exception.class)
+                    .returns(void.class);
+
+            for (ExceptionExample example: entry.getValue()) {
+                this.messageHandler.notYetSupported(element, example.getAnnotation());
+            }
             toAddTo.addMethod(specBuilder.build());
         }
     }

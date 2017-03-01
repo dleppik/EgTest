@@ -12,6 +12,6 @@ public class PatternMatchExample extends MatchExample {
     }
 
     @Override
-    public VariableElement element() { return element; }
+    public VariableElement getElement() { return element; }
 
 }
