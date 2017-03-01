@@ -4,15 +4,10 @@ package com.vocalabs.egtest.processor.junit;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
-import com.vocalabs.egtest.annotation.EgMatch;
-import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.data.*;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import java.lang.annotation.Annotation;
+import javax.lang.model.element.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,11 +91,25 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
         List<Element> nameCollisions =
                 element.getEnclosingElement()
                 .getEnclosedElements().stream()
+                        .filter(it -> ! it.equals(element))
                         .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
                         .collect(Collectors.toList());
-        if (nameCollisions.size() > 0)                                            // TODO
-            this.messageHandler.notYetSupported(element, "Operator overloading"); // Build the test anyway, it will fail
-        return "test"+baseName()+"$"+element.getSimpleName();
+        String elementHash = (nameCollisions.isEmpty())
+                ? ""
+                : "$"+elementHash(element);
+        return "test"+baseName()+"$"+element.getSimpleName()+elementHash;
+    }
+
+    private String elementHash(Element element) {
+        ExecutableElement el = (ExecutableElement) element;
+
+        int hash = el.getSimpleName().hashCode();
+        for (VariableElement arg: el.getParameters()) {
+            hash += arg.asType().toString().hashCode(); // type string is something like "double" or "java.lang.Double"
+        }
+        return hash < 0
+                ? "n" + Math.abs(hash)
+                : "" + hash;
     }
 
     /** The distinctive portion of the name constructed by {@link #testMethodName()}.  */
