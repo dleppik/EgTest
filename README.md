@@ -92,6 +92,6 @@ what's not yet implemented.
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
 
-To try it out, run `./gradlew ':example'` from the EgTest directory. (Windows: `gradle.bat` should work.) Generated 
-source code will be in `junit-example/build/generated/egTest` while JUnit test results will be at 
+To try it out, run `./gradlew ':junit-example:build'` from the EgTest directory. (Windows: `gradle.bat` should work.) 
+Generated source code will be in `junit-example/build/generated/egTest` while JUnit test results will be at 
 `junit-example/build/reports/tests/test/index.html`.
