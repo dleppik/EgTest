@@ -82,7 +82,8 @@ Method parameters and return types should be constants, but they can be imported
 it is visible to the test. Thus `org.apache.log4j.Level.DEBUG`, with the full package name, may be used if
 log4j is included in the test build CLASSPATH.
 
-Any JVM language that supports assertions should be able to use EgTest.
+Any JVM language that supports assertions should in theory be able to use EgTest. In practice, a particular language 
+may structure its code in ways that the test generator doesn't anticipate.
 
 ##Generating JUnit Tests
 
