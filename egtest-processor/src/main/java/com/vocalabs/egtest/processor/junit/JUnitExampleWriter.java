@@ -88,12 +88,12 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
     }
 
     protected String testMethodName() {
-        List<Element> nameCollisions =
-                element.getEnclosingElement()
+        List<Element> nameCollisions = element.getEnclosingElement()
                 .getEnclosedElements().stream()
-                        .filter(it -> ! it.equals(element))
-                        .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
-                        .collect(Collectors.toList());
+                .filter(it -> ! it.equals(element))
+                .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
+                .map(it -> (Element) it)         // Some Java compilers don't like <? extends Element>
+                .collect(Collectors.toList());
         String elementHash = (nameCollisions.isEmpty())
                 ? ""
                 : "$"+elementHash(element);
