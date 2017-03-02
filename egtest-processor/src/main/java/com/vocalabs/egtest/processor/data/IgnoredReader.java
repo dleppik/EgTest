@@ -5,6 +5,7 @@ import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.selftest.EgSelfTest;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.util.Types;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;

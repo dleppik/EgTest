@@ -12,9 +12,10 @@ import java.util.Set;
 public interface AnnotationReader<E extends Example<?>> {
 
     default void addExamples(RoundEnvironment roundEnvironment, AnnotationCollector collector) {
+        MessageHandler messageHandler = collector.getMessageHandler();
         for (Class<? extends Annotation> annotationClass: supportedAnnotationClasses()) {
             for (Element el: roundEnvironment.getElementsAnnotatedWith(annotationClass)) {
-                for (E example: examples(el.getAnnotation(annotationClass), el, collector.getMessageHandler())) {
+                for (E example: examples(el.getAnnotation(annotationClass), el, messageHandler)) {
                     collector.add(example);
                 }
             }

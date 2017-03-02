@@ -5,13 +5,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.processor.data.ReturnsExample;
 
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 
-public class ReturnsWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample> {
+class ReturnsWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample> {
     public ReturnsWriter(ExecutableElement element, List<ReturnsExample> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }

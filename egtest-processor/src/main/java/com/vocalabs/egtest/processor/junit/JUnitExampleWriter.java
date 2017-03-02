@@ -88,29 +88,43 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
     }
 
     protected String testMethodName() {
-        List<Element> nameCollisions = element.getEnclosingElement()
+        return "test"+baseName()+"$"+uniqueName();
+    }
+
+    private String uniqueName() {
+        String simpleName = element.getSimpleName().toString();
+        if (nameCollisions().isEmpty())
+            return simpleName;
+        return elementUniqueSuffix(element);
+    }
+
+    private List<Element> nameCollisions() {
+        return element.getEnclosingElement()
                 .getEnclosedElements().stream()
                 .filter(it -> ! it.equals(element))
                 .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
                 .map(it -> (Element) it)         // Some Java compilers don't like <? extends Element>
                 .collect(Collectors.toList());
-        String elementHash = (nameCollisions.isEmpty())
-                ? ""
-                : "$"+elementHash(element);
-        return "test"+baseName()+"$"+element.getSimpleName()+elementHash;
     }
 
-    private String elementHash(Element element) {
-        ExecutableElement el = (ExecutableElement) element;
-
-        int hash = el.getSimpleName().hashCode();
-        for (VariableElement arg: el.getParameters()) {
-            hash += arg.asType().toString().hashCode(); // type string is something like "double" or "java.lang.Double"
+    private String elementUniqueSuffix(Element el) {
+        if (el instanceof ExecutableElement) {
+            //
+            // Given   foo(String, double, Double[], org.omg.CORBA_2_3.ORB)
+            // returns "$java_lang_String$double$java_lang_Double$_A$org_omg_CORBA__2__3_ORB"
+            //
+            // I was tempted to use ᛜ (runic ingwaz) but I'm sure people would complain
+            return ((ExecutableElement)el).getParameters()
+                    .stream()
+                    .map(p -> p.asType().toString())
+                    .map(s -> s.replaceAll("_", "__"))
+                    .map(s -> s.replaceAll("\\.", "_"))
+                    .map(s -> s.replaceAll("\\[\\]", "$_A"))
+                    .reduce("",  (a,b)  -> a+"$"+b);
         }
-        return hash < 0
-                ? "n" + Math.abs(hash)
-                : "" + hash;
+        return "$"+el.getKind();
     }
+
 
     /** The distinctive portion of the name constructed by {@link #testMethodName()}.  */
     protected abstract String baseName();

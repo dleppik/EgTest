@@ -29,7 +29,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
     private static final List<AnnotationReader<?>> EXAMPLE_HANDLERS = Arrays.asList(
             ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
-            NotSupportedReader.INSTANCE,
+            ExceptionReader.INSTANCE,
             IgnoredReader.INSTANCE);
 
     private MessageHandler messageHandler = null;

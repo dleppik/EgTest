@@ -2,6 +2,8 @@ package com.vocalabs.egtest.example;
 
 import com.vocalabs.egtest.annotation.Eg;
 
+import java.util.Arrays;
+
 public class EgExample {
 
     @Eg(given = {"2", "1"}, returns = "3")
@@ -23,6 +25,17 @@ public class EgExample {
         return numerator / divisor;
     }
 
+    @Eg(given = {"5.0"}, returns = "5.0")
+    @Eg(given = {"2.0", "3.0", "5.0"}, returns = "30.0")
+    public static double multiply(double a, double... others) {
+        return Arrays.stream(others).reduce(a, (b,c) -> b*c);
+    }
+
+    @Eg(given = {"5"}, returns = "5")
+    @Eg(given = {"2", "3", "5"}, returns = "30")
+    public static int multiply(int a, int... others) {
+        return Arrays.stream(others).reduce(a, (b,c) -> b*c);
+    }
 
     // When testing a non-static method, the public default constructor is used
     private final int decrementStep;
