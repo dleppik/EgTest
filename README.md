@@ -1,14 +1,14 @@
 # EgTest
-Write annotations to create unit tests and documentation in Java and other JVM languages
+Use annotations to create unit tests and documentation in Java
 
 ###### Definition
 e.g., _exempli gratia:_ for the sake of an example.
 
 Not to be confused with i.e., _id et_: it is. (A definition or exhaustive list.)
 
-##Why
+## Why
 
-Because unit tests should be the easiest way to test.
+Because unit tests should be the easiest way to test—even easier than a REPL.
 
 Because code, tests, and documentation belong together.
 
@@ -21,10 +21,10 @@ By removing the excuses for writing tests, you may find yourself writing tests f
 Rather than testing in a REPL, it is easier to write a permanent unit test. Even simple one-line functions are worth a 
 unit test when it's this quick and easy!
 
-EgTest is **not an excuse to avoid writing full unit tests!** In some cases, especially
-with functional programming, you might be able to avoid writing a test file. EgTest should encourage you to 
-break your complex code into small, simple, easily tested functions. With EgTest, you don't need to write several lines
-of unit test boilerplate for a one-line test-- but you still need that boilerplate for more complicated tests.
+**EgTest is not an excuse to avoid writing full unit tests!** In some cases, especially with functional programming, 
+you might be able to just use EgTest. EgTest should encourage you to break your complex code into small, simple, easily 
+tested functions. With EgTest, you don't need to write several lines of unit test boilerplate for a one-line test—but 
+you still need that boilerplate for more complicated tests.
 
 ### Examples
 
@@ -98,13 +98,16 @@ Method parameters and return types should be constants, but they can be imported
 it is visible to the test. Thus `org.apache.log4j.Level.DEBUG`, with the full package name, may be used if
 log4j is included in the test build CLASSPATH.
 
+The JUnit test generator copies parameters and return types directly into JUnit source code, so you can even make
+fancier calls like `@Eg(given={"new StringBuilder(\"World\")"} returns="new StringBuilder(\"Hello, World!\")")`.
+@Eg comparisons yield JUnit `assertEquals()` assertions, which compares objects by `Object.equals()`, so this example 
+could succeed.
+
 Any JVM language that supports assertions should in theory be able to use EgTest. In practice, a particular language 
-may structure its code in ways that the test generator doesn't anticipate.
+may structure its code in ways that the test generator doesn't anticipate, or it might not support the Java annotation
+processor which comes with EgTest.
 
 ##Generating JUnit Tests
-
-A JUnit 4 test generator is **in progress, with many features missing.** Keep an eye on the compiler warnings to see
-what's not yet implemented.
 
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
