@@ -1,4 +1,7 @@
 subprojects {
+    group = 'com.vocalabs'
+    version = '0.1-SNAPSHOT'
+
     apply plugin: 'java'
     sourceCompatibility = 1.8
 

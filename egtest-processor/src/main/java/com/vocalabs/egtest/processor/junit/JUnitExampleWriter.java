@@ -85,7 +85,9 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
 
     private boolean visible(Element el) {
         Set<Modifier> modifiers = el.getModifiers();
-        return modifiers.contains(Modifier.PUBLIC) || modifiers.contains(Modifier.DEFAULT);
+        if (modifiers.contains(Modifier.PRIVATE))
+            return false;
+        return ! modifiers.contains(Modifier.PROTECTED);
     }
 
     protected String testMethodName() {
