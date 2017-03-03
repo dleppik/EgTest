@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.processor.data.ReturnsExample;
+import com.vocalabs.egtest.processor.data.ReturnsWithDeltaExample;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -42,14 +43,19 @@ class ReturnsWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample
 
             if (element.getModifiers().contains(Modifier.STATIC)) {
                 specBuilder.addCode(
-                        "$L($S, $L, $T.$L($L));\n",
+                        "$L($S, $L, $T.$L($L)",
                         assertion, description, expected, className, methodName, arguments);
             }
             else {
                 specBuilder.addCode(
-                        "$L($S, $L, new $T().$L($L));\n",
+                        "$L($S, $L, new $T().$L($L)",
                         assertion, description, expected, className, methodName, arguments);
             }
+            if (example instanceof ReturnsWithDeltaExample) {
+                specBuilder.addCode(", $L", ((ReturnsWithDeltaExample) example).deltaString());
+            }
+
+            specBuilder.addCode(");\n");
         }
         toAddTo.addMethod(specBuilder.build());
     }

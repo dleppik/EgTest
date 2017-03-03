@@ -9,7 +9,7 @@ public class EgThrowsCase {
         return s.length();
     }
 
-    @EgException(value = {"a", "moXie", "b"}, willThrow = IllegalArgumentException.class)
+    @EgException(value = {"\"a\"", "\"moXie\"", "\"b\""}, willThrow = IllegalArgumentException.class)
     public void cantHandleX(String... strings) {
         for (String s : strings) {
             if (s.contains("X"))

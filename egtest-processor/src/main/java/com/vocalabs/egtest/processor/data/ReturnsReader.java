@@ -58,7 +58,7 @@ public class ReturnsReader implements AnnotationReader<ReturnsExample> {
     }
 
     private ReturnsExample example(ExecutableElement el, Eg eg) {
-        if (DELTA_RETURN_TYPES.contains(el.getReturnType().toString()))
+        if (DELTA_RETURN_TYPES.contains(el.getReturnType().toString())  &&  ! "null".equals(eg.returns().trim()))
             return new ReturnsWithDeltaExample(el, eg);
         return new ReturnsExample(el, eg);
     }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
     protected final JUnitClassWriter classWriter;
@@ -76,7 +77,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
         }
 
         if (! visible(element) ) {
-            messageHandler.unsupported(element, "non-public");
+            messageHandler.unsupported(element, "private or protected");
             return false;
         }
         return true;
@@ -107,22 +108,28 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
                 .collect(Collectors.toList());
     }
 
-    private String elementUniqueSuffix(Element el) {
+    private static String elementUniqueSuffix(Element el) {
         if (el instanceof ExecutableElement) {
-            //
-            // Given   foo(String, double, Double[], org.omg.CORBA_2_3.ORB)
-            // returns "$java_lang_String$double$java_lang_Double$_A$org_omg_CORBA__2__3_ORB"
-            //
-            // I was tempted to use ᛜ (runic ingwaz) but I'm sure people would complain
-            return ((ExecutableElement)el).getParameters()
+            Stream<String> params = ((ExecutableElement)el).getParameters()
                     .stream()
-                    .map(p -> p.asType().toString())
-                    .map(s -> s.replaceAll("_", "__"))
-                    .map(s -> s.replaceAll("\\.", "_"))
-                    .map(s -> s.replaceAll("\\[\\]", "$_A"))
-                    .reduce("",  (a,b)  -> a+"$"+b);
+                    .map(p -> p.asType().toString());
+            return escapeParameterNames(params);
         }
         return "$"+el.getKind();
+    }
+
+    /**
+     * Escape names for use in generating unique JUnit names. See the unit tests for expected results of the current
+     * implementation; it may change over time.
+     */
+    static String escapeParameterNames(Stream<String> names) {
+        //  I was tempted to use ᛜ (runic ingwaz) but I'm sure people would complain
+        return names
+                .map(s -> s.replace("$", "$$"))
+                .map(s -> s.replace("_", "__"))
+                .map(s -> s.replace(".", "_"))
+                .map(s -> s.replace("[]", "$_A"))
+                .reduce("",  (a,b)  -> a+"$"+b);
     }
 
 

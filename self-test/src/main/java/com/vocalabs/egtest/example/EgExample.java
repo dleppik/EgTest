@@ -31,6 +31,21 @@ public class EgExample {
         return Arrays.stream(others).reduce(a, (b,c) -> b*c);
     }
 
+    @Eg(given = {"7f", "5f"}, returns = "35f")
+    @Eg(given = {"null", "5f"}, returns = "null")
+    @Eg(given = {"1f", "(Float) null"}, returns = "null")
+    public static Float multiply(Float a, Float b) {
+        return (a==null || b==null)  ?  null  :  a * b;
+    }
+
+
+    @Eg(given = {"null", "5.0"}, returns = "null")
+    @Eg(given = {"1.0", "(Double) null"}, returns = "null")
+    public static Double multiply(Double a, Double b) {
+        return (a==null || b==null)  ?  null  :  a * b;
+    }
+
+
     @Eg(given = {"5"}, returns = "5")
     @Eg(given = {"2", "3", "5"}, returns = "30")
     public static int multiply(int a, int... others) {
@@ -48,7 +63,7 @@ public class EgExample {
         this.decrementStep = decrementStep;
     }
 
-    @Eg(given = {"Integer.MAX_VALUE"}, returns = "Integer.MIN_VALUE")
+    @Eg(given = {"Integer.MIN_VALUE"}, returns = "Integer.MAX_VALUE")
     @Eg(given = {"1"}, returns = "0")
     public int decrement(int a) {
         return a - decrementStep;

@@ -34,17 +34,17 @@ public class EgCases {
     // When testing a non-static method, the default constructor is used
     private final int decrementStep;
 
-    public EgCases() {
+    EgCases() {
         this(1);
     }
 
-    public EgCases(int decrementStep) {
+    EgCases(int decrementStep) {
         this.decrementStep = decrementStep;
     }
 
-    @Eg(given = {"Integer.MAX_VALUE"}, returns = "Integer.MIN_VALUE")
+    @Eg(given = {"Integer.MIN_VALUE"}, returns = "Integer.MAX_VALUE")
     @Eg(given = {"1"}, returns = "0")
-    public int decrement(int a) {
+    int decrement(int a) {
         return a - decrementStep;
     }
 }

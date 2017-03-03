@@ -9,8 +9,8 @@ public class EgExceptionExample {
         return thing1.toString();
     }
 
-    @EgException({"null", "hello"})
-    @EgException({"hello", "null"})
+    @EgException({"null", "\"hello\""})
+    @EgException({"\"hello\"", "null"})
     public static String anotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
         if (thing1 == null) {
             throw new IllegalArgumentException("thing1 is null, but I just don't feel like throwing a NPE");
