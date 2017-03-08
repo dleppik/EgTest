@@ -21,26 +21,16 @@ public class MessageHandler {
         this.failOnUnsupported = failOnUnsupported;
     }
 
-    /** This will be removed once we support all the cases promised in README.md. */
-    @Deprecated
-    public void notYetSupported(Element el, Annotation a) { notYetSupported(el, a.toString()); }
-
-    /** This will be removed once we support all the cases promised in README.md. */
-    @Deprecated
-    public void notYetSupported(Element el, Annotation a, String description) { notYetSupported(el, description+" "+a); }
-
-    /** This will be removed once we support all the cases promised in README.md. */
-    @Deprecated
-    public void notYetSupported(Element el, String description) {
-        messager.printMessage(WARNING, "EgTest does not yet support "+description + " on "+elStr(el));
-    }
-
     public void unsupported(Element el, Annotation a, String description) { unsupported(el, description+" "+a);}
 
-    /** This includes all cases not promised in README.md or other documentation. */
+    /**
+     * This includes all cases not promised in README.md or other documentation.
+     * @param el the element with the unsupported annotation(s)
+     * @param description the kind of thing that's unsupported, e.g. "inner classes"
+     */
     public void unsupported(Element el, String description) {
         Kind kind = (failOnUnsupported) ? ERROR : WARNING;
-        messager.printMessage(kind, "EgTest does not support " + description + " on " + elStr(el));
+        messager.printMessage(kind, "EgTest does not support " + description + " on " + elStr(el), el);
     }
 
     private String elStr(Element el) {
@@ -51,7 +41,10 @@ public class MessageHandler {
         messager.printMessage(NOTE, message);
     }
 
-    /** Print the stack trace as well as the message */
+    /**
+     * Print the stack trace as well as the message.
+     * @param error a caught exception
+     */
     public void error(Exception error) {
         error.printStackTrace();
         messager.printMessage(ERROR, error.getMessage());
