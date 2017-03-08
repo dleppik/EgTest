@@ -109,6 +109,8 @@ processor which comes with EgTest.
 
 ##Generating JUnit Tests
 
+See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle.
+
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
 

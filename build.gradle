@@ -13,4 +13,10 @@ subprojects {
         testCompile 'junit:junit:4.12'
         compile 'org.jetbrains:annotations:15.0'
     }
+
+    // IMHO, Javadoc warnings about missing @param and @returns just discourage good use of Javadoc;
+    // if the method and parameters have self-descriptive names, more explanation just makes the file longer.
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:all,-missing', "-quiet")
+    }
 }
