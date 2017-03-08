@@ -1,11 +1,6 @@
-apply plugin: 'maven'
-
-dependencies {
-    compile 'com.squareup:javapoet:1.8.0'
-    compile project(':egtest-annotations')
-}
-
 // Everything below is for packaging releases
+
+apply plugin: 'maven'
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -29,9 +24,9 @@ uploadArchives {
             repository(url: "file://localhost/tmp/EgTest-staging/")
 
             pom.project {
-                name 'EgTest Annotation Processor'
+                name 'EgTest Annotations'
                 packaging 'jar'
-                description 'Java annotation processor for turning EgTest annotations into JUnit tests.'
+                description 'Annotations for writing EgTest tests; does not include the annotation processor.'
                 url 'https://github.com/dleppik/EgTest'
 
                 scm {
