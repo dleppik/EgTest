@@ -7,9 +7,10 @@ import javax.lang.model.element.*;
 import com.vocalabs.egtest.processor.data.*;
 import com.vocalabs.egtest.processor.junit.JUnitWriter;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.*;
+
+import static javax.tools.Diagnostic.Kind.WARNING;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes({
@@ -22,7 +23,11 @@ import java.util.*;
         "com.vocalabs.egtest.annotation.EgNoMatch",
         "com.vocalabs.egtest.annotation.EgNoMatchContainer",
         "com.vocalabs.egtest.processor.selftest.EgSelfTest"})
-@SupportedOptions("egtest.targetDirectory")
+@SupportedOptions({
+        Settings.TARGET_DIR_KEY,
+        Settings.DIR_EXISTS_BEHAVIOR_KEY,
+        Settings.FAIL_ON_UNSUPPORTED_KEY,
+        Settings.SELF_TEST_KEY})
 public class EgAnnotationProcessor extends AbstractProcessor {
 
     /** These do the work of pulling examples out of annotations. */
@@ -30,15 +35,23 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
             ExceptionReader.INSTANCE,
-            IgnoredReader.INSTANCE);
+            SelfTestReader.INSTANCE);
 
     private MessageHandler messageHandler = null;
     private boolean firstPass = true;
+    private Settings settings = Settings.illegalInstance("not initialized");
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        messageHandler = new MessageHandler(processingEnv.getMessager(), false);
+        settings = Settings.instance(processingEnv);
+        messageHandler = new MessageHandler(processingEnv.getMessager(), settings.isFailOnUnsupported());
+        if (settings.isValid()) {
+            messageHandler.note("EgTest will write test source code in "+settings.getTargetDir());
+        }
+        else if ( ! processingEnv.getOptions().containsKey(Settings.TARGET_DIR_KEY)) {
+            processingEnv.getMessager().printMessage(WARNING, "Skipping EgTest, "+Settings.TARGET_DIR_KEY+" not specified");
+        }
         firstPass = true;
     }
 
@@ -46,21 +59,36 @@ public class EgAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
+            if (firstPass) {
+                writeInitializationMessages();
+            }
+            if (! settings.isValid()) {
+                return true;
+            }
+            if (settings.isSelfTest()) {
+                checkFactories();
+            }
             AnnotationCollector collector = new AnnotationCollector(messageHandler);
-            checkFactories();  // Eventually we'll want to do this only on self-test
             EXAMPLE_HANDLERS.forEach(f -> f.addExamples(roundEnv, collector));
 
-            File targetDir = new File(processingEnv.getOptions().get("egtest.targetDirectory"));
-            EgTestWriter.AlreadyExistsBehavior onExists = (firstPass)
-                    ? EgTestWriter.AlreadyExistsBehavior.DELETE
-                    : EgTestWriter.AlreadyExistsBehavior.OVERWRITE;
-            new JUnitWriter(targetDir, onExists).write(collector);
+            final Settings.AlreadyExistsBehavior onExists = firstPass
+                    ? settings.getTargetDirExistsBehavior()
+                    : Settings.AlreadyExistsBehavior.OVERWRITE;
+
+            new JUnitWriter(settings.getTargetDir(), onExists).write(collector);
         }
         catch (Exception ex) {
             messageHandler.error(ex);
         }
         firstPass = false;
         return true;
+    }
+
+    /** For non-fatal messages. This is done in process() to avoid any unnecessary synchronized code in init(). */
+    private void writeInitializationMessages() {
+        if (settings.isValid()) {
+            messageHandler.note("EgTest will write test source code in "+settings.getTargetDir());
+        }
     }
 
     private void checkFactories() {

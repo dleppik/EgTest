@@ -1,8 +1,7 @@
 package com.vocalabs.egtest.processor;
 
-/** Write unit tests once we have collected all the data. */
+/** Writes the unit tests; rather than read annotations directly, uses an {@link AnnotationCollector}. */
 public interface EgTestWriter {
-    enum AlreadyExistsBehavior { OVERWRITE, DELETE, FAIL }
 
     void write(AnnotationCollector annotationCollector) throws Exception;
 }

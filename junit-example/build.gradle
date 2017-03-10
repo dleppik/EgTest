@@ -4,13 +4,8 @@ plugins {
 
 dependencies {
     apt project(':egtest-processor')     // change apt to annotationProcessor if compiling for Android
-    compile project(':egtest-processor')
+    compile project(':egtest-annotations')
 }
-
-// Debugging:
-// I've been unable to create a debugger process on the compiler, since Gradle appears to use the compiler API.
-// However, with --debug, it prints the javac arguments so you can run it by hand and add
-// -J-agentlib:jdwp=transport=dt_socket,server=y,address=5005
 
 compileJava.options.compilerArgs.add("-Aegtest.targetDirectory=$buildDir/generated/egTest")
 

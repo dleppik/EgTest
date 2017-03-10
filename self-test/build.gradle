@@ -15,6 +15,8 @@ dependencies {
 // -J-agentlib:jdwp=transport=dt_socket,server=y,address=5005
 
 compileJava.options.compilerArgs.add("-Aegtest.targetDirectory=$buildDir/generated/egTest")
+compileJava.options.compilerArgs.add("-Aegtest.selfTest=true")
+compileJava.options.compilerArgs.add("-Aegtest.failOnUnsupportedExample=false")
 
 sourceSets {
     test {

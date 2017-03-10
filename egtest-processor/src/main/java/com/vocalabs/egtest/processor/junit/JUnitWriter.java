@@ -3,6 +3,7 @@ package com.vocalabs.egtest.processor.junit;
 import com.vocalabs.egtest.processor.AnnotationCollector;
 import com.vocalabs.egtest.processor.EgTestWriter;
 import com.vocalabs.egtest.processor.MessageHandler;
+import com.vocalabs.egtest.processor.Settings;
 import com.vocalabs.egtest.processor.data.Example;
 
 import java.io.File;
@@ -14,23 +15,23 @@ import java.util.Map;
 public class JUnitWriter implements EgTestWriter {
 
     private final File directoryToFill;
-    private final AlreadyExistsBehavior directoryExistsBehavior;
+    private final Settings.AlreadyExistsBehavior directoryExistsBehavior;
 
-    public JUnitWriter(File directoryToFill, AlreadyExistsBehavior directoryExistsBehavior) {
+    public JUnitWriter(File directoryToFill, Settings.AlreadyExistsBehavior directoryExistsBehavior) {
         this.directoryToFill = directoryToFill;
         this.directoryExistsBehavior = directoryExistsBehavior;
     }
 
     @Override
     public void write(AnnotationCollector annotationCollector) throws Exception {
-        if (AlreadyExistsBehavior.FAIL.equals(directoryExistsBehavior) && directoryToFill.exists()) {
+        if (Settings.AlreadyExistsBehavior.FAIL.equals(directoryExistsBehavior) && directoryToFill.exists()) {
             annotationCollector.getMessageHandler()
                     .error("EgTest target directory exists ("+directoryToFill.getAbsolutePath()+")");
             return;
         }
 
         boolean didCreateDir = directoryToFill.mkdirs();
-        if (AlreadyExistsBehavior.DELETE.equals(directoryExistsBehavior) &&  ! didCreateDir) {
+        if (Settings.AlreadyExistsBehavior.DELETE.equals(directoryExistsBehavior) &&  ! didCreateDir) {
             File[] files = directoryToFill.listFiles();
             if (files == null)
                 throw new IOException("Location for writing EgTest source is not a directory: "+directoryToFill);

@@ -1,9 +1,6 @@
 package com.vocalabs.egtest.processor.junit;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import com.vocalabs.egtest.processor.data.ExceptionExample;
 
 import javax.lang.model.element.ExecutableElement;
