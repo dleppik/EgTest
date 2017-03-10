@@ -2,9 +2,17 @@
 Use annotations to create unit tests and documentation in Java
 
 ###### Definition
-e.g., _exempli gratia:_ for the sake of an example.
+e.g., _exempli gratia:_ for the sake of an example.  (Not to be confused with i.e., _id et_: it is.)
 
-Not to be confused with i.e., _id et_: it is. (A definition or exhaustive list.)
+For example:
+
+```Java
+    @Eg(given = {"1", "2"}, returns = "3")
+    @Eg(given = {"1", "Integer.MAX_VALUE"}, returns = "Integer.MIN_VALUE")
+    int add(int a, int b) {
+        return a + b;
+    }
+```
 
 ## Why
 
@@ -13,18 +21,17 @@ Because unit tests should be the easiest way to test—even easier than a REPL.
 Because code, tests, and documentation belong together.
 
 ## What it's for (and not for)
-EgTest annotations provide **testable documentation in the source code**.
-
-EgTest annotations automatically show up in Javadoc, so you can have confidence that the examples work as documented.
+EgTest annotations provide **testable documentation in the source code**. The annotations automatically show up in 
+Javadoc and are automatically compiled into JUnit tests. That way, you know that the examples work.
 
 By removing the excuses for writing tests, you may find yourself writing tests for one-off code or exploratory code. 
 Rather than testing in a REPL, it is easier to write a permanent unit test. Even simple one-line functions are worth a 
 unit test when it's this quick and easy!
 
 **EgTest is not an excuse to avoid writing full unit tests!** In some cases, especially with functional programming, 
-you might be able to just use EgTest. EgTest should encourage you to break your complex code into small, simple, easily 
-tested functions. With EgTest, you don't need to write several lines of unit test boilerplate for a one-line test—but 
-you still need that boilerplate for more complicated tests.
+EgTest may be sufficient. EgTest should encourage you to break your complex code into small, simple, easily 
+tested functions. But what makes EgTest so simple is that it doesn't try to solve all your testing needs: it's there
+to complement, not replace full unit testing.
 
 ### Examples
 
