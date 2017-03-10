@@ -114,13 +114,15 @@ Any JVM language that supports assertions should in theory be able to use EgTest
 may structure its code in ways that the test generator doesn't anticipate, or it might not support the Java annotation
 processor which comes with EgTest.
 
-##Getting Started
-
-See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle.
-
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
 
-To try it out, run `./gradlew ':junit-example:build'` from the EgTest directory. (Windows: `gradle.bat` should work.) 
+##Getting Started
+
+See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle which 
+pulls the code you need from Maven Central.
+
+To try it out from source, clone this project and run `./gradlew ':junit-example:build'` from the EgTest directory. 
+(Windows: `gradle.bat` should work.) 
 Generated source code will be in `junit-example/build/generated/egTest` while JUnit test results will be at 
 `junit-example/build/reports/tests/test/index.html`.
