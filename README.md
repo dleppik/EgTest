@@ -114,7 +114,7 @@ Any JVM language that supports assertions should in theory be able to use EgTest
 may structure its code in ways that the test generator doesn't anticipate, or it might not support the Java annotation
 processor which comes with EgTest.
 
-##Generating JUnit Tests
+##Getting Started
 
 See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle.
 
