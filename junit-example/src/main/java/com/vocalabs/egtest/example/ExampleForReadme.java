@@ -14,7 +14,6 @@ public class ExampleForReadme {
         return "Hello, "+target+"!";
     }
 
-
     // Package-private methods are fair game
 
     @Eg(given = {"1", "2"}, returns = "3")
@@ -62,7 +61,6 @@ public class ExampleForReadme {
     public static String methodWhichCannotHandleNulls(Object thing1) {
         return thing1.toString();
     }
-
 
     // Non-static methods and variables are tested using the default zero-argument constructor
 
