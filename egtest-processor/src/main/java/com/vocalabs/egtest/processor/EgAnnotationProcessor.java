@@ -35,7 +35,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
             ExceptionReader.INSTANCE,
-            SelfTestReader.INSTANCE);
+            IgnoredReader.INSTANCE);
 
     private MessageHandler messageHandler = null;
     private boolean firstPass = true;
@@ -69,7 +69,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
                 checkFactories();
             }
             AnnotationCollector collector = new AnnotationCollector(messageHandler);
-            EXAMPLE_HANDLERS.forEach(f -> f.addExamples(roundEnv, collector));
+            EXAMPLE_HANDLERS.forEach(f -> f.addExamples(roundEnv, collector, settings.isSelfTest()));
 
             final Settings.AlreadyExistsBehavior onExists = firstPass
                     ? settings.getTargetDirExistsBehavior()

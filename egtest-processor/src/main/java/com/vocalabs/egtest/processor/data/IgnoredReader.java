@@ -12,10 +12,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** Annotations for internal use. */
-public class SelfTestReader implements AnnotationReader<Example<?>> {
+/** Marks annotations that are for internal use and therefore aren't handled by AnnotationReader. */
+public class IgnoredReader implements AnnotationReader<Example<?>> {
 
-    public static final SelfTestReader INSTANCE = new SelfTestReader();
+    public static final IgnoredReader INSTANCE = new IgnoredReader();
 
     @Override
     public Set<Class<? extends Annotation>> supportedAnnotationClasses() {

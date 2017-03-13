@@ -14,7 +14,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
  * Data class for user-defined settings.
  */
 public class Settings {
-    static final String
+    public static final String
             PREFIX = "egtest.",
             TARGET_DIR_KEY = PREFIX+"targetDirectory",
             DIR_EXISTS_BEHAVIOR_KEY = PREFIX+"targetDirectoryExistsBehavior",

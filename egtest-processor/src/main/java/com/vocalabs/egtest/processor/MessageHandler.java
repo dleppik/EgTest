@@ -53,4 +53,8 @@ public class MessageHandler {
     public void error(String message) {
         messager.printMessage(ERROR, message);
     }
+
+    public void error(Element el, String message) {
+        messager.printMessage(ERROR, message, el);
+    }
 }
