@@ -8,6 +8,7 @@ dependencies {
 }
 
 compileJava.options.compilerArgs.add("-Aegtest.targetDirectory=$buildDir/generated/egTest")
+compileJava.options.encoding = 'UTF-8'
 
 sourceSets {
     test {
