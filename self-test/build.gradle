@@ -18,6 +18,14 @@ compileJava.options.compilerArgs.add("-Aegtest.targetDirectory=$buildDir/generat
 compileJava.options.compilerArgs.add("-Aegtest.selfTest=true")
 compileJava.options.compilerArgs.add("-Aegtest.failOnUnsupportedExample=false")
 
+testClasses.doLast {
+    copy {
+        from "$buildDir/generated/egTest"
+        into "$buildDir/classes/test"
+        include "**/*.txt"
+    }
+}
+
 sourceSets {
     test {
         java {

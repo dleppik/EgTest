@@ -47,4 +47,11 @@ public class EgCases {
     int decrement(int a) {
         return a - decrementStep;
     }
+
+    /** A trivial case, to show that it works with overridden methods. */
+    @Eg(returns = "1")
+    @Override
+    public int hashCode() {
+        return decrementStep;
+    }
 }

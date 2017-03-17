@@ -6,6 +6,7 @@ import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
 import com.vocalabs.egtest.processor.junit.JUnitWriter;
+import com.vocalabs.egtest.processor.selftest.SelfTestAnnotationCollector;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -31,7 +32,7 @@ import static javax.tools.Diagnostic.Kind.WARNING;
 public class EgAnnotationProcessor extends AbstractProcessor {
 
     /** These do the work of pulling examples out of annotations. */
-    private static final List<AnnotationReader<?>> EXAMPLE_HANDLERS = Arrays.asList(
+    private static final List<AnnotationReader<?>> ANNOTATION_READERS = Arrays.asList(
             ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
             ExceptionReader.INSTANCE,
@@ -45,7 +46,10 @@ public class EgAnnotationProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         settings = Settings.instance(processingEnv);
-        messageHandler = new MessageHandler(processingEnv.getMessager(), settings.isFailOnUnsupported());
+
+        messageHandler = (settings.isSelfTest())
+                ? new SelfTestMessageHandler(processingEnv.getMessager())
+                : new MessageHandler(processingEnv.getMessager(), settings.isFailOnUnsupported());
         if (settings.isValid()) {
             messageHandler.note("EgTest will write test source code in "+settings.getTargetDir());
         }
@@ -59,23 +63,26 @@ public class EgAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
-            if (firstPass) {
-                writeInitializationMessages();
-            }
             if (! settings.isValid()) {
                 return true;
             }
+
             if (settings.isSelfTest()) {
-                checkFactories();
+                cheackAnnotationReaders();
             }
-            AnnotationCollector collector = new AnnotationCollector(messageHandler);
-            EXAMPLE_HANDLERS.forEach(f -> f.addExamples(roundEnv, collector, settings.isSelfTest()));
+            AnnotationCollector collector = (settings.isSelfTest())
+                    ? new SelfTestAnnotationCollector(messageHandler)
+                    : new AnnotationCollector(messageHandler);
+            ANNOTATION_READERS.forEach(f -> f.addExamples(roundEnv, collector));
 
             final Settings.AlreadyExistsBehavior onExists = firstPass
                     ? settings.getTargetDirExistsBehavior()
                     : Settings.AlreadyExistsBehavior.OVERWRITE;
 
             new JUnitWriter(settings.getTargetDir(), onExists).write(collector);
+            if (messageHandler instanceof SelfTestMessageHandler) {
+                ((SelfTestMessageHandler) messageHandler).write(settings.getTargetDir().toPath());
+            }
         }
         catch (Exception ex) {
             messageHandler.error(ex);
@@ -83,23 +90,15 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         firstPass = false;
         return true;
     }
-
-    /** For non-fatal messages. This is done in process() to avoid any unnecessary synchronized code in init(). */
-    private void writeInitializationMessages() {
-        if (settings.isValid()) {
-            messageHandler.note("EgTest will write test source code in "+settings.getTargetDir());
-        }
-    }
-
-    private void checkFactories() {
+    private void cheackAnnotationReaders() {
         Map<String,AnnotationReader<?>> found = new HashMap<>();
-        for (AnnotationReader<?> factory: EXAMPLE_HANDLERS) {
-            Set<Class<? extends Annotation>> current = factory.supportedAnnotationClasses();
+        for (AnnotationReader<?> reader: ANNOTATION_READERS) {
+            Set<Class<? extends Annotation>> current = reader.supportedAnnotationClasses();
             for (Class<? extends Annotation> a : current) {
                 String name = a.getCanonicalName();
                 if (found.containsKey(name))
-                    messageHandler.error("Bug: Redundant support for "+name+": in "+found.get(name)+" and "+factory);
-                found.put(name, factory);
+                    messageHandler.error("Bug: Redundant support for "+name+": in "+found.get(name)+" and "+reader);
+                found.put(name, reader);
             }
         }
 

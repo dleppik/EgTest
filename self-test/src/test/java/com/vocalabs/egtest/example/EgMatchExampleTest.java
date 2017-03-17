@@ -2,9 +2,6 @@ package com.vocalabs.egtest.example;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.util.regex.Pattern;
-
 import static com.vocalabs.egtest.example.EgMatchExample.SIMPLE_EMAIL_RE;
 import static org.junit.Assert.*;
 
@@ -26,16 +23,14 @@ public class EgMatchExampleTest {
 
     @Test
     public void isEmailEgMatches() throws Exception {
-        assertTrue("dleppik@vocalabs.com", instance().isEmail("dleppik@vocalabs.com"));
-        assertTrue("dleppik@vocalabs.example.com",instance().isEmail("dleppik@vocalabs.example.com"));
+        assertTrue("dleppik@vocalabs.com", EgMatchExample.isEmail("dleppik@vocalabs.com"));
+        assertTrue("dleppik@vocalabs.example.com", EgMatchExample.isEmail("dleppik@vocalabs.example.com"));
     }
 
     @Test
     public void isEmailEgNoMatch() throws Exception {
-        assertFalse("dleppik", instance().isEmail("dleppik"));
-        assertFalse("dleppik@vocalabs@example.com", instance().isEmail("dleppik@vocalabs@example.com"));
-        assertFalse("David Leppik <dleppik@vocalabs.com>", instance().isEmail("David Leppik <dleppik@vocalabs.com>"));
+        assertFalse("dleppik", EgMatchExample.isEmail("dleppik"));
+        assertFalse("dleppik@vocalabs@example.com", EgMatchExample.isEmail("dleppik@vocalabs@example.com"));
+        assertFalse("David Leppik <dleppik@vocalabs.com>", EgMatchExample.isEmail("David Leppik <dleppik@vocalabs.com>"));
     }
-
-    private EgMatchExample instance() { return new EgMatchExample(); }
 }

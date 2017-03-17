@@ -1,10 +1,13 @@
 package com.vocalabs.egtest.processor.junit;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import com.vocalabs.egtest.processor.JavaModelUtil;
 import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.data.Example;
 
+import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -39,8 +42,14 @@ class JUnitClassWriter {
     }
 
     private JavaFile createFileSpec() throws Exception {
+
+        AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
+                .addMember("value", "$S", "com.vocalabs.egtest.EgTest")
+                .build();
+
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotation(generated);
 
         JUnitExampleWriter.write(this, typeSpecBuilder);
         TypeSpec javaFileSpec = typeSpecBuilder.build();

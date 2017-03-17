@@ -28,10 +28,22 @@ By removing the excuses for writing tests, you may find yourself writing tests f
 Rather than testing in a REPL, it is easier to write a permanent unit test. Even simple one-line functions are worth a 
 unit test when it's this quick and easy!
 
-**EgTest is not an excuse to avoid writing full unit tests!** In some cases, especially with functional programming, 
+###EgTest is not an excuse to avoid writing full unit tests
+
+In some cases, especially with functional programming, 
 EgTest may be sufficient. EgTest should encourage you to break your complex code into small, simple, easily 
 tested functions. But what makes EgTest so simple is that it doesn't try to solve all your testing needs: it's there
 to complement, not replace full unit testing.
+
+###EgTest is not a static analysis or type constraint tool
+
+There are other similar-looking annotations out there which extend the type system by 
+describing constraints, including 
+[several to describe nullability](https://stackoverflow.com/questions/4963300/which-notnull-java-annotation-should-i-use).
+Some of them even [enforce the constraints through static analysis](https://checkerframework.org/).
+These are extremely powerful, since they cover entire classes of errors. EgTest isn't one of them.
+
+EgTest is for writing **examples**. They are specific, concrete, and easier to understand—especially in complex cases.
 
 ### Examples
 
@@ -156,6 +168,25 @@ fancier calls like `@Eg(given={"new StringBuilder(\"World\")"} returns="new Stri
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
 
+Annotation processing has its limitations. In particular, because anonymous classes are constructed at runtime, 
+annotations within anonymous classes are not visible to the compiler. Not only is EgTest unable to create a test
+for the following, it is unable to emit a warning. As is true whenever you write unit tests, **you should write a 
+failing test—and confirm that it fails—before making it pass.**
+
+```Java
+public class BadExample {
+    public static final Object AN_OBJECT_WITH_SILENTLY_IGNORED_ANNOTATIONS = new Object() {
+        @Eg(returns = "1")  // Silently ignored
+        @Override
+        public int hashCode() {
+            return 1;
+        }
+    };
+}
+```
+
+
+
 ##Getting Started
 
 See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle which 
@@ -165,3 +196,14 @@ To try it out from source, clone this project and run `./gradlew ':junit-example
 (Windows: `gradle.bat` should work.) 
 Generated source code will be in `junit-example/build/generated/egTest` while JUnit test results will be at 
 `junit-example/build/reports/tests/test/index.html`.
+
+Running the Java compiler from the command line isn't recommended, but can be helpful for debugging. 
+To process EgTest annotations into JUnit test code, download `egtest-processor-`VERSION`.jar` and compile your source 
+with 
+`-processorpath [path/to/jar/]egtest-processor-VERSION.jar -Aegtest.targetDirectory=/path/for/generated/source/files`. 
+
+Similarly, running with Maven should work if you configure `compiler:compile` with EgTest in the `annotationProcessors`
+parameter, include `-Aegtest.targetDirectory=/path/for/generated/source/files` in `compilerArgs`, and make sure the
+unit test compile includes the generated source files. EgTest is unlike most annotation processors in that **its
+generated source is compiled with unit tests, not with the main source code.** Thus, you can't just set 
+`generatedSourcesDirectory` and be done.

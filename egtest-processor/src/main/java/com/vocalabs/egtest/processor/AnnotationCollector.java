@@ -2,7 +2,6 @@ package com.vocalabs.egtest.processor;
 
 
 import com.vocalabs.egtest.processor.data.Example;
-import com.vocalabs.egtest.processor.junit.JavaModelUtil;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -36,7 +35,7 @@ public class AnnotationCollector {
         TypeElement te = (TypeElement) dt.asElement();
 
         if ( ! allowedNesting(te.getNestingKind())) {
-            messageHandler.error("Unsupported nesting level");
+            messageHandler.error(classEl, "Unsupported nesting level");
         }
         return te.getQualifiedName().toString();
     }

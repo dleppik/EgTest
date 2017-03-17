@@ -1,7 +1,5 @@
 package com.vocalabs.egtest.processor;
 
-import com.vocalabs.egtest.processor.junit.JavaModelUtil;
-
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import java.lang.annotation.Annotation;

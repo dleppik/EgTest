@@ -8,19 +8,17 @@ import com.vocalabs.egtest.processor.selftest.ExpectedBehavior;
 
 import java.util.regex.Pattern;
 
-public class EgMatchesCase {
+public class UnsupportedCases {
+    @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
     @EgMatch("-0.77E77")
     @EgNoMatch("-.Infinity")
     private static final Pattern
             NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
 
-    public static final Object AN_OBJECT = new Object() {
-        @EgMatch("-0.77E77")
-        @EgNoMatch("-.Infinity")
-        public final Pattern
-                numberRe = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
-    };
-
+    @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
+    @EgMatch("Cow")
+    @EgNoMatch("Cw")
+    protected static final Pattern COW_RE = Pattern.compile("C?w");
 
     /**
      * We don't currently support inner classes, but the build should not fail unless it is configured to fail on
@@ -30,7 +28,7 @@ public class EgMatchesCase {
         @EgSelfTest(ExpectedBehavior.UNSUPPORTED_CASE)
         @EgMatch("-0.77E77")
         @EgNoMatch("-.Infinity")
-        private static final Pattern
+        public static final Pattern
                 NUMBER_RE = Pattern.compile("(?:NaN|-?(?:(?:\\d+|\\d*\\.\\d+)(?:[E|e][+|-]?\\d+)?|Infinity))");
 
 
