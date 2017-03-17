@@ -125,7 +125,6 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
      * implementation; it may change over time.
      */
     static String escapeParameterNames(Stream<String> names) {
-        //  I was tempted to use ᛜ (runic ingwaz) but I'm sure people would complain
         return names
                 .map(s -> s.replace("$", "$$"))
                 .map(s -> s.replace("_", "__"))
