@@ -45,7 +45,7 @@ unit test when it's this quick and easy!
 In some cases, especially with functional programming, 
 EgTest may be sufficient. EgTest should encourage you to break your complex code into small, simple, easily 
 tested functions. But what makes EgTest so simple is that it doesn't try to solve all your testing needs: it's there
-to complement, not replace full unit testing.
+to complement, not replace, full unit testing.
 
 ### EgTest is not a static analysis or type constraint tool
 
@@ -56,6 +56,8 @@ Some of them even [enforce the constraints through static analysis](https://chec
 These are extremely powerful, since they cover entire classes of errors. EgTest isn't one of them.
 
 EgTest is for writing **examples**. They are specific, concrete, and easier to understand—especially in complex cases.
+It should be used with type-constraint annotations, dealing with the cases that they can't handle or providing 
+clarifying examples.
 
 ### Examples
 
