@@ -40,14 +40,14 @@ By removing the excuses for writing tests, you may find yourself writing tests f
 Rather than testing in a REPL, it is easier to write a permanent unit test. Even simple one-line functions are worth a 
 unit test when it's this quick and easy!
 
-###EgTest is not an excuse to avoid writing full unit tests
+### EgTest is not an excuse to avoid writing full unit tests
 
 In some cases, especially with functional programming, 
 EgTest may be sufficient. EgTest should encourage you to break your complex code into small, simple, easily 
 tested functions. But what makes EgTest so simple is that it doesn't try to solve all your testing needs: it's there
 to complement, not replace full unit testing.
 
-###EgTest is not a static analysis or type constraint tool
+### EgTest is not a static analysis or type constraint tool
 
 There are other similar-looking annotations out there which extend the type system by 
 describing constraints, including 
