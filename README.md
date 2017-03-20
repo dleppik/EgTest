@@ -14,11 +14,23 @@ For example:
     }
 ```
 
-## Why
+The `@Eg` annotations tell the EgTest annotation processor to create unit tests from the method and its two examples.
+They also show up in Javadoc. That way your examples are always in synch with the documentation, and you see
+the tests every time you look at the source code.
 
-Because unit tests should be the easiest way to test—even easier than a REPL.
+Have you ever written a regular expression, tested it in a regex checker or a REPL, and then forgotten to write unit
+tests for all the cases you hand tested? Sure unit tests are easy to write, but what if they were __so easy to write
+that you didn't bother with hand-testing?__ Like this:
 
-Because code, tests, and documentation belong together.
+```Java
+    @EgMatch("dleppik@vocalabs.com")
+    @EgMatch("dleppik@vocalabs.example.com")
+    @EgNoMatch("dleppik")
+    @EgNoMatch("dleppik@vocalabs@example.com")
+    @EgNoMatch("David Leppik <dleppik@vocalabs.com>")
+    public static final Pattern
+            SIMPLE_EMAIL_RE = Pattern.compile("^[\\w+.\\-=&|/?!#$*]+@[\\w.\\-]+\\.[\\w]+$");
+```
 
 ## What it's for (and not for)
 EgTest annotations provide **testable documentation in the source code**. The annotations automatically show up in 
