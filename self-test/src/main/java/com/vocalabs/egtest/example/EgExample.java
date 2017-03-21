@@ -68,4 +68,31 @@ public class EgExample {
     public int decrement(int a) {
         return a - decrementStep;
     }
+
+
+
+    /** This demonstrates the use of EgTest on long method names*/
+    @Eg(returns = "\"\"")
+    public String thisDemonstratesTheUseOfEgTestOnLongMethodNameswhatShouldWeNameOurMethodIAmSoConfusedddddddWillThisWorkIHopeItDoesWaitYouWantItEvenLongerrrrrrrrrrrrrrrrrrrr() {
+        return "";
+    }
+
+    /** This demonstrates the use of EgTest on long parameter names */
+    @Eg(given = {"56"}, returns = "0")
+    @Eg(given = {"129"}, returns = "0")
+    public int longParameterName(int thisDemonstratesTheUseOfEgTestOnLongParameterNameswhatShouldWeNameOurParamterIAmSoConfusedddddddWillThisWorkIHopeItDoesWaitYouWantItEvenLongerrrrrrrrrrrrrrrrrrrr) {
+        return 0;
+    }
+
+    /** This demonstrates a long list of parameters */
+    @Eg(given = {"1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5",
+            "1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5", "1", "2", "3", "4", "5",
+            "1"}, returns = "0")
+    public int longParameterList(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l,
+                                 int m, int n, int o, int p, int q, int r, int s, int t, int u, int v, int w, int x,
+                                 int y, int z, int aa, int bb, int cc, int dd, int ee, int ff, int gg, int hh, int ii,
+                                 int jj, int kk, int ll, int mm, int oo, int pp, int qq, int rr, int ss, int tt, int uu,
+                                 int vv, int ww, int xx, int yy, int zz) {
+        return zz - a;
+    }
 }
