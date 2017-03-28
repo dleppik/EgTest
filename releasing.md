@@ -3,7 +3,7 @@
 0. Make sure everything is checked in and working!
 1. Remove SNAPSHOT from version in top-level build.gradle
 2. `./gradlew :egtest-annotations:uploadArchives`
-3. Find the jars and pom and sign them with gpg2.
+3. Find the jars and pom and sign them with gpg2. (`gpg2 -ab filename` for each file.)
 4. Follow the directions at http://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html
 5. Change dependencies in egtest-processor to point at the repository
 6. Repeat 2-4 for egtest-processor.
