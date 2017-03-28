@@ -22,7 +22,7 @@ public class ExampleForReadme {
         return a + b;
     }
 
-    // Floating-point types allow a delta; the default is 0.0.
+    // Floating-point return types have a delta (margin of error); the default is 0.0.
 
     @Eg(given = {"1.0", "3.0"}, returns = "0.33333", delta = 0.001)
     @Eg(given = {"1.0", "0.0"}, returns = "Double.POSITIVE_INFINITY")

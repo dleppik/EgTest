@@ -90,11 +90,11 @@ public class ExampleForReadme {
         return a + b;
     }
 
-    // Floating-point types allow a delta; the default is 0.0.
+    // Floating-point return types have a delta (margin of error); the default is 0.0.
 
     @Eg(given = {"1.0", "3.0"}, returns = "0.33333", delta = 0.001)
     @Eg(given = {"1.0", "0.0"}, returns = "Double.POSITIVE_INFINITY")
-    public static double divide(double numerator, double divisor) {
+    static double divide(double numerator, double divisor) {
         return numerator / divisor;
     }
 
@@ -130,12 +130,37 @@ public class ExampleForReadme {
         return thing1.toString();
     }
 
-    // Non-static methods and variables are tested using the default zero-argument constructor
-
     @EgException({"null", "\"hello\""})
     @EgException({"\"hello\"", "null"})
-    String anotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
+    static String anotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
         return thing1.toString() + thing2.toString();
+    }
+
+
+    //
+    // Non-static usage:
+    // Non-static methods and variables are tested using the default zero-argument constructor
+    // unless constructor arguments are specified
+    //
+
+    private final int min;
+    private final int max;
+
+    public ExampleForReadme(int min, int max) {
+        this.min = min;
+        this.max = max;
+    }
+
+    public ExampleForReadme() {
+        this(0, 5);
+    }
+
+    @Eg(given = "4", returns = "true")
+    @Eg(construct = {"8", "9"},
+        given = "4",
+        returns = "false")
+    boolean inRange(int num) {
+        return num >= min  &&  num < max;
     }
 
     //
@@ -167,7 +192,6 @@ public class ExampleForReadme {
         }
     }
 }
-
 ```
 
 ##Details
