@@ -5,7 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.processor.JavaModelUtil;
 import com.vocalabs.egtest.processor.MessageHandler;
-import com.vocalabs.egtest.processor.data.Example;
+import com.vocalabs.egtest.processor.data.EgItem;
 
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
@@ -20,19 +20,19 @@ class JUnitClassWriter {
 
     static JavaFile createFileSpec(String classUnderTestName,
                                    MessageHandler messageHandler,
-                                   List<Example<?>> items)
+                                   List<EgItem<?>> items)
     throws Exception {
         return new JUnitClassWriter(classUnderTestName, messageHandler, items)
                 .createFileSpec();
     }
 
     private final MessageHandler messageHandler;
-    private final List<Example<?>> items;
+    private final List<EgItem<?>> items;
     private final TypeElement classElement;
     private final String className;
 
 
-    private JUnitClassWriter(String name, MessageHandler messageHandler, List<Example<?>> items) {
+    private JUnitClassWriter(String name, MessageHandler messageHandler, List<EgItem<?>> items) {
         this.messageHandler = messageHandler;
         this.items = items;
         if (items.isEmpty())
@@ -59,12 +59,13 @@ class JUnitClassWriter {
             messageHandler.unsupported(classElement, "EgTest does not support classes without packages.");
         }
         String packageName = packageElement.getQualifiedName().toString();
-        return JavaFile.builder(packageName, javaFileSpec).build();
+        JavaFile.Builder fileBuilder = JavaFile.builder(packageName, javaFileSpec);
+        return fileBuilder.build();
     }
 
     MessageHandler getMessageHandler() { return messageHandler; }
 
-    List<Example<?>> getItems() { return items; }
+    List<EgItem<?>> getItems() { return items; }
 
     TypeElement getClassElement() { return classElement; }
 

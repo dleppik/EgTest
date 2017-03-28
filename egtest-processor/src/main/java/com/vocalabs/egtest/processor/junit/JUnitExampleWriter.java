@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
+abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
     protected final JUnitClassWriter classWriter;
     protected final List<X> examples;
     protected final TypeSpec.Builder toAddTo;
@@ -23,12 +23,12 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
     protected final AnnotationSpec testAnnotation = AnnotationSpec.builder(ClassName.get("org.junit", "Test")).build();
 
     static void write(JUnitClassWriter classWriter, TypeSpec.Builder builder) {
-        Map<Element, List<Example<?>>> examplesByElement = classWriter.getItems().stream()
-                .collect(Collectors.groupingBy(Example::getElement));
+        Map<Element, List<EgItem<?>>> examplesByElement = classWriter.getItems().stream()
+                .collect(Collectors.groupingBy(EgItem::getElement));
 
-        for (Map.Entry<Element, List<Example<?>>> entry: examplesByElement.entrySet()) {
+        for (Map.Entry<Element, List<EgItem<?>>> entry: examplesByElement.entrySet()) {
             Element el = entry.getKey();
-            List<Example<?>> examples = entry.getValue();
+            List<EgItem<?>> examples = entry.getValue();
 
             new PatternMatchWriter(el, filterAndConvert(PatternMatchExample.class, examples), classWriter, builder)
                     .addTests();
@@ -49,7 +49,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends Example<?>> {
         }
     }
 
-    private static <X extends Example<?>> List<X> filterAndConvert(Class<X> cl, List<?> items) {
+    private static <X extends EgItem<?>> List<X> filterAndConvert(Class<X> cl, List<?> items) {
         return items.stream()
                 .filter(it -> cl.isAssignableFrom(it.getClass()))
                 .map(cl::cast)

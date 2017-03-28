@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** Marks annotations that are for internal use and therefore aren't handled by AnnotationReader. */
-public class IgnoredReader implements AnnotationReader<Example<?>> {
+public class IgnoredReader implements AnnotationReader<EgItem<?>> {
 
     public static final IgnoredReader INSTANCE = new IgnoredReader();
 
@@ -23,7 +23,7 @@ public class IgnoredReader implements AnnotationReader<Example<?>> {
     }
 
     @Override
-    public List<Example<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
+    public List<EgItem<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
         return Collections.emptyList();
     }
 }

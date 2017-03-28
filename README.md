@@ -201,10 +201,14 @@ public class BadExample {
 
 
 
-##Getting Started
+## Getting Started
 
 See [this gist](https://gist.github.com/dleppik/260d978bf4dcb023bb3218c051653a6c) for an example build.gradle which 
-pulls the code you need from Maven Central.
+pulls the code you need from Maven Central, or fork 
+[this full example project](https://github.com/sheltah22/EgTestExample).
+
+There's also a [Kotlin example project](https://github.com/sheltah22/sharks-and-fishes) using EgTest with Kapt, the
+Kotlin annotation processor.
 
 To try it out from source, clone this project and run `./gradlew ':junit-example:build'` from the EgTest directory. 
 (Windows: `gradle.bat` should work.) 

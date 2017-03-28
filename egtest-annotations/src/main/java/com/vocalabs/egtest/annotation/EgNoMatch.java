@@ -11,5 +11,9 @@ import java.lang.annotation.*;
 @Repeatable(EgNoMatchContainer.class)
 
 public @interface EgNoMatch {
+
+    /** Constructor arguments */
+    String[] construct() default {};
+
     String value();
 }

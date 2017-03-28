@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
-public interface AnnotationReader<E extends Example<?>> {
+public interface AnnotationReader<E extends EgItem<?>> {
 
     default void addExamples(RoundEnvironment roundEnvironment, AnnotationCollector collector) {
         MessageHandler messageHandler = collector.getMessageHandler();

@@ -47,9 +47,10 @@ class ReturnsWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample
                         assertion, description, expected, className, methodName, arguments);
             }
             else {
+                String constructorArgs = String.join(", ", example.getAnnotation().construct());
                 specBuilder.addCode(
-                        "$L($S, $L, new $T().$L($L)",
-                        assertion, description, expected, className, methodName, arguments);
+                        "$L($S, $L, new $T($L).$L($L)",
+                        assertion, description, expected, className, constructorArgs, methodName, arguments);
             }
             if (example instanceof ReturnsWithDeltaExample) {
                 specBuilder.addCode(", $L", ((ReturnsWithDeltaExample) example).deltaString());

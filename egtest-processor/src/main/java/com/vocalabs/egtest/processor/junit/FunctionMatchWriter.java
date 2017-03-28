@@ -8,7 +8,9 @@ import com.vocalabs.egtest.processor.data.FunctionMatchExample;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.StringJoiner;
 
 class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
@@ -38,9 +40,10 @@ class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
                         assertion, description, className, methodName, example.toMatch());
             }
             else {
+                String constructorArgs = example.constructorArgs().stream().reduce((a,b) -> a+", "+b).orElse("");
                 specBuilder.addCode(
-                        "$L($S, new $T().$L($S));\n",
-                        assertion, description, className, methodName, example.toMatch());
+                        "$L($S, new $T($L).$L($S));\n",
+                        assertion, description, className, constructorArgs, methodName, example.toMatch());
             }
         }
         toAddTo.addMethod(specBuilder.build());

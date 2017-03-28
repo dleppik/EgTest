@@ -11,5 +11,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
 @Repeatable(EgMatchContainer.class)
 public @interface EgMatch {
+
+    /** Constructor arguments */
+    String[] construct() default {};
+
     String value();
 }

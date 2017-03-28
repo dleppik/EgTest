@@ -2,7 +2,7 @@ package com.vocalabs.egtest.processor.selftest;
 
 import com.vocalabs.egtest.processor.AnnotationCollector;
 import com.vocalabs.egtest.processor.MessageHandler;
-import com.vocalabs.egtest.processor.data.Example;
+import com.vocalabs.egtest.processor.data.EgItem;
 import com.vocalabs.egtest.processor.JavaModelUtil;
 
 import javax.lang.model.element.Element;
@@ -19,7 +19,7 @@ public class SelfTestAnnotationCollector extends AnnotationCollector {
     private static final HashMap<String, ExpectedBehavior> behaviorAnnotations = new HashMap<>();
 
     @Override
-    public void add(Example<?> data) {
+    public void add(EgItem<?> data) {
         Element el = data.getElement();
         EgSelfTest selfTest = el.getAnnotation(EgSelfTest.class);
         ExpectedBehavior expectedBehavior = (selfTest==null) ? ExpectedBehavior.CREATE_WORKING_TEST : selfTest.value();

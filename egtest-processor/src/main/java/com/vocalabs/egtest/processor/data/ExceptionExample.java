@@ -5,7 +5,7 @@ import com.vocalabs.egtest.annotation.EgException;
 
 import javax.lang.model.element.ExecutableElement;
 
-public class ExceptionExample implements Example<EgException> {
+public class ExceptionExample implements EgItem<EgException> {
     private final ExecutableElement element;
     private final EgException annotation;
     private final TypeName exceptionType;

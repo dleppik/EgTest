@@ -46,18 +46,32 @@ class ExceptionWriter extends JUnitExampleWriter<ExecutableElement, ExceptionExa
                     ? "$T.$L($L);"
                     : "new $T().$L($L);";
             specBuilder.addCode(
-                    "try {\n"+
-                    "    "+callTemplate+"\n"+
+                    "try {\n");
+            specBuilder.addCode(methodCall(className, methodName, example));
+            specBuilder.addCode(
                     "    $L($S);\n"+
                     "} catch (Throwable ex) {\n"+
                     "    if (ex instanceof java.lang.AssertionError)\n"+
                     "        throw ex;\n"+
                     "    $L($S+\", instead threw \"+ex, ex instanceof $L);\n"+
                     "}\n",
-                    className, methodName, arguments,
                     ASSERT_FAIL, description+", returned without error",
                     ASSERT_TRUE, description, exceptionType);
         }
         toAddTo.addMethod(specBuilder.build());
+    }
+
+    private CodeBlock methodCall(ClassName className, String methodName, ExceptionExample example) {
+        String arguments = String.join(", ", example.getAnnotation().value());
+
+        if (element.getModifiers().contains(Modifier.STATIC)) {
+            return CodeBlock.builder()
+                    .add("$T.$L($L);", className, methodName, arguments)
+                    .build();
+        }
+            String constructorArgs = String.join(", ", example.getAnnotation().construct());
+            return CodeBlock.builder()
+                    .add("new $T($L).$L($L);", className, constructorArgs, methodName, arguments)
+                    .build();
     }
 }

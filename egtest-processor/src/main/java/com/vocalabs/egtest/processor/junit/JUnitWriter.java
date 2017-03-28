@@ -4,14 +4,14 @@ import com.vocalabs.egtest.processor.AnnotationCollector;
 import com.vocalabs.egtest.processor.EgTestWriter;
 import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.Settings;
-import com.vocalabs.egtest.processor.data.Example;
+import com.vocalabs.egtest.processor.data.EgItem;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/** Build JUnit test source code; this is the entry point. */
+/** Build JUnit test source code; this is the code generator entry point. */
 public class JUnitWriter implements EgTestWriter {
 
     private final File directoryToFill;
@@ -41,8 +41,8 @@ public class JUnitWriter implements EgTestWriter {
         }
 
         MessageHandler messageHandler = annotationCollector.getMessageHandler();
-        Map<String, List<Example<?>>> itemsByClassName = annotationCollector.getItemsByClassName();
-        for (Map.Entry<String, List<Example<?>>> entry: itemsByClassName.entrySet()) {
+        Map<String, List<EgItem<?>>> itemsByClassName = annotationCollector.getItemsByClassName();
+        for (Map.Entry<String, List<EgItem<?>>> entry: itemsByClassName.entrySet()) {
             JUnitClassWriter.createFileSpec(entry.getKey(), messageHandler, entry.getValue())
                 .writeTo(directoryToFill);
         }

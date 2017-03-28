@@ -9,6 +9,9 @@ import java.lang.annotation.*;
 @Repeatable(EgExceptionContainer.class)
 public @interface EgException {
 
+    /** Constructor arguments */
+    String[] construct() default {};
+
     /** The arguments which cause an exception to be thrown. */
     String[] value();
 

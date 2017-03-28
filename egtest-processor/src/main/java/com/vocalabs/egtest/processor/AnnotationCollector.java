@@ -1,7 +1,7 @@
 package com.vocalabs.egtest.processor;
 
 
-import com.vocalabs.egtest.processor.data.Example;
+import com.vocalabs.egtest.processor.data.EgItem;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -11,14 +11,14 @@ import javax.lang.model.type.DeclaredType;
 import java.util.*;
 
 public class AnnotationCollector {
-    private final Map<String, List<Example<?>>> itemsByClassName = new TreeMap<>();
+    private final Map<String, List<EgItem<?>>> itemsByClassName = new TreeMap<>();
     private final MessageHandler messageHandler;
 
     public AnnotationCollector(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }
 
-    public void add(Example<?> data) {
+    public void add(EgItem<?> data) {
         Element classEl = JavaModelUtil.topLevelClass(data.getElement());
         if (classEl.getKind().equals(ElementKind.CLASS)) {
             String name = className(classEl);
@@ -50,7 +50,7 @@ public class AnnotationCollector {
         }
     }
 
-    public Map<String, List<Example<?>>> getItemsByClassName() {
+    public Map<String, List<EgItem<?>>> getItemsByClassName() {
         // The inner lists are mutable, but this at least discourages modification
         return Collections.unmodifiableMap(itemsByClassName);
     }

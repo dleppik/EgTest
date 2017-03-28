@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ExceptionReader implements AnnotationReader<Example<?>> {
+public class ExceptionReader implements AnnotationReader<EgItem<?>> {
 
     public static final ExceptionReader INSTANCE = new ExceptionReader();
 
@@ -28,7 +28,7 @@ public class ExceptionReader implements AnnotationReader<Example<?>> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Example<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
+    public List<EgItem<?>> examples(Annotation annotation, Element element, MessageHandler messageHandler) {
         if ( ! (element instanceof ExecutableElement)) {
             messageHandler.unsupported(element, annotation, "non-executable");
             return Collections.emptyList();
@@ -61,29 +61,13 @@ public class ExceptionReader implements AnnotationReader<Example<?>> {
     }
 
     /** Constructs an AnnotationValue from the AnnotationMirror. */
-    @SuppressWarnings("unchecked")
-    private List<Example<?>> example(ExecutableElement el, AnnotationMirror am) {
-        AnnotationValue argListAv = getAnnotationValue(am, "value");
-        List<AnnotationValue> argList = argListAv == null
-                ? null
-                : (List<AnnotationValue>) argListAv.getValue();
-
-        final String[] parameters;
-        if (argList==null) {
-            parameters = new String[0];
-        }
-        else {
-            List<String> args = argList.stream()
-                    .map(AnnotationValue::getValue)
-                    .map(it -> (String) it)
-                    .collect(Collectors.toList());
-            parameters = args.toArray(new String[args.size()]);
-        }
+    private List<EgItem<?>> example(ExecutableElement el, AnnotationMirror am) {
+        final String[] parameters = annotationValues(am, "value");
+        final String[] constructorArgs = annotationValues(am, "construct");
 
         EgException egException = new EgException() {
-            @Override public String[] value() {
-                return parameters;
-            }
+            @Override public String[] construct() { return constructorArgs; }
+            @Override public String[] value()     { return parameters;      }
 
             @Override
             public Class<? extends Throwable> willThrow() {
@@ -98,7 +82,26 @@ public class ExceptionReader implements AnnotationReader<Example<?>> {
         return example(egException, el, am);
     }
 
-    private List<Example<?>> example(EgException a, ExecutableElement el, AnnotationMirror egExceptionMirror) {
+    @SuppressWarnings("unchecked")
+    private String[] annotationValues(AnnotationMirror am, String paramName) {
+        AnnotationValue argListAv = getAnnotationValue(am, paramName);
+        List<AnnotationValue> argList = argListAv == null
+                ? null
+                : (List<AnnotationValue>) argListAv.getValue();
+
+        if (argList==null) {
+            return new String[0];
+        }
+        else {
+            List<String> args = argList.stream()
+                    .map(AnnotationValue::getValue)
+                    .map(it -> (String) it)
+                    .collect(Collectors.toList());
+            return args.toArray(new String[args.size()]);
+        }
+    }
+
+    private List<EgItem<?>> example(EgException a, ExecutableElement el, AnnotationMirror egExceptionMirror) {
         AnnotationValue value = getAnnotationValue(egExceptionMirror, "willThrow");
         final TypeName name;
         if (value == null) {
