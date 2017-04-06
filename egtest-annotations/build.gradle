@@ -1,6 +1,11 @@
-// Everything below is for packaging releases
-
 apply plugin: 'maven'
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy:2.4.6'  // For GroovySupport
+}
+
+// Everything below is for packaging releases
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'

@@ -16,6 +16,10 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
 @Repeatable(EgContainer.class)
 public @interface Eg {
+
+    /** Language used for this example. */
+    EgLanguage language() default EgLanguage.JAVA;
+
     /** Constructor arguments */
     String[] construct() default {};
 
