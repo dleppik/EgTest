@@ -10,7 +10,7 @@ public class GroovyExampleTest {
     @Test
     public void testVowels() {
         Object actual = execGroovy("GroovyExample.vowels(['Elephant', 'Octopus', 'Noodles'])");
-        Object expected = execGroovy("['aEe', 'uOo', 'eo']");
+        Object expected = execGroovy("['Eea', 'Oou', 'oe']");
         assertEquals(expected, actual);
     }
 
