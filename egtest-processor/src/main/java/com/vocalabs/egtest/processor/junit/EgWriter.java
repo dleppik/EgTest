@@ -50,7 +50,7 @@ class EgWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample> {
             String description = element.getSimpleName()+"("+argumentString+")";
             String methodName = element.getSimpleName().toString();
 
-            specBuilder.addCode("$L($S,\n", assertion, description);
+            specBuilder.addCode("$L($S,\n    ", assertion, description);
             languageInjector.add(specBuilder, element.getReturnType(), expected);
             specBuilder.addCode(",\n");
 

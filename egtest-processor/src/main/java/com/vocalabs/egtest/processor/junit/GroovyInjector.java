@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 public class GroovyInjector implements LanguageInjector {
@@ -56,10 +57,15 @@ public class GroovyInjector implements LanguageInjector {
 
     /** Return true if the text doesn't need Groovy. */
     private boolean plainJava(TypeMirror tm, String text) {
-        switch (tm.getKind()) {
+        return plainJava(tm.getKind(), text);
+    }
+
+    /** Exposed for unit testing. */
+    static boolean plainJava(TypeKind kind, String text) {
+        switch (kind) {
             case BOOLEAN: return "true".equals(text) || "false".equals(text);
-            case BYTE:    return NumberUtils.isCreatable(text);
-            case CHAR:    return NumberUtils.isCreatable(text) || text.matches("'\\\\?.'"); // e.g. 'a', '\n'; imperfect
+            case BYTE:    return NumberUtils.isCreatable(text);  // Unfortunately doesn't handle "12_345".
+            case CHAR:    return text.matches("'.'");            // e.g. 'a', '\t'; note that newline isn't a character
             case DOUBLE:  return NumberUtils.isCreatable(text);
             case FLOAT:   return NumberUtils.isCreatable(text);
             case INT:     return NumberUtils.isCreatable(text);

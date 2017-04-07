@@ -31,7 +31,9 @@ public class GroovyExample {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private static boolean isVowel(char ch) {
+
+    @Eg(language = EgLanguage.GROOVY, given = "'a'", returns = "true")
+    public static boolean isVowel(char ch) {
         switch (Character.toLowerCase(ch)) {
             case 'a': return true;
             case 'e': return true;
