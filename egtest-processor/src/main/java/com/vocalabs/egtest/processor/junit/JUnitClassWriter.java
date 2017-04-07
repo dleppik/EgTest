@@ -30,6 +30,7 @@ class JUnitClassWriter {
     private final List<EgItem<?>> items;
     private final TypeElement classElement;
     private final String className;
+    private final CodeInjector codeInjector;
 
 
     private JUnitClassWriter(String name, MessageHandler messageHandler, List<EgItem<?>> items) {
@@ -39,27 +40,29 @@ class JUnitClassWriter {
             throw new IllegalArgumentException("Must have at least one Example to write a test file for "+name);
         this.classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
         this.className = classElement.getSimpleName() +"$EgTest";
+
+        PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
+        if (packageElement == null || packageElement.getQualifiedName() == null) {
+            messageHandler.unsupported(classElement, "EgTest does not support classes without packages.");
+            this.codeInjector = new CodeInjector("");
+        }
+        else {
+            String packageName = ""+packageElement.getQualifiedName();
+            this.codeInjector = new CodeInjector(packageName);
+        }
     }
 
     private JavaFile createFileSpec() throws Exception {
-
         AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", "com.vocalabs.egtest.EgTest")
                 .build();
-
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotation(generated);
-
         JUnitExampleWriter.write(this, typeSpecBuilder);
+        codeInjector.decorateClass(typeSpecBuilder);
         TypeSpec javaFileSpec = typeSpecBuilder.build();
-
-        PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-        if (packageElement == null) {
-            messageHandler.unsupported(classElement, "EgTest does not support classes without packages.");
-        }
-        String packageName = packageElement.getQualifiedName().toString();
-        JavaFile.Builder fileBuilder = JavaFile.builder(packageName, javaFileSpec);
+        JavaFile.Builder fileBuilder = JavaFile.builder(codeInjector.getPackageName(), javaFileSpec);
         return fileBuilder.build();
     }
 
@@ -69,4 +72,5 @@ class JUnitClassWriter {
 
     TypeElement getClassElement() { return classElement; }
 
+    public CodeInjector getCodeInjector() { return codeInjector; }
 }

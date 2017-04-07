@@ -39,7 +39,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
                 ExecutableElement exEl = (ExecutableElement) el;
 
                 List<ReturnsExample> returnsExamples = filterAndConvert(ReturnsExample.class, examples);
-                new ReturnsWriter(exEl, returnsExamples, classWriter, builder)
+                new EgWriter(exEl, returnsExamples, classWriter, builder)
                         .addTests();
 
                 List<ExceptionExample> exceptionExamples = filterAndConvert(ExceptionExample.class, examples);
@@ -85,9 +85,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
 
     private boolean visible(Element el) {
         Set<Modifier> modifiers = el.getModifiers();
-        if (modifiers.contains(Modifier.PRIVATE))
-            return false;
-        return ! modifiers.contains(Modifier.PROTECTED);
+        return ! modifiers.contains(Modifier.PRIVATE)  &&  ! modifiers.contains(Modifier.PROTECTED);
     }
 
     protected String testMethodName() {
@@ -117,7 +115,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
                     .map(p -> p.asType().toString());
             return escapeParameterNames(params);
         }
-        return "$"+el.getKind();
+        return stripGenerics("$"+el.getKind());
     }
 
     /**
@@ -126,6 +124,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
      */
     static String escapeParameterNames(Stream<String> names) {
         return names
+                .map(JUnitExampleWriter::stripGenerics)
                 .map(s -> s.replace("$", "$$"))
                 .map(s -> s.replace("_", "__"))
                 .map(s -> s.replace(".", "_"))
@@ -133,6 +132,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
                 .reduce("",  (a,b)  -> a+"$"+b);
     }
 
+    private static String stripGenerics(String s) { return s.replaceAll("<.*?>", ""); }
 
     /** The distinctive portion of the name constructed by {@link #testMethodName()}.  */
     protected abstract String baseName();

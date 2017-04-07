@@ -1,9 +1,9 @@
 package com.vocalabs.egtest.example;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import com.vocalabs.egtest.annotation.Eg;
+import com.vocalabs.egtest.annotation.EgLanguage;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 public class GroovyExample {
 
 
-    // @Eg( language = EgLanguage.GROOVY,
-    //        given = "['Elephant', 'Octopus', 'Noodles']", returns = "['Eae', 'Oou', 'eo']")
+    @Eg( language = EgLanguage.GROOVY,
+            given = "['Elephant', 'Octopus', 'Noodles']", returns = "['Eae', 'Oou', 'eo']")
     public static List<String> vowels(Collection<String> words) {
         return words.stream()
                 .map(GroovyExample::vowels)
@@ -43,6 +43,7 @@ public class GroovyExample {
 
     private static String charsToSortedString(Set<Character> chars) {
         List<Character> sortedChars = new ArrayList<>(chars);
+        Collections.sort(sortedChars);
         StringBuilder sb = new StringBuilder(sortedChars.size());
         for (Character ch : sortedChars) {
             sb.append(ch);
