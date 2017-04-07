@@ -44,6 +44,17 @@ public class GroovyExample {
         }
     }
 
+    @Eg(language = EgLanguage.GROOVY, given = {"3", "[2.0f, 5f]"}, returns = "3.3333", delta = 0.001)
+    public static float divide(float denominator, List<Float> numerators) {
+        if (numerators.isEmpty())
+            return 0;
+        float num = 1;
+        for (Float numerator : numerators) {
+            num *= numerator;
+        }
+        return num / denominator;
+    }
+
     private static String charsToString(Set<Character> chars) {
         StringBuilder sb = new StringBuilder(chars.size());
         for (Character ch : chars) {
