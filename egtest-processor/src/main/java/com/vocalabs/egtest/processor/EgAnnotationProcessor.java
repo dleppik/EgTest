@@ -29,7 +29,8 @@ import static javax.tools.Diagnostic.Kind.WARNING;
         Settings.TARGET_DIR_KEY,
         Settings.DIR_EXISTS_BEHAVIOR_KEY,
         Settings.FAIL_ON_UNSUPPORTED_KEY,
-        Settings.SELF_TEST_KEY})
+        Settings.SELF_TEST_KEY,
+        Settings.TARGET_LANGUAGE_KEY})
 public class EgAnnotationProcessor extends AbstractProcessor {
 
     /** These do the work of pulling examples out of annotations. */
