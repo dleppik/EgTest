@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
  */
 public class GroovyExample {
 
-
     @Eg( language = EgLanguage.GROOVY,
             given = "['Elephant', 'Octopus', 'Noodles']", returns = "['Eea', 'Oou', 'oe']")
     public static List<String> vowels(Collection<String> words) {
@@ -23,7 +22,7 @@ public class GroovyExample {
     }
 
     /** Returns a sorted set of vowels for each of the words */
-    private static Set<Character> vowels(String words) {
+    static Set<Character> vowels(String words) {
         return words
                 .chars()
                 .filter(it -> isVowel((char) it))
@@ -55,7 +54,7 @@ public class GroovyExample {
         return num / denominator;
     }
 
-    private static String charsToString(Set<Character> chars) {
+    static String charsToString(Set<Character> chars) {
         StringBuilder sb = new StringBuilder(chars.size());
         for (Character ch : chars) {
             sb.append(ch);

@@ -25,7 +25,6 @@ public class ExampleForReadmeTest {
         assertHasTestMethod("testMatch$startsWithAsciiVowel", generatedClass);
         assertHasTestMethod("testReturns$startsWithAsciiVowel", generatedClass);
         assertHasTestMethod("testException$startsWithAsciiVowel", generatedClass);
-
     }
 
     private void assertHasTestMethod(String name, Class<?> generatedClass) throws NoSuchMethodException {

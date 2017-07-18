@@ -1,5 +1,6 @@
 package com.vocalabs.egtest.processor.junit;
 
+import com.vocalabs.egtest.annotation.EgLanguage;
 import com.vocalabs.egtest.processor.AnnotationCollector;
 import com.vocalabs.egtest.processor.EgTestWriter;
 import com.vocalabs.egtest.processor.MessageHandler;
@@ -12,14 +13,18 @@ import java.util.List;
 import java.util.Map;
 
 /** Build JUnit test source code; this is the code generator entry point. */
-public class JUnitWriter implements EgTestWriter {
+public class JUnitMainWriter implements EgTestWriter {
 
     private final File directoryToFill;
     private final Settings.AlreadyExistsBehavior directoryExistsBehavior;
+    private final EgLanguage defaultLanguage;
 
-    public JUnitWriter(File directoryToFill, Settings.AlreadyExistsBehavior directoryExistsBehavior) {
+    public JUnitMainWriter(EgLanguage defaultLanguage,
+                           Settings.AlreadyExistsBehavior directoryExistsBehavior,
+                           File directoryToFill) {
         this.directoryToFill = directoryToFill;
         this.directoryExistsBehavior = directoryExistsBehavior;
+        this.defaultLanguage = defaultLanguage;
     }
 
     @Override
@@ -43,7 +48,10 @@ public class JUnitWriter implements EgTestWriter {
         MessageHandler messageHandler = annotationCollector.getMessageHandler();
         Map<String, List<EgItem<?>>> itemsByClassName = annotationCollector.getItemsByClassName();
         for (Map.Entry<String, List<EgItem<?>>> entry: itemsByClassName.entrySet()) {
-            JUnitClassWriter.createFileSpec(entry.getKey(), messageHandler, entry.getValue())
+            String className = entry.getKey();
+            List<EgItem<?>> items = entry.getValue();
+            EgLanguage language = annotationCollector.languageForClassName(className, defaultLanguage);
+            JUnitClassWriter.createFileSpec(language, className, messageHandler, items)
                 .writeTo(directoryToFill);
         }
     }

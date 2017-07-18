@@ -42,12 +42,9 @@ class ExceptionWriter extends JUnitExampleWriter<ExecutableElement, ExceptionExa
             String arguments = String.join(", ", example.getAnnotation().value());
             TypeName exceptionType = example.exceptionType();
             String description = element.getSimpleName()+"("+arguments+") should throw "+exceptionType;
-            String callTemplate = element.getModifiers().contains(Modifier.STATIC)
-                    ? "$T.$L($L);"
-                    : "new $T().$L($L);";
             specBuilder.addCode(
                     "try {\n");
-            specBuilder.addCode(methodCall(className, methodName, example));
+            specBuilder.addCode("    "+methodCall(className, methodName, example)+"\n");
             specBuilder.addCode(
                     "    $L($S);\n"+
                     "} catch (Throwable ex) {\n"+

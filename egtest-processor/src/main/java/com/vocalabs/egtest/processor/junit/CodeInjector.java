@@ -12,19 +12,25 @@ import java.util.EnumMap;
  * have exactly one of these.
  */
 public class CodeInjector {
+    private final EgLanguage defaultLanguage;
     private final String packageName;
 
     /**
      * @param packageName The name of the enclosing package; these are imported into the script's namespace.
      */
-    public CodeInjector(String packageName) {
+    public CodeInjector(EgLanguage defaultLanguage, String packageName) {
+        this.defaultLanguage = defaultLanguage;
         this.packageName = packageName;
+        if (EgLanguage.INHERIT.equals(defaultLanguage)) {
+            throw new IllegalArgumentException("Cannot use INHERIT as a default EgTest language");
+        }
     }
 
     private LanguageInjector createInjector(EgLanguage language) {
         switch (language) {
-            case JAVA:   return new JavaInjector();
-            case GROOVY: return new GroovyInjector(packageName);
+            case    JAVA: return new JavaInjector();
+            case  GROOVY: return new GroovyInjector(packageName);
+            case INHERIT: return createInjector(defaultLanguage);
             default:     throw new IllegalArgumentException("Unexpected language "+language);
         }
     }

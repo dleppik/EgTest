@@ -1,5 +1,6 @@
 package com.vocalabs.egtest.processor;
 
+import com.vocalabs.egtest.annotation.EgLanguage;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.processing.Messager;
@@ -15,11 +16,12 @@ import static javax.tools.Diagnostic.Kind.ERROR;
  */
 public class Settings {
     public static final String
-            PREFIX = "egtest.",
-            TARGET_DIR_KEY = PREFIX+"targetDirectory",
+                             PREFIX = "egtest.",
+                TARGET_LANGUAGE_KEY = PREFIX+"targetLanguage",
+                     TARGET_DIR_KEY = PREFIX+"targetDirectory",
             DIR_EXISTS_BEHAVIOR_KEY = PREFIX+"targetDirectoryExistsBehavior",
             FAIL_ON_UNSUPPORTED_KEY = PREFIX+"failOnUnsupportedExample",
-            SELF_TEST_KEY = PREFIX+"selfTest";
+                      SELF_TEST_KEY = PREFIX+"selfTest";
 
     /**
      * The behavior when a target directory already exists. This should be used with caution, since build tools may
@@ -36,6 +38,7 @@ public class Settings {
     private final AlreadyExistsBehavior targetDirExistsBehavior;
     private final boolean failOnUnsupported;
     private final boolean selfTest;
+    private final EgLanguage language;
 
     static Settings instance(ProcessingEnvironment processingEnv) {
         return instance(processingEnv.getMessager(), processingEnv.getOptions());
@@ -56,9 +59,10 @@ public class Settings {
                 return handleBadDirExistsBehavior(messager, onDirExistsStr);
             }
         }
-        boolean failOnUnsupported = booleanOption(options.get(FAIL_ON_UNSUPPORTED_KEY), true);
-        boolean          selfTest = booleanOption(options.get(SELF_TEST_KEY), false);
-        return new Settings(new File(targetDirStr), targetDirExistsBehavior, failOnUnsupported, selfTest);
+        EgLanguage          language = EgLanguage.valueOf(options.getOrDefault(TARGET_LANGUAGE_KEY, "JAVA"));
+        boolean    failOnUnsupported = booleanOption(options.get(FAIL_ON_UNSUPPORTED_KEY), true);
+        boolean             selfTest = booleanOption(options.get(SELF_TEST_KEY), false);
+        return new Settings(language, new File(targetDirStr), targetDirExistsBehavior, failOnUnsupported, selfTest);
     }
 
     private static boolean booleanOption(@Nullable String optionString, boolean defaultValue) {
@@ -86,14 +90,19 @@ public class Settings {
 
 
     static Settings illegalInstance(String reason) {
-        return new Settings(new File("no-such-file"), AlreadyExistsBehavior.OVERWRITE, true, false) {
+        return new Settings(EgLanguage.JAVA, new File("no-such-file"), AlreadyExistsBehavior.OVERWRITE, true, false) {
             private final String message = "EgTest "+reason;
             @Override public File getTargetDir() { throw new IllegalStateException(message); }
             @Override public boolean isValid() { return false; }
         };
     }
 
-    private Settings(File targetDir, AlreadyExistsBehavior targetDirExistsBehavior, boolean failOnUnsupported, boolean selfTest) {
+    private Settings(EgLanguage language,
+                     File targetDir,
+                     AlreadyExistsBehavior targetDirExistsBehavior,
+                     boolean failOnUnsupported,
+                     boolean selfTest) {
+        this.language = language;
         this.targetDir = targetDir;
         this.targetDirExistsBehavior = targetDirExistsBehavior;
         this.failOnUnsupported = failOnUnsupported;
@@ -112,4 +121,6 @@ public class Settings {
     public boolean isValid() { return true; }
 
     public boolean isSelfTest() { return selfTest; }
+
+    public EgLanguage getLanguage() { return language; }
 }

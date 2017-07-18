@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 public @interface Eg {
 
     /** Language used for this example. */
-    EgLanguage language() default EgLanguage.JAVA;
+    EgLanguage language() default EgLanguage.INHERIT;
 
     /** Constructor arguments */
     String[] construct() default {};

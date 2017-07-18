@@ -5,7 +5,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
-import com.vocalabs.egtest.processor.junit.JUnitWriter;
+import com.vocalabs.egtest.processor.junit.JUnitMainWriter;
 import com.vocalabs.egtest.processor.selftest.SelfTestAnnotationCollector;
 
 import java.lang.annotation.Annotation;
@@ -17,6 +17,7 @@ import static javax.tools.Diagnostic.Kind.WARNING;
 @SupportedAnnotationTypes({
         "com.vocalabs.egtest.annotation.Eg",
         "com.vocalabs.egtest.annotation.EgContainer",
+        "com.vocalabs.egtest.annotation.EgDefaultLanguage",
         "com.vocalabs.egtest.annotation.EgException",
         "com.vocalabs.egtest.annotation.EgExceptionContainer",
         "com.vocalabs.egtest.annotation.EgMatch",
@@ -36,7 +37,8 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             ReturnsReader.INSTANCE,
             MatchReader.INSTANCE,
             ExceptionReader.INSTANCE,
-            IgnoredReader.INSTANCE);
+            IgnoredReader.INSTANCE,
+            DefaultLanguageReader.INSTANCE);
 
     private MessageHandler messageHandler = null;
     private boolean firstPass = true;
@@ -68,7 +70,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             }
 
             if (settings.isSelfTest()) {
-                cheackAnnotationReaders();
+                checkAnnotationReaders();
             }
             AnnotationCollector collector = (settings.isSelfTest())
                     ? new SelfTestAnnotationCollector(messageHandler)
@@ -79,7 +81,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
                     ? settings.getTargetDirExistsBehavior()
                     : Settings.AlreadyExistsBehavior.OVERWRITE;
 
-            new JUnitWriter(settings.getTargetDir(), onExists).write(collector);
+            new JUnitMainWriter(settings.getLanguage(), onExists, settings.getTargetDir()).write(collector);
             if (messageHandler instanceof SelfTestMessageHandler) {
                 ((SelfTestMessageHandler) messageHandler).write(settings.getTargetDir().toPath());
             }
@@ -90,7 +92,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         firstPass = false;
         return true;
     }
-    private void cheackAnnotationReaders() {
+    private void checkAnnotationReaders() {
         Map<String,AnnotationReader<?>> found = new HashMap<>();
         for (AnnotationReader<?> reader: ANNOTATION_READERS) {
             Set<Class<? extends Annotation>> current = reader.supportedAnnotationClasses();
