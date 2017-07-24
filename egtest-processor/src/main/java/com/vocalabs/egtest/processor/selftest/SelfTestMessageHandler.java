@@ -2,8 +2,6 @@ package com.vocalabs.egtest.processor.selftest;
 
 import com.vocalabs.egtest.processor.JavaModelUtil;
 import com.vocalabs.egtest.processor.MessageHandler;
-import com.vocalabs.egtest.processor.selftest.EgSelfTest;
-import com.vocalabs.egtest.processor.selftest.ExpectedBehavior;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;

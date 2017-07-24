@@ -4,8 +4,6 @@ package com.vocalabs.egtest.testcase;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Many of these tests ensure not that something fails, but that it fails via a compile-time message rather than in
