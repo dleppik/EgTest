@@ -1,5 +1,7 @@
-package com.vocalabs.egtest.processor;
+package com.vocalabs.egtest.processor.selftest;
 
+import com.vocalabs.egtest.processor.JavaModelUtil;
+import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.selftest.EgSelfTest;
 import com.vocalabs.egtest.processor.selftest.ExpectedBehavior;
 
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.*;
 
-/** Captures errors which are expected for the self-test. */
+/** Captures errors which are expected for the self-test and can writes them to files for testing. */
 public class SelfTestMessageHandler extends MessageHandler {
 
     private final Map<String,String> unsupportedElements = new HashMap<>();

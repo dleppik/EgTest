@@ -6,7 +6,7 @@ apply plugin: 'groovy'
 
 dependencies {
     apt project(':egtest-processor')     // change apt to annotationProcessor if compiling for Android
-    compile project(':egtest-annotations')
+    compileOnly project(':egtest-annotations')
     testCompile 'org.codehaus.groovy:groovy:2.4.6'
 }
 

@@ -5,8 +5,8 @@ plugins {
 dependencies {
     apt project(':egtest-processor')     // change apt to annotationProcessor if compiling for Android
     testApt project(':egtest-processor')
-    compile project(':egtest-processor')
-    compile project(':egtest-annotations')
+    compileOnly project(':egtest-processor')
+    compileOnly project(':egtest-annotations')
 }
 
 // Debugging:

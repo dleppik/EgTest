@@ -6,7 +6,7 @@ import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
 import com.vocalabs.egtest.processor.junit.JUnitMainWriter;
-import com.vocalabs.egtest.processor.selftest.SelfTestAnnotationCollector;
+import com.vocalabs.egtest.processor.selftest.SelfTestMessageHandler;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -73,9 +73,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             if (settings.isSelfTest()) {
                 checkAnnotationReaders();
             }
-            AnnotationCollector collector = (settings.isSelfTest())
-                    ? new SelfTestAnnotationCollector(messageHandler)
-                    : new AnnotationCollector(messageHandler);
+            AnnotationCollector collector = new AnnotationCollector(messageHandler);
             ANNOTATION_READERS.forEach(f -> f.addExamples(roundEnv, collector));
 
             final Settings.AlreadyExistsBehavior onExists = firstPass
@@ -93,6 +91,8 @@ public class EgAnnotationProcessor extends AbstractProcessor {
         firstPass = false;
         return true;
     }
+
+
     private void checkAnnotationReaders() {
         Map<String,AnnotationReader<?>> found = new HashMap<>();
         for (AnnotationReader<?> reader: ANNOTATION_READERS) {

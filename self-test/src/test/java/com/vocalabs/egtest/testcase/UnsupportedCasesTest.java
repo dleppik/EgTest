@@ -16,7 +16,6 @@ public class UnsupportedCasesTest {
     private static String CLASS = "com.vocalabs.egtest.testcase.UnsupportedCases";
     private static String PATTERN = "java.util.regex.Pattern ";
 
-
     @Test
     public void innerStaticClassUnsupported() throws Exception {
         assertEquals("inner classes", Messages.unsupportedReason(PATTERN + CLASS + ".InnerStaticClass#NUMBER_RE"));
