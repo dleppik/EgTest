@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 /** Build JUnit test source code; this is the code generator entry point. */
-public class JUnitMainWriter implements EgTestWriter {
+public class AllClassesWriter implements EgTestWriter {
 
     private final File directoryToFill;
     private final Settings.AlreadyExistsBehavior directoryExistsBehavior;
     private final EgLanguage defaultLanguage;
 
-    public JUnitMainWriter(EgLanguage defaultLanguage,
-                           Settings.AlreadyExistsBehavior directoryExistsBehavior,
-                           File directoryToFill) {
+    public AllClassesWriter(EgLanguage defaultLanguage,
+                            Settings.AlreadyExistsBehavior directoryExistsBehavior,
+                            File directoryToFill) {
         this.directoryToFill = directoryToFill;
         this.directoryExistsBehavior = directoryExistsBehavior;
         this.defaultLanguage = defaultLanguage;
@@ -50,8 +50,8 @@ public class JUnitMainWriter implements EgTestWriter {
         for (Map.Entry<String, List<EgItem<?>>> entry: itemsByClassName.entrySet()) {
             String className = entry.getKey();
             List<EgItem<?>> items = entry.getValue();
-            EgLanguage language = annotationCollector.languageForClassName(className, defaultLanguage);
-            JUnitClassWriter.createFileSpec(language, className, messageHandler, items)
+            Map<String,EgLanguage> languageForClassName = annotationCollector.getLanguageForClassName();
+            ClassWriter.createFileSpec(languageForClassName, defaultLanguage, className, messageHandler, items)
                 .writeTo(directoryToFill);
         }
     }

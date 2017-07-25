@@ -13,18 +13,24 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Build JUnit test classes; used by {@link JUnitMainWriter}.
+ * Build JUnit test classes; used by {@link AllClassesWriter}.
  */
-class JUnitClassWriter {
+class ClassWriter {
 
-    static JavaFile createFileSpec(EgLanguage defaultLanguage,
+    static JavaFile createFileSpec(Map<String,EgLanguage> languageForClassName,
+                                   EgLanguage defaultLanguage,
                                    String classUnderTestName,
                                    MessageHandler messageHandler,
                                    List<EgItem<?>> items)
     throws Exception {
-        return new JUnitClassWriter(defaultLanguage, classUnderTestName, messageHandler, items)
+        if (items.isEmpty())
+            throw new IllegalArgumentException("Must have at least one Example to write a test file for "+classUnderTestName);
+        TypeElement classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
+        CodeInjector codeInjector = new CodeInjector(classElement, languageForClassName, defaultLanguage);
+        return new ClassWriter(codeInjector, classElement, messageHandler, items)
                 .createFileSpec();
     }
 
@@ -35,23 +41,12 @@ class JUnitClassWriter {
     private final CodeInjector codeInjector;
 
 
-    private JUnitClassWriter(EgLanguage defaultLanguage, String name, MessageHandler messageHandler, List<EgItem<?>> items) {
+    private ClassWriter(CodeInjector codeInjector, TypeElement classElement, MessageHandler messageHandler, List<EgItem<?>> items) {
+        this.codeInjector = codeInjector;
         this.messageHandler = messageHandler;
         this.items = items;
-        if (items.isEmpty())
-            throw new IllegalArgumentException("Must have at least one Example to write a test file for "+name);
         this.classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
         this.className = classElement.getSimpleName() +"$EgTest";
-
-        PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-        if (packageElement == null || packageElement.getQualifiedName() == null) {
-            messageHandler.unsupported(classElement, "EgTest does not support classes without packages.");
-            this.codeInjector = new CodeInjector(defaultLanguage, "");
-        }
-        else {
-            String packageName = ""+packageElement.getQualifiedName();
-            this.codeInjector = new CodeInjector(defaultLanguage, packageName);
-        }
     }
 
     private JavaFile createFileSpec() throws Exception {
@@ -61,7 +56,7 @@ class JUnitClassWriter {
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotation(generated);
-        JUnitExampleWriter.write(this, typeSpecBuilder);
+        TestWriter.write(this, typeSpecBuilder);
         codeInjector.decorateClass(typeSpecBuilder);
         TypeSpec javaFileSpec = typeSpecBuilder.build();
         JavaFile.Builder fileBuilder = JavaFile.builder(codeInjector.getPackageName(), javaFileSpec);

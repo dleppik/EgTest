@@ -15,13 +15,6 @@ public class UnsupportedCasesTest {
     private static String PATTERN = "java.util.regex.Pattern ";
 
     @Test
-    public void innerStaticClassUnsupported() throws Exception {
-        assertEquals("inner classes", Messages.unsupportedReason(PATTERN + CLASS + ".InnerStaticClass#NUMBER_RE"));
-        assertEquals("inner classes", Messages.unsupportedReason(PATTERN + CLASS + ".InnerStaticClass.InnerInnerStaticClass#NUMBER_RE"));
-        assertEquals("inner classes", Messages.unsupportedReason(PATTERN + CLASS + ".InnerClass#numberRe"));
-    }
-
-    @Test
     public void privateUnsupported() {
         assertEquals("private or protected", Messages.unsupportedReason(PATTERN+CLASS+"#NUMBER_RE"));
     }

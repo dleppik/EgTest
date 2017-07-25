@@ -42,26 +42,26 @@ public class AnnotationCollector {
 
     private void addDefaultLanguage(EgItem<?> data) {
         Element classEl = data.getElement();
-        if (classEl.equals(JavaModelUtil.topLevelClass(data.getElement()))) {
+        if (classEl.getKind().equals(ElementKind.CLASS)) {
             EgLanguage language = ((DefaultLanguageReader.Item)data).getAnnotation().value();
             languageForClassName.put(className(classEl), language);
         }
         else {
-            messageHandler.error("Can't set default language except on top-level Class: "+classEl);
+            messageHandler.error("Can't set default language except on Class: "+classEl);
         }
     }
 
-    private String className(Element classEl) {
+    public static String className(Element classEl) {
         DeclaredType dt = (DeclaredType) classEl.asType();
         TypeElement te = (TypeElement) dt.asElement();
 
         if ( ! allowedNesting(te.getNestingKind())) {
-            messageHandler.error(classEl, "Unsupported nesting level");
+            throw new IllegalArgumentException("EgTest doesn't support local and anonymous classes: "+classEl);
         }
         return te.getQualifiedName().toString();
     }
 
-    private boolean allowedNesting(NestingKind nk) {
+    private static boolean allowedNesting(NestingKind nk) {
         switch (nk) {
             case TOP_LEVEL: return true;
             case MEMBER:    return true;
@@ -73,6 +73,10 @@ public class AnnotationCollector {
 
     public EgLanguage languageForClassName(String className, EgLanguage defaultLanguage) {
         return languageForClassName.getOrDefault(className, defaultLanguage);
+    }
+
+    public Map<String,EgLanguage> getLanguageForClassName() {
+        return Collections.unmodifiableMap(languageForClassName);
     }
 
     public Map<String, List<EgItem<?>>> getItemsByClassName() {

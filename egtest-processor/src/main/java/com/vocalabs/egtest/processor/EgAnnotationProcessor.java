@@ -5,7 +5,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
-import com.vocalabs.egtest.processor.junit.JUnitMainWriter;
+import com.vocalabs.egtest.processor.junit.AllClassesWriter;
 import com.vocalabs.egtest.processor.selftest.SelfTestMessageHandler;
 
 import java.lang.annotation.Annotation;
@@ -80,7 +80,7 @@ public class EgAnnotationProcessor extends AbstractProcessor {
                     ? settings.getTargetDirExistsBehavior()
                     : Settings.AlreadyExistsBehavior.OVERWRITE;
 
-            new JUnitMainWriter(settings.getLanguage(), onExists, settings.getTargetDir()).write(collector);
+            new AllClassesWriter(settings.getLanguage(), onExists, settings.getTargetDir()).write(collector);
             if (messageHandler instanceof SelfTestMessageHandler) {
                 ((SelfTestMessageHandler) messageHandler).write(settings.getTargetDir().toPath());
             }

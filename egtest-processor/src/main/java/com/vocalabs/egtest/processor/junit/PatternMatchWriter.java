@@ -12,7 +12,7 @@ import java.util.List;
 
 class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
 
-    PatternMatchWriter(Element e, List<PatternMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
+    PatternMatchWriter(Element e, List<PatternMatchExample> exs, ClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);
     }
 
@@ -21,7 +21,7 @@ class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
         if (!checkSupport())
             return;
 
-        String methodName = "testMatch$" + element.getSimpleName();
+        String methodName = testMethodName();
 
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)

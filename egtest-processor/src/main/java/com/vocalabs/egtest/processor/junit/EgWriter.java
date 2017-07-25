@@ -16,8 +16,8 @@ import javax.lang.model.type.TypeMirror;
 import java.util.List;
 
 /** Writer for {@code @Eg(...)} annotations. */
-class EgWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample> {
-    public EgWriter(ExecutableElement element, List<ReturnsExample> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
+class EgWriter extends TestWriter<ExecutableElement, ReturnsExample> {
+    public EgWriter(ExecutableElement element, List<ReturnsExample> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 
@@ -43,7 +43,7 @@ class EgWriter extends JUnitExampleWriter<ExecutableElement, ReturnsExample> {
         CodeInjector codeInjector = classWriter.getCodeInjector();
         for (ReturnsExample example: examples) {
             EgLanguage language = example.getAnnotation().language();
-            LanguageInjector languageInjector = codeInjector.languageInjector(language);
+            LanguageInjector languageInjector = codeInjector.languageInjector(language, element.getEnclosingElement());
             String[] arguments = example.getAnnotation().given();
             String argumentString = String.join(", ", example.getAnnotation().given());
             String expected  = example.getAnnotation().returns();

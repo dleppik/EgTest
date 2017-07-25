@@ -14,15 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
-    protected final JUnitClassWriter classWriter;
+abstract class TestWriter<T extends Element, X extends EgItem<?>> {
+    protected final ClassWriter classWriter;
     protected final List<X> examples;
     protected final TypeSpec.Builder toAddTo;
     protected final MessageHandler messageHandler;
     protected final T element;
     protected final AnnotationSpec testAnnotation = AnnotationSpec.builder(ClassName.get("org.junit", "Test")).build();
 
-    static void write(JUnitClassWriter classWriter, TypeSpec.Builder builder) {
+    static void write(ClassWriter classWriter, TypeSpec.Builder builder) {
         Map<Element, List<EgItem<?>>> examplesByElement = classWriter.getItems().stream()
                 .collect(Collectors.groupingBy(EgItem::getElement));
 
@@ -56,7 +56,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
                 .collect(Collectors.toList());
     }
 
-    protected JUnitExampleWriter(T element, List<X> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
+    protected TestWriter(T element, List<X> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
         this.element = element;
         this.examples = examples;
         this.classWriter = classWriter;
@@ -66,44 +66,71 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
 
     public abstract void addTests();
 
-    /** If the element is unsupported, return false after writing to messageHandler. */
+    /**
+     * Return true if work needs to be done on this element.
+     * If the element is unsupported, return false after alerting messageHandler.
+     */
     protected boolean checkSupport() {
         if (examples.isEmpty())
             return false;
 
-        if (! element.getEnclosingElement().equals(classWriter.getClassElement())) {
-            messageHandler.unsupported(element, "inner classes");
+        if (inInnerClass()
+                && ! element.getModifiers().contains(Modifier.STATIC)
+                && ! enclosingClass().getModifiers().contains(Modifier.STATIC)) {
+            messageHandler.unsupported(element, "non-static inner class");
             return false;
         }
 
-        if (! visible(element) ) {
+        if (! visible()) {
             messageHandler.unsupported(element, "private or protected");
             return false;
         }
         return true;
     }
 
-    private boolean visible(Element el) {
-        Set<Modifier> modifiers = el.getModifiers();
+    private boolean visible() {
+        Set<Modifier> modifiers = element.getModifiers();
         return ! modifiers.contains(Modifier.PRIVATE)  &&  ! modifiers.contains(Modifier.PROTECTED);
     }
 
+    private TypeElement enclosingClass() {
+        Element el = element;
+        while ( ! (el instanceof TypeElement) ) {
+            el = el.getEnclosingElement();
+        }
+        return (TypeElement) el;
+    }
+
+    private boolean inInnerClass() {
+        return ! element.getEnclosingElement().equals(classWriter.getClassElement());
+    }
+
+    protected String innerClassNamePortion() {
+        TypeElement outerEl = classWriter.getClassElement();
+        StringBuilder sb = new StringBuilder();
+        for (Element el = element.getEnclosingElement(); ! el.equals(outerEl); el = el.getEnclosingElement()) {
+            sb.append("$");
+            sb.append(uniqueName(el));
+        }
+        return sb.toString();
+    }
+
     protected String testMethodName() {
-        return "test"+baseName()+"$"+uniqueName();
+        return "test"+baseName()+innerClassNamePortion()+"$"+uniqueName(element);
     }
 
-    private String uniqueName() {
-        String simpleName = element.getSimpleName().toString();
-        if (nameCollisions().isEmpty())
+    private static String uniqueName(Element el) {
+        String simpleName = el.getSimpleName().toString();
+        if (nameCollisions(el).isEmpty())
             return simpleName;
-        return elementUniqueSuffix(element);
+        return elementUniqueSuffix(el);
     }
 
-    private List<Element> nameCollisions() {
-        return element.getEnclosingElement()
+    private static List<Element> nameCollisions(Element el) {
+        return el.getEnclosingElement()
                 .getEnclosedElements().stream()
-                .filter(it -> ! it.equals(element))
-                .filter(it -> it.getSimpleName().toString().equals(element.getSimpleName().toString()))
+                .filter(it -> ! it.equals(el))
+                .filter(it -> it.getSimpleName().toString().equals(el.getSimpleName().toString()))
                 .map(it -> (Element) it)         // Some Java compilers don't like <? extends Element>
                 .collect(Collectors.toList());
     }
@@ -124,7 +151,7 @@ abstract class JUnitExampleWriter<T extends Element, X extends EgItem<?>> {
      */
     static String escapeParameterNames(Stream<String> names) {
         return names
-                .map(JUnitExampleWriter::stripGenerics)
+                .map(TestWriter::stripGenerics)
                 .map(s -> s.replace("$", "$$"))
                 .map(s -> s.replace("_", "__"))
                 .map(s -> s.replace(".", "_"))

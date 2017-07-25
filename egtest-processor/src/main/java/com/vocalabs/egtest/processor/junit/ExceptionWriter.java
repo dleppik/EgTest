@@ -8,13 +8,13 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 
-class ExceptionWriter extends JUnitExampleWriter<ExecutableElement, ExceptionExample> {
+class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
 
     private static final ClassName ASSERT_TRUE = ClassName.get("org.junit.Assert", "assertTrue");
     private static final ClassName ASSERT_FAIL = ClassName.get("org.junit.Assert", "fail");
 
 
-    public ExceptionWriter(ExecutableElement element, List<ExceptionExample> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
+    public ExceptionWriter(ExecutableElement element, List<ExceptionExample> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 

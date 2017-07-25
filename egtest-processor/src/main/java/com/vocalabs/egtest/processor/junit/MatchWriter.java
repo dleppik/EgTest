@@ -10,8 +10,8 @@ import javax.lang.model.element.Element;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-abstract class MatchWriter<T extends Element, X extends EgItem<?>> extends JUnitExampleWriter<T,X> {
-    public MatchWriter(T element, List<X> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
+abstract class MatchWriter<T extends Element, X extends EgItem<?>> extends TestWriter<T,X> {
+    public MatchWriter(T element, List<X> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 

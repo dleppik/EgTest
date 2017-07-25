@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
+/** Wraps Eg code in a Groovy script interpreter, unless it can trivially prove that it isn't necessary. */
 public class GroovyInjector implements LanguageInjector {
 
     private static final String EXEC_NAME = "execGroovy";

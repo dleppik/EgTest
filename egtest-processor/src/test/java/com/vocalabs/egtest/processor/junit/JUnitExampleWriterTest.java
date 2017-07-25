@@ -16,7 +16,7 @@ public class JUnitExampleWriterTest {
 
 
         Stream<String> args = Stream.of("java.lang.String", "double", "java.lang.Double[]", "org.omg.CORBA_2_3.ORB");
-        String actual = JUnitExampleWriter.escapeParameterNames(args);
+        String actual = TestWriter.escapeParameterNames(args);
         assertEquals("$java_lang_String$double$java_lang_Double$_A$org_omg_CORBA__2__3_ORB", actual);
     }
 }

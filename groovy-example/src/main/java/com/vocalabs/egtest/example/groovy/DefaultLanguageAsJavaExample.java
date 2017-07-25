@@ -130,4 +130,13 @@ public class DefaultLanguageAsJavaExample {
             default:  return false;
         }
     }
+
+    @EgDefaultLanguage(EgLanguage.GROOVY)
+    public static class WithInnerGroovy {
+
+        @Eg(given = "[2, 4, 6]", returns = "3")
+        public static int count(List<?> items) {
+            return items.size();
+        }
+    }
 }

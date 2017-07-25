@@ -8,13 +8,11 @@ import com.vocalabs.egtest.processor.data.FunctionMatchExample;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.StringJoiner;
 
 class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
-    FunctionMatchWriter(Element e, List<FunctionMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
+    FunctionMatchWriter(Element e, List<FunctionMatchExample> exs, ClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);
     }
 
@@ -23,8 +21,7 @@ class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
         if (!checkSupport())
             return;
 
-        String newMethodName = testMethodName();
-        MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
+        MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(testMethodName())
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(testAnnotation)
                 .returns(void.class);
