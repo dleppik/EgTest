@@ -194,21 +194,71 @@ public class ExampleForReadme {
 }
 ```
 
-## Details
+## How does it work?
 
-Method parameters and return types should be constants, but they can be imported from anywhere, so long as 
-it is visible to the test. Thus `org.apache.log4j.Level.DEBUG`, with the full package name, may be used if
-log4j is included in the test build CLASSPATH.
-
-The JUnit test generator copies parameters and return types directly into JUnit source code, so you can even make
-fancier calls like `@Eg(given={"new StringBuilder(\"World\")"} returns="new StringBuilder(\"Hello, World!\")")`.
+At compile time, EgTest's annotation processor creates JUnit tests separate from your hand-written unit tests.
+With parameters `given`, `returns`, and `construct` it copies Java code verbatim. Thus you can use fully qualified
+names, e.g. `@Eg(returns=java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)`. Just like regular JUnit tests, the 
+tests are in the same package as the class being tested. For example: 
+`@Eg(given={"new MyClassInTheSamePackage(\"World\")"} returns="new MyClassInTheSamePackage(\"Hello, World!\")")`.
 
 Source code for JUnit tests are generated while compiling the main code. Generated classes have names ending in 
 `$EgTest`, so they do not conflict with other JUnit tests.
 
-Annotation processing has its limitations. In particular, because anonymous classes are constructed at runtime, 
-annotations within anonymous classes are not visible to the compiler. Not only is EgTest unable to create a test
-for the following, it is unable to emit a warning. As is true whenever you write unit tests, **you should write a 
+## Groovy for easier-to-read examples
+
+By default, Java is used whenever code is copied verbatim. This makes the generated source code easier to follow,
+but all those escaped quotes can be a pain, and lists are difficult to construct. Fortunately, you can change EgTest's
+language from Java to Groovy.
+
+Groovy lets you use single quotes to construct strings, and lists are as easy as `[1, 2, 3]`. For example:
+
+```Java
+@Eg(language = EgLanguage.GROOVY, given = {"['apple', 'banjo', 'cow']"}, returns = "'apple banjo cow'")
+public static String joinWithSpace(java.util.List<String> items) {
+    return String.join(" ", items);
+}
+```
+
+As you can see, you can set the language in an annotation with `language = EgLanguage.GROOVY`. You can also set the
+language for an entire class (and its inner classes) like this:
+
+```Java
+@EgDefaultLanguage(EgLanguage.GROOVY)
+public class NestedGroovyExampleForReadme {
+    @Eg(given = "['this', 'is', 'groovy']", returns = "'this is groovy'")
+    public static String joinWithSpace(java.util.List<String> items) {
+        return String.join(" ", items);
+    }
+
+    // Inner classes continue to use Groovy
+    public static class Inner {
+        @Eg(given = "['this', 'is', 'groovy']", returns = "'this-is-groovy'")
+        public static String joinWithDash(java.util.List<String> items) {
+            return String.join("-", items);
+        }
+    }
+}
+```
+
+To set the language for the entire build, add the `-Aegtest.targetLanguage=GROOVY` compiler argument. In Gradle, that 
+looks like this:
+
+```
+compileJava.options.compilerArgs.add("-Aegtest.targetLanguage=GROOVY")
+``` 
+
+At the moment, Groovy only works for `given` and `returns`. Java is used to construct an object.
+
+In Groovy mode, the unit test methods are still written in Java, but the appropriate portions call out to a Groovy 
+interpreter. Trivial cases which are identical in both languages, such as numerical literals, are handled with pure 
+Java.
+
+## Don't annotate anonymous classes!
+
+Because anonymous classes are constructed at runtime, 
+annotations within anonymous classes are not visible to the compiler. Not only is EgTest unable to create a test, it
+can't even emit a warning! As is true whenever you write unit tests, **you should write a 
 failing test—and confirm that it fails—before making it pass.**
 
 ```Java
