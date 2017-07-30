@@ -6,7 +6,8 @@ import com.vocalabs.egtest.annotation.*;
 public class ExampleForReadme {
 
     //
-    // @Eg:  given the specified input, returns the specified value
+    // @Eg:  given the specified input, returns the specified value. Arguments are copied verbatim into test code,
+    // so we need to escape quotes around strings, since there could be a class named "World" in the test's scope.
     //
 
     @Eg(given = {"\"World\""}, returns = "\"Hello, World!\"")
@@ -31,7 +32,8 @@ public class ExampleForReadme {
     }
 
     //
-    // @EgMatch/@EgNoMatch: String pattern matching, for regular expressions or boolean functions
+    // @EgMatch/@EgNoMatch: String pattern matching, for regular expressions or boolean functions. These only take
+    // string literals, so they don't need the escaped quotes that @Eg takes.
     //
 
     /**
@@ -61,6 +63,8 @@ public class ExampleForReadme {
     public static String methodWhichCannotHandleNulls(Object thing1) {
         return thing1.toString();
     }
+
+    // If you don't specify what it throws, the test passes if any Throwable is thrown.
 
     @EgException({"null", "\"hello\""})
     @EgException({"\"hello\"", "null"})

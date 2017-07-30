@@ -55,9 +55,9 @@ describing constraints, including
 Some of them even [enforce the constraints through static analysis](https://checkerframework.org/).
 These are extremely powerful, since they cover entire classes of errors. EgTest isn't one of them.
 
-EgTest is for writing **examples**. They are specific, concrete, and easier to understand—especially in complex cases.
+EgTest is for writing **examples**. Examples are specific, concrete, and easier to understand—especially in complex cases.
 It should be used with type-constraint annotations, dealing with the cases that they can't handle or providing 
-clarifying examples.
+clarification.
 
 ### Examples
 
@@ -74,7 +74,8 @@ import com.vocalabs.egtest.annotation.*;
 public class ExampleForReadme {
 
     //
-    // @Eg:  given the specified input, returns the specified value
+    // @Eg:  given the specified input, returns the specified value. Arguments are copied verbatim into test code,
+    // so we need to escape strings, since there could be a class named "World" in the test's scope.
     //
 
     @Eg(given = {"\"World\""}, returns = "\"Hello, World!\"")
@@ -129,6 +130,8 @@ public class ExampleForReadme {
     public static String methodWhichCannotHandleNulls(Object thing1) {
         return thing1.toString();
     }
+
+    // If you don't specify what it throws, the test passes if any Throwable is thrown.
 
     @EgException({"null", "\"hello\""})
     @EgException({"\"hello\"", "null"})
