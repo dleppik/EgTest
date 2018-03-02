@@ -1,12 +1,10 @@
 package com.vocalabs.egtest.processor
 
 import com.vocalabs.egtest.annotation.EgLanguage
-
+import java.io.File
+import java.util.*
 import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
-import java.io.File
-import java.util.Arrays
-
 import javax.tools.Diagnostic.Kind.ERROR
 
 /**
