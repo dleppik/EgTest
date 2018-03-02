@@ -43,12 +43,12 @@ public class EgAnnotationProcessor extends AbstractProcessor {
 
     private MessageHandler messageHandler = null;
     private boolean firstPass = true;
-    private Settings settings = Settings.illegalInstance("not initialized");
+    private Settings settings = Settings.Companion.illegalInstance("not initialized");
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        settings = Settings.instance(processingEnv);
+        settings = Settings.Companion.instance(processingEnv);
 
         messageHandler = (settings.isSelfTest())
                 ? new SelfTestMessageHandler(processingEnv.getMessager())
@@ -57,7 +57,10 @@ public class EgAnnotationProcessor extends AbstractProcessor {
             messageHandler.note("EgTest will write test source code in "+settings.getTargetDir());
         }
         else if ( ! processingEnv.getOptions().containsKey(Settings.TARGET_DIR_KEY)) {
-            processingEnv.getMessager().printMessage(WARNING, "Skipping EgTest, "+Settings.TARGET_DIR_KEY+" not specified");
+            processingEnv.getMessager().printMessage(WARNING, "Skipping EgTest, "+ Settings.TARGET_DIR_KEY +" not specified");
+        }
+        else {
+            processingEnv.getMessager().printMessage(WARNING, "Skipping EgTest: "+settings.getInvalidReason());
         }
         firstPass = true;
     }
