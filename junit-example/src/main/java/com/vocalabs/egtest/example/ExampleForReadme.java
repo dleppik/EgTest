@@ -66,9 +66,15 @@ public class ExampleForReadme {
 
     // If you don't specify what it throws, the test passes if any Throwable is thrown.
 
+    @EgException("null")
+    public static String anotherMethodWhichCannotHandleNulls(Object thing1) {
+        return thing1.toString();
+    }
+
+
     @EgException({"null", "\"hello\""})
     @EgException({"\"hello\"", "null"})
-    static String anotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
+    static String yetAnotherMethodWhichCannotHandleNulls(Object thing1, Object thing2) {
         return thing1.toString() + thing2.toString();
     }
 
