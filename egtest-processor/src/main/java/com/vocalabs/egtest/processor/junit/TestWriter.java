@@ -67,25 +67,25 @@ abstract class TestWriter<T extends Element, X extends EgItem<?>> {
     public abstract void addTests();
 
     /**
-     * Return true if work needs to be done on this element.
-     * If the element is unsupported, return false after alerting messageHandler.
+     * Return false if work needs to be done on this element.
+     * If the element is unsupported, return true after alerting messageHandler.
      */
-    protected boolean checkSupport() {
+    protected boolean notSupported() {
         if (examples.isEmpty())
-            return false;
+            return true;
 
         if (inInnerClass()
                 && ! element.getModifiers().contains(Modifier.STATIC)
                 && ! enclosingClass().getModifiers().contains(Modifier.STATIC)) {
             messageHandler.unsupported(element, "non-static inner class");
-            return false;
+            return true;
         }
 
         if (! visible()) {
             messageHandler.unsupported(element, "private or protected");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean visible() {
@@ -105,7 +105,7 @@ abstract class TestWriter<T extends Element, X extends EgItem<?>> {
         return ! element.getEnclosingElement().equals(classWriter.getClassElement());
     }
 
-    protected String innerClassNamePortion() {
+    private String innerClassNamePortion() {
         TypeElement outerEl = classWriter.getClassElement();
         StringBuilder sb = new StringBuilder();
         for (Element el = element.getEnclosingElement(); ! el.equals(outerEl); el = el.getEnclosingElement()) {

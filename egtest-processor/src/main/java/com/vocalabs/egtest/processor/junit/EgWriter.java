@@ -28,7 +28,7 @@ class EgWriter extends TestWriter<ExecutableElement, ReturnsExample> {
 
     @Override
     public void addTests() {
-        if ( ! checkSupport())
+        if (notSupported())
             return;
 
         String newMethodName = testMethodName();

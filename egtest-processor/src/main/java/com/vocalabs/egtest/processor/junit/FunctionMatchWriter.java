@@ -18,7 +18,7 @@ class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
     @Override
     public void addTests() {
-        if (!checkSupport())
+        if (notSupported())
             return;
 
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(testMethodName())

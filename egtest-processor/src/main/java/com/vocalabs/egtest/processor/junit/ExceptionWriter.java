@@ -25,7 +25,7 @@ class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
 
     @Override
     public void addTests() {
-        if ( ! checkSupport())
+        if (notSupported())
             return;
 
         String newMethodName = testMethodName();

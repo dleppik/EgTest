@@ -18,7 +18,7 @@ class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
 
     @Override
     public void addTests() {
-        if (!checkSupport())
+        if (notSupported())
             return;
 
         String methodName = testMethodName();

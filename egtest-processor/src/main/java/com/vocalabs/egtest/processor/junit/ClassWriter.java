@@ -10,7 +10,6 @@ import com.vocalabs.egtest.processor.data.EgItem;
 
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ class ClassWriter {
                                    String classUnderTestName,
                                    MessageHandler messageHandler,
                                    List<EgItem<?>> items)
-    throws Exception {
+    {
         if (items.isEmpty())
             throw new IllegalArgumentException("Must have at least one Example to write a test file for "+classUnderTestName);
         TypeElement classElement = JavaModelUtil.topLevelClass(items.get(0).getElement());
@@ -49,7 +48,7 @@ class ClassWriter {
         this.className = classElement.getSimpleName() +"$EgTest";
     }
 
-    private JavaFile createFileSpec() throws Exception {
+    private JavaFile createFileSpec() {
         AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", "com.vocalabs.egtest.EgTest")
                 .build();
