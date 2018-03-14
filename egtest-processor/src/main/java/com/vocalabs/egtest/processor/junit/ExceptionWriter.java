@@ -2,6 +2,7 @@ package com.vocalabs.egtest.processor.junit;
 
 import com.squareup.javapoet.*;
 import com.vocalabs.egtest.processor.data.ExceptionExample;
+import org.jetbrains.annotations.NotNull;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -18,6 +19,7 @@ class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
         super(element, examples, classWriter, toAddTo);
     }
 
+    @NotNull
     @Override
     protected String baseName() {
         return "Exception";
@@ -31,17 +33,17 @@ class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
         String newMethodName = testMethodName();
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(testAnnotation)
+                .addAnnotation(getTestAnnotation())
                 .addException(Exception.class)
                 .returns(void.class);
 
-        ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
-        String methodName = element.getSimpleName().toString();
+        ClassName className = ClassName.get((TypeElement) getElement().getEnclosingElement());
+        String methodName = getElement().getSimpleName().toString();
 
-        for (ExceptionExample example: examples) {
+        for (ExceptionExample example: getExamples()) {
             String arguments = String.join(", ", example.getAnnotation().value());
             TypeName exceptionType = example.exceptionType();
-            String description = element.getSimpleName()+"("+arguments+") should throw "+exceptionType;
+            String description = getElement().getSimpleName()+"("+arguments+") should throw "+exceptionType;
             specBuilder.addCode(
                     "try {\n");
             specBuilder.addCode("    "+methodCall(className, methodName, example)+"\n");
@@ -55,13 +57,13 @@ class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
                     ASSERT_FAIL, description+", returned without error",
                     ASSERT_TRUE, description, exceptionType);
         }
-        toAddTo.addMethod(specBuilder.build());
+        getToAddTo().addMethod(specBuilder.build());
     }
 
     private CodeBlock methodCall(ClassName className, String methodName, ExceptionExample example) {
         String arguments = String.join(", ", example.getAnnotation().value());
 
-        if (element.getModifiers().contains(Modifier.STATIC)) {
+        if (getElement().getModifiers().contains(Modifier.STATIC)) {
             return CodeBlock.builder()
                     .add("$T.$L($L);", className, methodName, arguments)
                     .build();

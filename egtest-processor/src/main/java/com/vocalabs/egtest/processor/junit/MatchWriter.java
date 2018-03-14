@@ -5,6 +5,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 import com.vocalabs.egtest.processor.data.EgItem;
+import org.jetbrains.annotations.NotNull;
 
 import javax.lang.model.element.Element;
 import java.lang.annotation.Annotation;
@@ -15,6 +16,7 @@ abstract class MatchWriter<T extends Element, X extends EgItem<?>> extends TestW
         super(element, examples, classWriter, toAddTo);
     }
 
+    @NotNull
     @Override
     protected String baseName() {
         return "Match";

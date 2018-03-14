@@ -34,27 +34,27 @@ class EgWriter extends TestWriter<ExecutableElement, ReturnsExample> {
         String newMethodName = testMethodName();
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(newMethodName)
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(testAnnotation)
+                .addAnnotation(getTestAnnotation())
                 .addException(Exception.class)
                 .returns(void.class);
 
         ClassName assertion = ClassName.get("org.junit.Assert", "assertEquals");
-        ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
-        CodeInjector codeInjector = classWriter.getCodeInjector();
-        for (ReturnsExample example: examples) {
+        ClassName className = ClassName.get((TypeElement) getElement().getEnclosingElement());
+        CodeInjector codeInjector = getClassWriter().getCodeInjector();
+        for (ReturnsExample example: getExamples()) {
             EgLanguage language = example.getAnnotation().language();
-            LanguageInjector languageInjector = codeInjector.languageInjector(language, element.getEnclosingElement());
+            LanguageInjector languageInjector = codeInjector.languageInjector(language, getElement().getEnclosingElement());
             String[] arguments = example.getAnnotation().given();
             String argumentString = String.join(", ", example.getAnnotation().given());
             String expected  = example.getAnnotation().returns();
-            String description = element.getSimpleName()+"("+argumentString+")";
-            String methodName = element.getSimpleName().toString();
+            String description = getElement().getSimpleName()+"("+argumentString+")";
+            String methodName = getElement().getSimpleName().toString();
 
             specBuilder.addCode("$L($S,\n    ", assertion, description);
-            languageInjector.add(specBuilder, element.getReturnType(), expected);
+            languageInjector.add(specBuilder, getElement().getReturnType(), expected);
             specBuilder.addCode(",\n");
 
-            if (element.getModifiers().contains(Modifier.STATIC)) {
+            if (getElement().getModifiers().contains(Modifier.STATIC)) {
                 specBuilder.addCode("    $T.$L(", className, methodName);
                 addArguments(specBuilder, languageInjector, arguments);
                 specBuilder.addCode(")");
@@ -71,14 +71,14 @@ class EgWriter extends TestWriter<ExecutableElement, ReturnsExample> {
 
             specBuilder.addCode(");\n");
         }
-        toAddTo.addMethod(specBuilder.build());
+        getToAddTo().addMethod(specBuilder.build());
     }
 
     private void addArguments(MethodSpec.Builder specBuilder, LanguageInjector languageInjector, String[] arguments) {
-        List<? extends VariableElement> parameters = element.getParameters();
+        List<? extends VariableElement> parameters = getElement().getParameters();
         int argPos=0;
         for (VariableElement param: parameters) {
-            if (element.isVarArgs()  &&  argPos == parameters.size() - 1) {
+            if (getElement().isVarArgs()  &&  argPos == parameters.size() - 1) {
                 addVarArgs(specBuilder, languageInjector, arguments, parameters, param);
             }
             else {

@@ -25,16 +25,16 @@ class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
 
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(testAnnotation)
+                .addAnnotation(getTestAnnotation())
                 .addException(Exception.class)
                 .returns(void.class);
 
-        for (PatternMatchExample example : examples) {
+        for (PatternMatchExample example : getExamples()) {
             ClassName assertion = booleanAssertion(example.getAnnotation());
             String description = example.getAnnotation().annotationType().getSimpleName() + " " + example.toMatch();
-            ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
-            String patternName = element.getSimpleName().toString();
-            if (element.getModifiers().contains(Modifier.STATIC)) {
+            ClassName className = ClassName.get((TypeElement) getElement().getEnclosingElement());
+            String patternName = getElement().getSimpleName().toString();
+            if (getElement().getModifiers().contains(Modifier.STATIC)) {
                 specBuilder.addCode(
                         "$L($S, $T.$L.matcher($S).matches());\n",
                         assertion, description, className, patternName, example.toMatch());
@@ -44,6 +44,6 @@ class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
                         assertion, description, className, patternName, example.toMatch());
             }
         }
-        toAddTo.addMethod(specBuilder.build());
+        getToAddTo().addMethod(specBuilder.build());
     }
 }

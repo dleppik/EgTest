@@ -23,15 +23,15 @@ class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
         MethodSpec.Builder specBuilder = MethodSpec.methodBuilder(testMethodName())
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(testAnnotation)
+                .addAnnotation(getTestAnnotation())
                 .returns(void.class);
 
-        for (FunctionMatchExample example: examples) {
+        for (FunctionMatchExample example: getExamples()) {
             ClassName assertion = booleanAssertion(example.getAnnotation());
             String description = example.getAnnotation().annotationType().getSimpleName()+" "+example.toMatch();
-            ClassName className = ClassName.get((TypeElement) element.getEnclosingElement());
-            String methodName = element.getSimpleName().toString();
-            if (element.getModifiers().contains(Modifier.STATIC)) {
+            ClassName className = ClassName.get((TypeElement) getElement().getEnclosingElement());
+            String methodName = getElement().getSimpleName().toString();
+            if (getElement().getModifiers().contains(Modifier.STATIC)) {
                 specBuilder.addCode(
                         "$L($S, $T.$L($S));\n",
                         assertion, description, className, methodName, example.toMatch());
@@ -43,6 +43,6 @@ class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
                         assertion, description, className, constructorArgs, methodName, example.toMatch());
             }
         }
-        toAddTo.addMethod(specBuilder.build());
+        getToAddTo().addMethod(specBuilder.build());
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Build JUnit test classes; used by {@link AllClassesWriter}.
  */
-class ClassWriter {
+public class ClassWriter {
 
     static JavaFile createFileSpec(Map<String,EgLanguage> languageForClassName,
                                    EgLanguage defaultLanguage,
