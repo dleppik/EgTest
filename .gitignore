@@ -8,4 +8,5 @@ hs_err_pid*
 .DS_Store
 .idea
 .gradle
+out
 build
