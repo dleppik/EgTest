@@ -1,8 +1,7 @@
 package com.vocalabs.egtest.kotlinhandcraft
 
-import org.junit.jupiter.api.*
-
-import org.junit.jupiter.api.Assertions.*
+import org.junit.Test
+import kotlin.test.*
 
 internal class HelloTest {
     @Test
