@@ -4,7 +4,7 @@ import kotlin.reflect.KType
 import kotlin.collections.List
 import kotlin.*
 
-class CodeBuilderImplementation(val fileName: String) : CodeBuilderInterface {
+abstract class AbstractCodeBuilder: CodeBuilderInterface {
 
     var giantString : String= ""
 
@@ -18,8 +18,7 @@ class CodeBuilderImplementation(val fileName: String) : CodeBuilderInterface {
         var index = 1
         var result = ""
         for (t in listIterator) {
-            var nextType = listIterator.next()
-            nextType = nextType.substring(6)
+            val nextType = listIterator.next()
             result = result + "arg$index : $nextType"
             if(index != arguments.lastIndex){
                 result += ", "
@@ -29,9 +28,27 @@ class CodeBuilderImplementation(val fileName: String) : CodeBuilderInterface {
         giantString += "fun function($result) : $returnType\n"
     }
 
+    fun buildString(): String = giantString
+
+    //override fun build() {
+    //    File(fileName).bufferedWriter().use { out -> out.write(giantString) }
+    //}
+}
+
+class PrintingCodeBuilder(): AbstractCodeBuilder() {
     override fun build() {
-        File(fileName).bufferedWriter().use { out -> out.write(giantString) }
+        println(buildString())
     }
+}
 
+class FileCodeBuilder(val fileName: String): AbstractCodeBuilder() {
+    override fun build() {
+        File(fileName).bufferedWriter().use { out -> out.write(buildString()) }
+    }
+}
 
+class UnitTestCodeBuilder(): AbstractCodeBuilder() {
+    override fun build() {
+        throw UnsupportedOperationException("Not used in unit tests")
+    }
 }
