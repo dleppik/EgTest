@@ -12,7 +12,7 @@ fun isPositive(arg: String): Boolean{
 }
 
 fun writeToFile(): Unit{
-    File("./test.txt").bufferedWriter().use{ out -> out.write("I'm in a file again!")}
+    File("./test.txt").bufferedWriter().use{ out -> out.write("Blah")}
 }
 
 fun main(args: Array<String>){

@@ -2,7 +2,7 @@ package com.vocalabs.egtest.codegenerator
 
 import kotlin.reflect.KType
 
-interface CodeBuilder {
+public interface CodeBuilderInterface {
     fun addImport(importName: String)
 
     fun addFunction(arguments: List<KType>, returnType: KType)
