@@ -4,7 +4,7 @@ import kotlin.reflect.KType
 import kotlin.collections.List
 import kotlin.*
 
-abstract class AbstractCodeBuilder: CodeBuilderInterface {
+abstract class AbstractCodeBuilder: CodeBuilder {
 
     var giantString : String= ""
 
@@ -13,7 +13,11 @@ abstract class AbstractCodeBuilder: CodeBuilderInterface {
         giantString += "import $importName\n"
     }
 
-    override fun addFunction(arguments: List<KType>, returnType: KType){
+    override fun addClass(name: String, properties: List<KType>): ClassBuilder {
+        TODO("not implemented")
+    }
+
+    override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
         val listIterator = arguments.iterator()
         var index = 1
         var result = ""
@@ -26,6 +30,7 @@ abstract class AbstractCodeBuilder: CodeBuilderInterface {
             index++
         }
         giantString += "fun function($result) : $returnType\n"
+        TODO()
     }
 
     fun buildString(): String = giantString
