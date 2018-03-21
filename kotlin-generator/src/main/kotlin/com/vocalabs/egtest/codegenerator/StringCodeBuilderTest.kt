@@ -7,5 +7,6 @@ class StringCodeBuilderTest {
 
     @Test
     fun functionsAreIncludedInBuild() {
+        fail("Test not written")
     }
 }
