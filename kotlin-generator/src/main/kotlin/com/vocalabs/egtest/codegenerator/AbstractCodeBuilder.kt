@@ -48,8 +48,8 @@ class FileCodeBuilder(val fileName: String): AbstractCodeBuilder() {
     }
 }
 
-class UnitTestCodeBuilder(): AbstractCodeBuilder() {
+class StringCodeBuilder(): AbstractCodeBuilder() {
     override fun build() {
-        throw UnsupportedOperationException("Not used in unit tests")
+        throw UnsupportedOperationException("Call buildString instead")
     }
 }
