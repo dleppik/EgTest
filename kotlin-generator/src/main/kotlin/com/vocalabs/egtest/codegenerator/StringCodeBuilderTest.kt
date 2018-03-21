@@ -1,10 +1,11 @@
 package com.vocalabs.egtest.codegenerator
 
 import org.junit.Assert.*
+import org.junit.Test
 
 class StringCodeBuilderTest {
 
-    @org.junit.Test
+    @Test
     fun functionsAreIncludedInBuild() {
     }
 }
