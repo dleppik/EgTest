@@ -34,10 +34,6 @@ abstract class AbstractCodeBuilder: CodeBuilder {
     }
 
     fun buildString(): String = giantString
-
-    //override fun build() {
-    //    File(fileName).bufferedWriter().use { out -> out.write(giantString) }
-    //}
 }
 
 class PrintingCodeBuilder(): AbstractCodeBuilder() {
