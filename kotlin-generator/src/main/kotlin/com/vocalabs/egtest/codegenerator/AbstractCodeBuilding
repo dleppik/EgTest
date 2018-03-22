@@ -1,0 +1,20 @@
+package com.vocalabs.egtest.codegenerator
+
+import kotlin.reflect.KType
+
+abstract class AbstractCodeBuilding : CodeBuilding {
+    var imports: String = ""
+    var functionSignature: String= ""
+
+
+    override fun addImport(importName: String){
+        imports += "import $importName\n"
+    }
+
+    override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
+        var toReturn : FunctionBuild = FunctionBuild(name, arguments, returnType)
+        return toReturn
+    }
+    fun buildString(): String = imports+ functionSignature
+
+}
