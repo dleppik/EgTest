@@ -1,7 +1,7 @@
 package com.vocalabs.egtest.codegenerator
 
-import org.junit.Assert.*
 import org.junit.Test
+import kotlin.test.*
 
 class CodeBuilderTest {
 
@@ -48,14 +48,36 @@ class CodeBuilderTest {
         assertEquals(expected.simplifyWhitespace(), cb.toString().simplifyWhitespace())
     }
 
+    /** Contains a complete test of Kotlin code building. */
+    @Test
+    fun completeCodeExampleCanBeBuilt() {
+        val expected =
+                """package com.vocalabs.egtest.example
+                    |
+                    |import javax.annotation.Generated
+                    |import org.junit.Test
+                    |import kotlin.test.*
+                    |import com.vocalabs.egtest.annotation.*
+                    |
+                    |@Generated("com.vocalabs.egtest.EgTest")
+                    |class Example() {
+                    |    @Test
+                    |    fun returnsGreet() {
+                    |        assertEquals("Hello, World!", Example.greet("World"))
+                    |    }
+                    |}
+                """.trimMargin()
+
+        fail("Annotations aren't supported yet")
+    }
+
     private fun String.simplifyWhitespace(): String {
             return this.replace("([\t ])+", " ")
                     .replace("\n+", "\n")
     }
 
 
-    private fun sampleFunction(a: String) {
-    }
+    private fun sampleFunction(a: String) {}
     private val stringKType = ::sampleFunction.typeParameters[0].upperBounds[0]
     private val voidKType = ::sampleFunction.returnType
 }
