@@ -1,5 +1,3 @@
 package com.vocalabs.egtest.codegenerator
 
-interface ClassBuilder: CodeBuilding {
-
-}
+interface ClassBuilder: CodeBuilding {}

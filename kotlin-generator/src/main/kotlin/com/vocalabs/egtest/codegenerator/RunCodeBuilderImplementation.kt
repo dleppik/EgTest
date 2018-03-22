@@ -18,6 +18,6 @@ fun main(args: Array<String>) {
     val example = PrintingCodeBuilder()
     example.addImport("kotlin.reflect.KType")
     val listOfTypes : List<KType> = listOf(kType, kType2)
-    example.addFunction(listOfTypes, kType)
+    example.addFunction(listOfTypes, kType)
     example.build()
 }

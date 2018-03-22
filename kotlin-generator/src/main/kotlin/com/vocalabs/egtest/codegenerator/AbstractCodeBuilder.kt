@@ -4,36 +4,11 @@ import kotlin.reflect.KType
 import kotlin.collections.List
 import kotlin.*
 
-abstract class AbstractCodeBuilder: CodeBuilder {
-
-    var giantString : String= ""
-
-
-    override fun addImport(importName: String){
-        giantString += "import $importName\n"
-    }
-
+abstract class AbstractCodeBuilder: CodeBuilder, AbstractCodeBuilding() {
     override fun addClass(name: String, properties: List<KType>): ClassBuilder {
-        TODO("not implemented")
+        var toReturn : ClassBuild = ClassBuild(name, properties)
+        return toReturn
     }
-
-    override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
-        val listIterator = arguments.iterator()
-        var index = 1
-        var result = ""
-        for (t in listIterator) {
-            val nextType = listIterator.next()
-            result = result + "arg$index : $nextType"
-            if(index != arguments.lastIndex){
-                result += ", "
-            }
-            index++
-        }
-        giantString += "fun function($result) : $returnType\n"
-        TODO()
-    }
-
-    fun buildString(): String = giantString
 }
 
 class PrintingCodeBuilder(): AbstractCodeBuilder() {
