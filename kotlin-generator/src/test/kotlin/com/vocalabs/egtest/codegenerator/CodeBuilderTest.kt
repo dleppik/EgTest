@@ -8,13 +8,13 @@ class CodeBuilderTest {
 
     /** Test that complete source code can be generated.
      * Unfortunately, this test will need to be changed when
-     * CodeBuilder classes are changed even when they produce valid code.
+     * SourceFileBuilder classes are changed even when they produce valid code.
      */
     @Test
     fun completeSourceCodeCanBeGenerated() {
         val expected =
-                """com.vocalabs.hello.*
-                    |com.vocalabs.goodbye.AuRevoir
+                """import com.vocalabs.hello.*
+                    |import com.vocalabs.goodbye.AuRevoir
                     |
                     |fun greet(): String {
                     |    return "hello"
@@ -29,14 +29,14 @@ class CodeBuilderTest {
                     |}
                     |""".trimMargin()
 
-        val cb: CodeBuilder = StringCodeBuilder()
+        val sfb: SourceFileBuilder = StringSourceFileBuilder()
 
-        cb.addImport("com.vocalabs.hello.*")
+        sfb.addImport("com.vocalabs.hello.*")
 
-        val greetFunction = cb.addFunction("greet", listOf(), stringKType)
+        val greetFunction = sfb.addFunction("greet", listOf(), stringKType)
         greetFunction.addLines("return \"hello\"")
 
-        val testClass = cb.addClass("HelloTest", listOf())
+        val testClass = sfb.addClass("HelloTest", listOf())
 
         val testGreeting: FunctionBuilder = testClass.addFunction("testGreeting", listOf(), voidKType)
         testGreeting.addLines("assertEquals(\"hello\", Greeter.DEFAULT_GREETING)")
@@ -44,9 +44,9 @@ class CodeBuilderTest {
             """println("got here")
             |println("also got here")
             """.trimMargin())
-        cb.addImport("com.vocalabs.goodbye.AuRevoir")
+        sfb.addImport("com.vocalabs.goodbye.AuRevoir")
 
-        assertEquals(expected.simplifyWhitespace(), cb.toString().simplifyWhitespace())
+        assertEquals(expected.simplifyWhitespace(), sfb.toString().simplifyWhitespace())
     }
 
     /** Contains a complete test of Kotlin code building. */

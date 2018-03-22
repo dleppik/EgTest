@@ -2,8 +2,8 @@ package com.vocalabs.egtest.codegenerator
 
 import kotlin.reflect.KType
 
-/** Write Kotlin source code */
-interface CodeBuilder: CodeBuilding {
+/** Write Kotlin source code files. */
+interface SourceFileBuilder : CodeBuilding {
 
     /** Create a class. The properties are used in the constructor. */
     fun addClass(name: String, properties: List<KType>): ClassBuilder

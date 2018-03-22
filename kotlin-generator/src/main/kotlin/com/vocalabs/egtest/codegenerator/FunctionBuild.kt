@@ -24,4 +24,8 @@ class FunctionBuild(/*imports: String,*/ val name: String, val arguments: List<K
     override fun addLines(lineToBeAdded: String) {
         functionSoFar += lineToBeAdded
     }
+
+    fun build(): String {
+        return "the text of the function should be returned here"
+    }
 }
