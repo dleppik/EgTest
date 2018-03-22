@@ -1,7 +1,8 @@
 package com.vocalabs.egtest.codegenerator
 
+// As of March 2018, IntelliJ has better support for org.junit.Assert than kotlin.test.Assert
+import org.junit.Assert.*
 import org.junit.Test
-import kotlin.test.*
 
 class CodeBuilderTest {
 
@@ -76,8 +77,7 @@ class CodeBuilderTest {
                     .replace("\n+", "\n")
     }
 
-
-    private fun sampleFunctionA(a: String) {}
+    private fun sampleFunctionA() {}
     private fun sampleFunctionB(): String = ""
     private val stringKType = ::sampleFunctionB.returnType
     private val voidKType = ::sampleFunctionA.returnType
