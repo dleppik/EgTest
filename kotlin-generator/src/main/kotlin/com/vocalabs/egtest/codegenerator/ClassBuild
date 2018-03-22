@@ -4,7 +4,6 @@ import kotlin.reflect.KType
 
  class ClassBuild(var name: String, var properties: List<KType>): AbstractCodeBuilding(), ClassBuilder {
      var classSignature: String = ""
-     var function: FunctionBuild()
 
      fun addClass(){
         classSignature += this.name

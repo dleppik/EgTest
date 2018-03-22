@@ -2,7 +2,7 @@ package com.vocalabs.egtest.codegenerator
 
 import kotlin.reflect.KType
 
-abstract class AbstractCodeBuilding : CodeBuilding {
+abstract class AbstractCodeBuilding() : CodeBuilding {
     var imports: String = ""
     var functionSignature: String= ""
 
