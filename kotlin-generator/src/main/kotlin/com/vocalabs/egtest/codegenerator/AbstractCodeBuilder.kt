@@ -24,7 +24,13 @@ class FileCodeBuilder(val fileName: String): AbstractCodeBuilder() {
 }
 
 class StringCodeBuilder(): AbstractCodeBuilder() {
+
+
     override fun build() {
         throw UnsupportedOperationException("Call buildString instead")
+    }
+
+    override fun toString(): String {
+        return buildString()
     }
 }
