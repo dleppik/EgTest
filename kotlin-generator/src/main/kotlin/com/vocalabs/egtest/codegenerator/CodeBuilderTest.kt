@@ -54,8 +54,8 @@ class CodeBuilderTest {
     }
 
 
-    private fun sampleFunction(a: String) {
-    }
-    private val stringKType = ::sampleFunction.typeParameters[0].upperBounds[0]
-    private val voidKType = ::sampleFunction.returnType
+    private fun sampleFunctionA(a: String) {}
+    private fun sampleFunctionB(): String = ""
+    private val stringKType = ::sampleFunctionB.returnType
+    private val voidKType = ::sampleFunctionA.returnType
 }
