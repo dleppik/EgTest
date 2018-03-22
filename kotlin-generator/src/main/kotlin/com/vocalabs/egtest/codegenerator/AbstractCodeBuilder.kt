@@ -6,8 +6,7 @@ import kotlin.*
 
 abstract class AbstractCodeBuilder: CodeBuilder, AbstractCodeBuilding() {
     override fun addClass(name: String, properties: List<KType>): ClassBuilder {
-        var toReturn : ClassBuild = ClassBuild(name, properties)
-        return toReturn
+        return ClassBuild(name, properties)
     }
 }
 
