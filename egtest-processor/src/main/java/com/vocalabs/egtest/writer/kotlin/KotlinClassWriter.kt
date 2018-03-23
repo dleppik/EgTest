@@ -1,5 +1,6 @@
 package com.vocalabs.egtest.writer.kotlin
 
+import com.vocalabs.egtest.codegenerator.FileSourceFileBuilder
 import com.vocalabs.egtest.processor.MessageHandler
 import com.vocalabs.egtest.processor.data.EgItem
 import java.io.File
@@ -14,7 +15,10 @@ class KotlinFileWriter private constructor(classToTestName: String,
                 classToTestName: String,
                 messageHandler: MessageHandler,
                 items: List<EgItem<*>>,
-                targetDirectory: File) {
+                targetDirectory: File)
+        {
+            val cb = FileSourceFileBuilder("")
+
             TODO()
         }
     }
