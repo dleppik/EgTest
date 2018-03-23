@@ -14,7 +14,8 @@ class CodeBuilderTest {
     @Test
     fun completeSourceCodeCanBeGenerated() {
         val expected =
-                """import com.vocalabs.hello.*
+                """package com.vocalabs.greetings
+                    |import com.vocalabs.hello.*
                     |import com.vocalabs.goodbye.AuRevoir
                     |
                     |fun greet(): String {
@@ -46,12 +47,12 @@ class CodeBuilderTest {
             |println("also got here")
             """.trimMargin())
         sfb.addImport("com.vocalabs.goodbye.AuRevoir")
+        sfb.addPackage("com.vocalabs.greetings")
 
         assertEquals(expected.simplifyWhitespace(), sfb.toString().simplifyWhitespace())
     }
 
     /** Contains a complete test of Kotlin code building. */
-    @Ignore
     @Test
     fun completeCodeExampleCanBeBuilt() {
         val expected =
@@ -66,11 +67,11 @@ class CodeBuilderTest {
                     |class Example() {
                     |    @Ignore
                     |    @Test
-                    |    fun returnsGreet() {
+                    |    fun returnsGreet(): Unit {
                     |        assertEquals("Hello, World!", Example.greet("World"))
                     |    }
                     |}
-                """.trimMargin()
+                    |""".trimMargin()
 
         val sfb: SourceFileBuilder = StringSourceFileBuilder()
 
@@ -85,7 +86,7 @@ class CodeBuilderTest {
         testGreeting.addAnnotation("Ignore", null)
         testGreeting.addAnnotation("Test", null)
 
-        exampleTestClass.addAnnotation("Generated", "com.vocalabs.egtest.EgTest")
+        exampleTestClass.addAnnotation("Generated", "\"com.vocalabs.egtest.EgTest\"")
 
         sfb.addImport("com.vocalabs.egtest.annotation.*")
         sfb.addPackage("com.vocalabs.egtest.example")

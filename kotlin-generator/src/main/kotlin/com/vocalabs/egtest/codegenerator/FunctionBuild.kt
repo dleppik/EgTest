@@ -19,7 +19,7 @@ class FunctionBuild(val name: String, val arguments: List<KType>, val returnType
                 }
                 index++
             }
-            var separatedT = returnType.toString().split(".")
+            val separatedT = returnType.toString().split(".")
             val TReturn = separatedT[separatedT.lastIndex]
             signature += "): $TReturn"
     }

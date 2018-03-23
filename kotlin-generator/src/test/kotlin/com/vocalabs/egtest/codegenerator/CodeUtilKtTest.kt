@@ -12,7 +12,7 @@ class CodeUtilKtTest {
 
     @Test
     fun testAnnotationToStringWithoutBody() {
-        val expected = """@Deprecated()"""
+        val expected = """@Deprecated"""
         assertEquals(expected, annotationToString("Deprecated", null))
     }
 

@@ -9,7 +9,7 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
     var packages: String = ""
 
     override fun addPackage(name: String) {
-        packages += name
+        packages += "package $name"
     }
 
     override fun addClass(name: String, properties: List<KType>): ClassBuilder {

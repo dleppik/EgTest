@@ -22,25 +22,22 @@ import kotlin.reflect.KType
         }
          classSignature += ")"
      }
-     fun f(): Unit{
-         return Unit
-     }
 
      override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
-
-         val function = FunctionBuild(name, arguments, ::f.returnType)
+         val function = FunctionBuild(name, arguments, returnType)
          function.addSignature()
          listofFunctions += function
          return function
      }
 
      override fun addAnnotation(annotationName: String, annotationBody: String?) {
-         annotations += " @$annotationName $annotationBody \n"
+         val annotationStr = annotationToString(annotationName, annotationBody)
+         annotations += "$annotationStr\n"
      }
 
      fun build(): String {
          val functionStr: String = listofFunctions.joinToString("\n\t") { it.build() }
          classBody += functionStr
-         return "$classSignature {\n$classBody\n}\n"
+         return "$annotations$classSignature {\n$classBody\n}\n"
      }
  }
