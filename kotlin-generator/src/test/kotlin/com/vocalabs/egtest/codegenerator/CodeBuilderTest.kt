@@ -21,7 +21,7 @@ class CodeBuilderTest {
                     |}
                     |
                     |class HelloTest() {
-                    |    testGreeting() {
+                    |    fun testGreeting(): Unit {
                     |       assertEquals("hello", Greeter.DEFAULT_GREETING)
                     |       println("got here")
                     |       println("also got here")
@@ -73,8 +73,7 @@ class CodeBuilderTest {
     }
 
     private fun String.simplifyWhitespace(): String {
-            return this.replace("([\t ])+", " ")
-                    .replace("\n+", "\n")
+            return this.replace("[\t ]*\n+[\t ]*".toRegex(), "\n")
     }
 
     private fun sampleFunctionA() {}
