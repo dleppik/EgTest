@@ -32,9 +32,9 @@ class PrintingSourceFileBuilder(): AbstractSourceFileBuilder() {
     }
 }
 
-class FileSourceFileBuilder(val fileName: String): AbstractSourceFileBuilder() {
+class FileSourceFileBuilder(val file: File): AbstractSourceFileBuilder() {
     override fun build() {
-        File(fileName).bufferedWriter().use { out -> out.write(buildString()) }
+        file.bufferedWriter().use { out -> out.write(buildString()) }
     }
 }
 
