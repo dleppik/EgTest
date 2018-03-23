@@ -40,7 +40,6 @@ class FileSourceFileBuilder(val fileName: String): AbstractSourceFileBuilder() {
 
 class StringSourceFileBuilder(): AbstractSourceFileBuilder() {
 
-
     override fun build() {
         throw UnsupportedOperationException("Call buildString instead")
     }
