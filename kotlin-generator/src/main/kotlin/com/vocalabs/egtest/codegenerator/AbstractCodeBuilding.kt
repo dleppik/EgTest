@@ -13,6 +13,7 @@ abstract class AbstractCodeBuilding : CodeBuilding {
 
     override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
         var toReturn = FunctionBuild(name, arguments, returnType)
+        toReturn.addSignature()
         functions += toReturn
         return toReturn
     }
