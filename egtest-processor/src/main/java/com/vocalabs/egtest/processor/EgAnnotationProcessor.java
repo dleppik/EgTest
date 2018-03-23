@@ -5,8 +5,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 
 import com.vocalabs.egtest.processor.data.*;
-import com.vocalabs.egtest.processor.junit.AllClassesWriter;
 import com.vocalabs.egtest.processor.selftest.SelfTestMessageHandler;
+import com.vocalabs.egtest.writer.AllClassesWriter;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
