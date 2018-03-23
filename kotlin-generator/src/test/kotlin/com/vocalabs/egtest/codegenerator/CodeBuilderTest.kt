@@ -31,7 +31,6 @@ class CodeBuilderTest {
                     |""".trimMargin()
 
         val sfb: SourceFileBuilder = StringSourceFileBuilder()
-
         sfb.addImport("com.vocalabs.hello.*")
 
         val greetFunction = sfb.addFunction("greet", listOf(), stringKType)
@@ -72,7 +71,7 @@ class CodeBuilderTest {
                     |}
                 """.trimMargin()
 
-        fail("Annotations aren't supported yet")
+
     }
 
     private fun String.simplifyWhitespace(): String {
