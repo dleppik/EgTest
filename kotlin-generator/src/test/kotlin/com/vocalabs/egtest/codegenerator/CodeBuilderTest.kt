@@ -72,7 +72,25 @@ class CodeBuilderTest {
                     |}
                 """.trimMargin()
 
-        fail("Annotations aren't supported yet")
+        val sfb: SourceFileBuilder = StringSourceFileBuilder()
+
+        sfb.addImport("javax.annotation.Generated")
+        sfb.addImport("org.junit.Test")
+        sfb.addImport("kotlin.test.*")
+
+        val exampleTestClass = sfb.addClass("Example", listOf())
+
+        val testGreeting: FunctionBuilder = exampleTestClass.addFunction("returnsGreet", listOf(), voidKType)
+        testGreeting.addLines("assertEquals(\"Hello, World!\", Example.greet(\"World\"))")
+        testGreeting.addAnnotation("Ignore", null)
+        testGreeting.addAnnotation("Test", null)
+
+        exampleTestClass.addAnnotation("Generated", "com.vocalabs.egtest.EgTest")
+
+        sfb.addImport("com.vocalabs.egtest.annotation.*")
+        sfb.addPackage("com.vocalabs.egtest.example")
+
+        assertEquals(expected.simplifyWhitespace(), sfb.toString().simplifyWhitespace())
     }
 
     private fun String.simplifyWhitespace(): String {

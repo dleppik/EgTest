@@ -6,6 +6,11 @@ import kotlin.*
 
 abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuilding() {
     var classes: List<ClassBuild> = listOf()
+    var packages: String = ""
+
+    override fun addPackage(name: String) {
+        packages += name
+    }
 
     override fun addClass(name: String, properties: List<KType>): ClassBuilder {
         val cl = ClassBuild(name, properties)
@@ -17,7 +22,7 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
     fun buildString(): String {
         val functionStr: String = functions.joinToString("\n") { it.build() }
         val classesString = classes.joinToString("\n") { it.build() }
-        return listOf(imports, functionStr, classesString).joinToString("\n\n")
+        return listOf(packages, imports, functionStr, classesString).joinToString("\n\n")
     }
 }
 
