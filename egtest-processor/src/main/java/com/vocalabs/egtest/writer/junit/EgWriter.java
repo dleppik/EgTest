@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -17,7 +17,7 @@ import java.util.List;
 
 /** Writer for {@code @Eg(...)} annotations. */
 class EgWriter extends TestWriter<ExecutableElement, ReturnsExample> {
-    public EgWriter(ExecutableElement element, List<ReturnsExample> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
+    public EgWriter(ExecutableElement element, List<ReturnsExample> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 

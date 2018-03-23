@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;

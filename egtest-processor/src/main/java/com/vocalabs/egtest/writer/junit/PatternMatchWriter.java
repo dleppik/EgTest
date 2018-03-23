@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -12,7 +12,7 @@ import java.util.List;
 
 class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
 
-    PatternMatchWriter(Element e, List<PatternMatchExample> exs, ClassWriter w, TypeSpec.Builder b) {
+    PatternMatchWriter(Element e, List<PatternMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);
     }
 

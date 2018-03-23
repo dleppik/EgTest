@@ -1,11 +1,11 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static com.vocalabs.egtest.processor.junit.TestWriter.*;
+import static com.vocalabs.egtest.writer.junit.TestWriter.*;
 import static org.junit.Assert.*;
 
 public class JUnitExampleWriterTest {

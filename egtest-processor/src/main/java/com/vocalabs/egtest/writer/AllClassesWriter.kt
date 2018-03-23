@@ -1,14 +1,15 @@
-package com.vocalabs.egtest.processor.junit
+package com.vocalabs.egtest.writer
 
 import com.vocalabs.egtest.annotation.EgLanguage
 import com.vocalabs.egtest.processor.AnnotationCollector
-import com.vocalabs.egtest.processor.EgTestWriter
 import com.vocalabs.egtest.processor.Settings
+import com.vocalabs.egtest.writer.junit.JUnitClassWriter
+import com.vocalabs.egtest.writer.kotlin.KotlinFileWriter
 
 import java.io.File
 import java.io.IOException
 
-/** Build JUnit test source code; this is the code generator entry point.  */
+/** Build test source code; this is the code generator entry point. */
 class AllClassesWriter(private val defaultLanguage: EgLanguage,
                        private val directoryExistsBehavior: Settings.AlreadyExistsBehavior,
                        private val directoryToFill: File) : EgTestWriter {
@@ -31,9 +32,17 @@ class AllClassesWriter(private val defaultLanguage: EgLanguage,
         val messageHandler = annotationCollector.messageHandler
         val itemsByClassName = annotationCollector.itemsByClassName
         for ((className, items) in itemsByClassName) {
-            val languageForClassName = annotationCollector.languageForClassName
-            ClassWriter.createFileSpec(languageForClassName, defaultLanguage, className, messageHandler, items)
-                    .writeTo(directoryToFill)
+            when(annotationCollector.languageForClassName.getOrDefault(className, defaultLanguage)) {
+                EgLanguage.KOTLIN -> KotlinFileWriter.write(className, messageHandler, items, directoryToFill)
+                else -> JUnitClassWriter
+                        .write(annotationCollector.languageForClassName,
+                                defaultLanguage,
+                                className,
+                                messageHandler,
+                                items,
+                                directoryToFill)
+            }
+
         }
     }
 

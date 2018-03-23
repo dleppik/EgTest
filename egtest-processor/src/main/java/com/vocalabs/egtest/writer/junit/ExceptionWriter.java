@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.*;
 import com.vocalabs.egtest.processor.data.ExceptionExample;
@@ -15,7 +15,7 @@ class ExceptionWriter extends TestWriter<ExecutableElement, ExceptionExample> {
     private static final ClassName ASSERT_FAIL = ClassName.get("org.junit.Assert", "fail");
 
 
-    public ExceptionWriter(ExecutableElement element, List<ExceptionExample> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
+    public ExceptionWriter(ExecutableElement element, List<ExceptionExample> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 

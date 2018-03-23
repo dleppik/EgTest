@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -12,7 +12,7 @@ import java.util.List;
 
 class FunctionMatchWriter extends MatchWriter<Element, FunctionMatchExample> {
 
-    FunctionMatchWriter(Element e, List<FunctionMatchExample> exs, ClassWriter w, TypeSpec.Builder b) {
+    FunctionMatchWriter(Element e, List<FunctionMatchExample> exs, JUnitClassWriter w, TypeSpec.Builder b) {
         super(e, exs, w, b);
     }
 

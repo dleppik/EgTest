@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit
+package com.vocalabs.egtest.writer.junit
 
 
 import com.squareup.javapoet.AnnotationSpec
@@ -14,7 +14,7 @@ import javax.lang.model.element.TypeElement
 abstract class TestWriter<out T : Element, out X : EgItem<*>>
 protected constructor(protected val element: T,
                       protected val examples: List<X>,
-                      protected val classWriter: ClassWriter,
+                      protected val classWriter: JUnitClassWriter,
                       protected val toAddTo: TypeSpec.Builder)
 {
     protected val messageHandler: MessageHandler = classWriter.messageHandler
@@ -83,7 +83,7 @@ protected constructor(protected val element: T,
     companion object {
 
         @JvmStatic
-        fun write(classWriter: ClassWriter, builder: TypeSpec.Builder) {
+        fun write(classWriter: JUnitClassWriter, builder: TypeSpec.Builder) {
             val examplesByElement = classWriter.items.groupBy { it.element }
 
             for ((el, examples) in examplesByElement) {

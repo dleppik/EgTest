@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.TypeSpec;
 import com.vocalabs.egtest.annotation.EgLanguage;
@@ -11,7 +11,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Container for {@link LanguageInjector}s which constructs them as needed; each {@link ClassWriter} should
+ * Container for {@link LanguageInjector}s which constructs them as needed; each {@link JUnitClassWriter} should
  * have exactly one of these.
  */
 public class CodeInjector {

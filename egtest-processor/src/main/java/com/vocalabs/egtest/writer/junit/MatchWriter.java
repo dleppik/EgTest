@@ -1,4 +1,4 @@
-package com.vocalabs.egtest.processor.junit;
+package com.vocalabs.egtest.writer.junit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 
 abstract class MatchWriter<T extends Element, X extends EgItem<?>> extends TestWriter<T,X> {
-    public MatchWriter(T element, List<X> examples, ClassWriter classWriter, TypeSpec.Builder toAddTo) {
+    public MatchWriter(T element, List<X> examples, JUnitClassWriter classWriter, TypeSpec.Builder toAddTo) {
         super(element, examples, classWriter, toAddTo);
     }
 
