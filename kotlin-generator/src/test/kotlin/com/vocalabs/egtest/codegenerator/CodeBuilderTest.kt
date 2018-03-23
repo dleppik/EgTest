@@ -2,6 +2,7 @@ package com.vocalabs.egtest.codegenerator
 
 // As of March 2018, IntelliJ has better support for org.junit.Assert than kotlin.test.Assert
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
 
 class CodeBuilderTest {
@@ -50,6 +51,7 @@ class CodeBuilderTest {
     }
 
     /** Contains a complete test of Kotlin code building. */
+    @Ignore
     @Test
     fun completeCodeExampleCanBeBuilt() {
         val expected =
@@ -62,6 +64,7 @@ class CodeBuilderTest {
                     |
                     |@Generated("com.vocalabs.egtest.EgTest")
                     |class Example() {
+                    |    @Ignore
                     |    @Test
                     |    fun returnsGreet() {
                     |        assertEquals("Hello, World!", Example.greet("World"))

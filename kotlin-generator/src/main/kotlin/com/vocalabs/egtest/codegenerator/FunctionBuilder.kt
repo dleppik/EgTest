@@ -6,6 +6,5 @@ interface FunctionBuilder {
     /** Add one or more lines to the function. This may be called multiple times. */
     fun addLines(string: String)
 
-    // TODO Uncomment and implement using CodeUtil.annotationToString
-    // fun addAnnotation(annotationName: String, annotationBody: String?)
+    fun addAnnotation(annotationName: String, annotationBody: String?)
 }

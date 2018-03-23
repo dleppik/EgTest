@@ -3,6 +3,7 @@ package com.vocalabs.egtest.codegenerator
 import kotlin.reflect.KType
 
 class FunctionBuild(/*imports: String,*/ val name: String, val arguments: List<KType>, val returnType: KType) : FunctionBuilder {
+    var annotation : String = ""
     var signature : String = ""
     var functionSoFar : String = ""
 
@@ -27,7 +28,12 @@ class FunctionBuild(/*imports: String,*/ val name: String, val arguments: List<K
         functionSoFar = "$functionSoFar\t$lineToBeAdded\n"
     }
 
+    override fun addAnnotation(annotationName: String, annotationBody: String?) {
+        val annotationStr = annotationToString(annotationName, annotationBody)
+        annotation += "$annotationStr\n"
+    }
+
     fun build(): String {
-        return "$signature {\n$functionSoFar}"
+        return "$annotation\n$signature {\n$functionSoFar}"
     }
 }

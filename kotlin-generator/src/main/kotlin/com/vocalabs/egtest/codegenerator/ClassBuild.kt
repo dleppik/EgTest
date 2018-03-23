@@ -29,6 +29,10 @@ import kotlin.reflect.KType
          return function
      }
 
+     override fun addAnnotation(annotationName: String, annotationBody: String?) {
+         
+     }
+
      fun build(): String {
          val functionStr: String = listofFunctions.joinToString("\n\t") { it.build() }
          classBody += functionStr
