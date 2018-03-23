@@ -30,7 +30,7 @@ import kotlin.reflect.KType
      }
 
      fun build(): String {
-         val functionStr: String = listofFunctions.joinToString("\n") { it.build() }
+         val functionStr: String = listofFunctions.joinToString("\n\t") { it.build() }
          classBody += functionStr
          return "$classSignature {\n$classBody\n}\n"
      }
