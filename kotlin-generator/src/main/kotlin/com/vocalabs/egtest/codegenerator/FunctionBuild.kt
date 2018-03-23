@@ -28,6 +28,6 @@ class FunctionBuild(/*imports: String,*/ val name: String, val arguments: List<K
     }
 
     fun build(): String {
-        return "$signature {\n$functionSoFar}\n"
+        return "$signature {\n$functionSoFar}"
     }
 }

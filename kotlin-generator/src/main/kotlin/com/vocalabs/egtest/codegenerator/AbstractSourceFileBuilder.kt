@@ -17,7 +17,7 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
     fun buildString(): String {
         val functionStr: String = functions.joinToString("\n") { it.build() }
         val classesString = classes.joinToString("\n") { it.build() }
-        return listOf(imports, classesString, functionStr).joinToString("\n\n")
+        return listOf(imports, functionStr, classesString).joinToString("\n\n")
     }
 }
 
