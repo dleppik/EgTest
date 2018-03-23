@@ -18,14 +18,16 @@ class FunctionBuild(/*imports: String,*/ val name: String, val arguments: List<K
             }
             index++
         }
-        signature += ") : $returnType\n"
+        var separatedT = returnType.toString().split(".")
+        val TReturn = separatedT[separatedT.lastIndex]
+        signature += "): $TReturn"
     }
 
     override fun addLines(lineToBeAdded: String) {
-        functionSoFar += lineToBeAdded
+        functionSoFar = "$functionSoFar\t$lineToBeAdded\n"
     }
 
     fun build(): String {
-        return "the text of the function should be returned here"
+        return "$signature {\n$functionSoFar}"
     }
 }

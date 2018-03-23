@@ -9,14 +9,15 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
 
     override fun addClass(name: String, properties: List<KType>): ClassBuilder {
         val cl = ClassBuild(name, properties)
+        cl.addClass()
         classes += cl
         return cl
     }
 
     fun buildString(): String {
         val functionStr: String = functions.joinToString("\n") { it.build() }
-        val classesString = "Classes go here..."
-        return listOf(imports, classesString, functionStr).joinToString("\n\n")
+        val classesString = classes.joinToString("\n") { it.build() }
+        return listOf(imports, functionStr, classesString).joinToString("\n\n")
     }
 }
 

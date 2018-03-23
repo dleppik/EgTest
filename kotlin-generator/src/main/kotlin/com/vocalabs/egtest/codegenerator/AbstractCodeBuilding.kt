@@ -8,11 +8,16 @@ abstract class AbstractCodeBuilding : CodeBuilding {
     var functions: List<FunctionBuild> = listOf()
 
     override fun addImport(importName: String){
-        imports += "import $importName\n"
+        if (imports.length == 0) {
+            imports += "import $importName"
+        }else{
+            imports += "\nimport $importName"
+        }
     }
 
     override fun addFunction(name: String, arguments: List<KType>, returnType: KType): FunctionBuilder {
         var toReturn = FunctionBuild(name, arguments, returnType)
+        toReturn.addSignature()
         functions += toReturn
         return toReturn
     }
