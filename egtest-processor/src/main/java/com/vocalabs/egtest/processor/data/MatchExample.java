@@ -2,6 +2,7 @@ package com.vocalabs.egtest.processor.data;
 
 import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -11,10 +12,11 @@ import java.util.List;
 public abstract class MatchExample implements EgItem<Annotation> {
     private final Annotation annotation;
 
-    MatchExample(Annotation annotation) {
+    MatchExample(@NotNull Annotation annotation) {
         this.annotation = annotation;
     }
 
+    @NotNull
     public String toMatch() {
         if (annotation instanceof EgMatch)   return ((EgMatch)   annotation).value();
         if (annotation instanceof EgNoMatch) return ((EgNoMatch) annotation).value();
@@ -30,5 +32,6 @@ public abstract class MatchExample implements EgItem<Annotation> {
     }
 
     @Override
+    @NotNull
     public Annotation getAnnotation() { return annotation; }
 }

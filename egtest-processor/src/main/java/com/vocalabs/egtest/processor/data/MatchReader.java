@@ -60,6 +60,7 @@ public class MatchReader implements AnnotationReader<MatchExample> {
     private boolean isPattern(Element element) {
         return element instanceof VariableElement
                 && element.getKind().equals(ElementKind.FIELD)
-                && element.asType().toString().equals("java.util.regex.Pattern");
+                && (element.asType().toString().equals("java.util.regex.Pattern")
+                    || element.asType().toString().equals("kotlin.text.Regex"));
     }
 }

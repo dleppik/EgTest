@@ -3,12 +3,15 @@ import java.io.File
 import kotlin.collections.List
 import kotlin.*
 
-abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuilding() {
+abstract class AbstractSourceFileBuilder(private val packageStr: String) : SourceFileBuilder, AbstractCodeBuilding() {
     private var classes: List<ClassBuilderImpl> = listOf()
-    private var packages: String = ""
+    private var imports: String = ""
 
-    override fun addPackage(name: String) {
-        packages += "package $name"
+    override fun addImport(importName: String){
+        imports += when {
+            imports.isEmpty() -> "import $importName"
+            else -> "\nimport $importName"
+        }
     }
 
     override fun addClass(name: String): ClassBuilder {
@@ -20,17 +23,17 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
     fun buildString(): String {
         val functionStr: String = functions.joinToString("\n") { it.build() }
         val classesString = classes.joinToString("\n") { it.build() }
-        return listOf(packages, imports, functionStr, classesString).joinToString("\n\n")
+        return listOf("package $packageStr", imports, functionStr, classesString).joinToString("\n\n")
     }
 }
 
-class FileSourceFileBuilder(private val file: File): AbstractSourceFileBuilder() {
+class FileSourceFileBuilder(private val file: File, packageStr: String): AbstractSourceFileBuilder(packageStr) {
     override fun build() {
         file.bufferedWriter().use { out -> out.write(buildString()) }
     }
 }
 
-class StringSourceFileBuilder: AbstractSourceFileBuilder() {
+class StringSourceFileBuilder(packageStr: String): AbstractSourceFileBuilder(packageStr) {
     override fun build() {
         throw UnsupportedOperationException("Call buildString instead")
     }

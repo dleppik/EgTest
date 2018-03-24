@@ -30,7 +30,7 @@ class SourceFileBuilderTest {
                     |}
                     |""".trimMargin()
 
-        val sfb: SourceFileBuilder = StringSourceFileBuilder()
+        val sfb: SourceFileBuilder = StringSourceFileBuilder("com.vocalabs.greetings")
 
         sfb.addImport("com.vocalabs.hello.*")
 
@@ -46,7 +46,6 @@ class SourceFileBuilderTest {
             |println("also got here")
             """.trimMargin())
         sfb.addImport("com.vocalabs.goodbye.AuRevoir")
-        sfb.addPackage("com.vocalabs.greetings")
 
         assertEquals(expected.simplifyWhitespace(), sfb.toString().simplifyWhitespace())
     }
@@ -72,7 +71,7 @@ class SourceFileBuilderTest {
                     |}
                     |""".trimMargin()
 
-        val sfb: SourceFileBuilder = StringSourceFileBuilder()
+        val sfb: SourceFileBuilder = StringSourceFileBuilder("com.vocalabs.egtest.example")
 
         sfb.addImport("javax.annotation.Generated")
         sfb.addImport("org.junit.Test")
@@ -88,7 +87,6 @@ class SourceFileBuilderTest {
         exampleTestClass.addAnnotation("Generated", "\"com.vocalabs.egtest.EgTest\"")
 
         sfb.addImport("com.vocalabs.egtest.annotation.*")
-        sfb.addPackage("com.vocalabs.egtest.example")
 
         assertEquals(expected.simplifyWhitespace(), sfb.toString().simplifyWhitespace())
     }

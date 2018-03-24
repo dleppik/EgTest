@@ -4,8 +4,9 @@ import kotlin.reflect.KType
 
 /** Write Kotlin source code files. */
 interface SourceFileBuilder : CodeBuilding {
-    /** Specify the package for the source code at the top of the file */
-    fun addPackage(name: String)
+
+    /** Add a top-level import statement which can be used by any function. */
+    fun addImport(importName: String)
 
     /** Create a class. The properties are used in the constructor. */
     fun addClass(name: String): ClassBuilder
