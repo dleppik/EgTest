@@ -1,20 +1,18 @@
 package com.vocalabs.egtest.codegenerator
 import java.io.File
-import kotlin.reflect.KType
 import kotlin.collections.List
 import kotlin.*
 
 abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuilding() {
-    var classes: List<ClassBuild> = listOf()
-    var packages: String = ""
+    private var classes: List<ClassBuilderImpl> = listOf()
+    private var packages: String = ""
 
     override fun addPackage(name: String) {
         packages += "package $name"
     }
 
-    override fun addClass(name: String, properties: List<KType>): ClassBuilder {
-        val cl = ClassBuild(name, properties)
-        cl.addClass()
+    override fun addClass(name: String): ClassBuilder {
+        val cl = ClassBuilderImpl(name)
         classes += cl
         return cl
     }
@@ -26,20 +24,13 @@ abstract class AbstractSourceFileBuilder : SourceFileBuilder, AbstractCodeBuildi
     }
 }
 
-class PrintingSourceFileBuilder(): AbstractSourceFileBuilder() {
-    override fun build() {
-        println(buildString())
-    }
-}
-
-class FileSourceFileBuilder(val file: File): AbstractSourceFileBuilder() {
+class FileSourceFileBuilder(private val file: File): AbstractSourceFileBuilder() {
     override fun build() {
         file.bufferedWriter().use { out -> out.write(buildString()) }
     }
 }
 
-class StringSourceFileBuilder(): AbstractSourceFileBuilder() {
-
+class StringSourceFileBuilder: AbstractSourceFileBuilder() {
     override fun build() {
         throw UnsupportedOperationException("Call buildString instead")
     }

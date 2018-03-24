@@ -2,10 +2,9 @@ package com.vocalabs.egtest.codegenerator
 
 // As of March 2018, IntelliJ has better support for org.junit.Assert than kotlin.test.Assert
 import org.junit.Assert.*
-import org.junit.Ignore
 import org.junit.Test
 
-class CodeBuilderTest {
+class SourceFileBuilderTest {
 
     /** Test that complete source code can be generated.
      * Unfortunately, this test will need to be changed when
@@ -22,7 +21,7 @@ class CodeBuilderTest {
                     |    return "hello"
                     |}
                     |
-                    |class HelloTest() {
+                    |class HelloTest {
                     |    fun testGreeting(): Unit {
                     |       assertEquals("hello", Greeter.DEFAULT_GREETING)
                     |       println("got here")
@@ -38,7 +37,7 @@ class CodeBuilderTest {
         val greetFunction = sfb.addFunction("greet", listOf(), stringKType)
         greetFunction.addLines("return \"hello\"")
 
-        val testClass = sfb.addClass("HelloTest", listOf())
+        val testClass = sfb.addClass("HelloTest")
 
         val testGreeting: FunctionBuilder = testClass.addFunction("testGreeting", listOf(), voidKType)
         testGreeting.addLines("assertEquals(\"hello\", Greeter.DEFAULT_GREETING)")
@@ -64,7 +63,7 @@ class CodeBuilderTest {
                     |import com.vocalabs.egtest.annotation.*
                     |
                     |@Generated("com.vocalabs.egtest.EgTest")
-                    |class Example() {
+                    |class Example {
                     |    @Ignore
                     |    @Test
                     |    fun returnsGreet(): Unit {
@@ -79,7 +78,7 @@ class CodeBuilderTest {
         sfb.addImport("org.junit.Test")
         sfb.addImport("kotlin.test.*")
 
-        val exampleTestClass = sfb.addClass("Example", listOf())
+        val exampleTestClass = sfb.addClass("Example")
 
         val testGreeting: FunctionBuilder = exampleTestClass.addFunction("returnsGreet", listOf(), voidKType)
         testGreeting.addLines("assertEquals(\"Hello, World!\", Example.greet(\"World\"))")

@@ -43,7 +43,7 @@ class KotlinFileWriter private constructor(classToTestName: String,
             fb.addImport("org.junit.Ignore")
             fb.addImport("org.junit.Assert.*")
 
-            val cl = fb.addClass(simpleClassName, listOf())
+            val cl = fb.addClass(simpleClassName)
             val function = cl.addFunction("testSomething", listOf(), unitKType)
             function.addAnnotation("Test", null)
             function.addAnnotation("Ignore", null)

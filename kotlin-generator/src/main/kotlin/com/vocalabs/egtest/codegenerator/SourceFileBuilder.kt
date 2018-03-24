@@ -8,7 +8,7 @@ interface SourceFileBuilder : CodeBuilding {
     fun addPackage(name: String)
 
     /** Create a class. The properties are used in the constructor. */
-    fun addClass(name: String, properties: List<KType>): ClassBuilder
+    fun addClass(name: String): ClassBuilder
 
     /**
      * Write the code. This should only be called once, and the "add" methods should not be used
