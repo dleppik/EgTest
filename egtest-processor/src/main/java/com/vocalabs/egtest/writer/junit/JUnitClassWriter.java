@@ -8,6 +8,7 @@ import com.vocalabs.egtest.writer.AllClassesWriter;
 import com.vocalabs.egtest.processor.JavaModelUtil;
 import com.vocalabs.egtest.processor.MessageHandler;
 import com.vocalabs.egtest.processor.data.EgItem;
+import com.vocalabs.egtest.writer.Constants;
 
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
@@ -55,7 +56,7 @@ public class JUnitClassWriter {
 
     private JavaFile createFileSpec() {
         AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
-                .addMember("value", "$S", "com.vocalabs.egtest.EgTest")
+                .addMember("value", "$S", Constants.GENERATED_BY)
                 .build();
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)

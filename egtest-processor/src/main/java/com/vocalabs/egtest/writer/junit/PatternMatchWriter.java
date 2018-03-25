@@ -39,9 +39,10 @@ class PatternMatchWriter extends MatchWriter<Element, PatternMatchExample> {
                         "$L($S, $T.$L.matcher($S).matches());\n",
                         assertion, description, className, patternName, example.toMatch());
             } else {
+                String constructorArgs = example.constructorArgs().stream().reduce((a,b) -> a+", "+b).orElse("");
                 specBuilder.addCode(
-                        "$L($S, new $T().$L.matcher($S).matches());\n",
-                        assertion, description, className, patternName, example.toMatch());
+                        "$L($S, new $T($L).$L.matcher($S).matches());\n",
+                        assertion, description, className, constructorArgs, patternName, example.toMatch());
             }
         }
         getToAddTo().addMethod(specBuilder.build());

@@ -7,8 +7,6 @@ interface CodeBuilding {
 
     /** Create a FunctionBuilder which will be used by the SourceFileBuilder to write a function. */
     fun addFunction(name: String, arguments: List<KType> = listOf(), returnType: KType = unitKType): FunctionBuilder
-
-    //fun addClass(name: String, properties: List<KType>): ClassBuilder
 }
 
 private fun example() {}

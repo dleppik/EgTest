@@ -6,6 +6,8 @@ import com.vocalabs.egtest.annotation.EgException;
 import com.vocalabs.egtest.annotation.EgMatch;
 import com.vocalabs.egtest.annotation.EgNoMatch;
 
+import java.util.regex.Pattern;
+
 public class ConstructorExamples {
     private static final String DEFAULT_COMMENT = "No comment";
 
@@ -13,10 +15,17 @@ public class ConstructorExamples {
     private final float floatValue;
     private final String comment;
 
+    @EgMatch("No comment")
+    @EgMatch(value = "Boo", construct = {"10", "3f", "\"Boo\""})
+    @EgNoMatch(value = "")
+    @EgNoMatch(value = "", construct = {"7.8f"})
+    public final Pattern commentPattern;
+
     public ConstructorExamples(int intValue, float floatValue, String comment) {
         this.intValue = intValue;
         this.floatValue = floatValue;
         this.comment = comment;
+        this.commentPattern = Pattern.compile(Pattern.quote(comment));
     }
 
     public ConstructorExamples(int intValue) {

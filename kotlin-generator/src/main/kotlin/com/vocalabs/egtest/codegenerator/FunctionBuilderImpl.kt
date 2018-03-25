@@ -2,9 +2,9 @@ package com.vocalabs.egtest.codegenerator
 
 import kotlin.reflect.KType
 
-class FunctionBuild(val name: String, val arguments: List<KType>, val returnType: KType) : FunctionBuilder {
-    var annotations : String = ""
-    var signature : String = ""
+class FunctionBuilderImpl(val name: String, val arguments: List<KType>, val returnType: KType) : FunctionBuilder {
+    var annotations = listOf<String>()
+    var signature: String = ""
     var functionSoFar : String = ""
 
     fun addSignature() {
@@ -30,10 +30,10 @@ class FunctionBuild(val name: String, val arguments: List<KType>, val returnType
 
     override fun addAnnotation(annotationName: String, annotationBody: String?) {
         val annotationStr = annotationToString(annotationName, annotationBody)
-        annotations += "$annotationStr\n"
+        annotations += annotationStr
     }
 
     fun build(): String {
-        return "$annotations\n$signature {\n$functionSoFar}"
+        return "${annotations.joinToString("\n")}\n$signature {\n$functionSoFar}"
     }
 }
