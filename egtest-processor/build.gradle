@@ -5,7 +5,6 @@ dependencies {
     compile 'com.squareup:javapoet:1.8.0'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile project(':egtest-annotations')
-    compile project(':kotlin-generator')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

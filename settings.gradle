@@ -1,3 +1,3 @@
-include 'egtest-annotations', 'kotlin-generator', 'egtest-processor', 'junit-example', 'groovy-example', 'kotlin-example', 'self-test'
+include 'egtest-annotations', 'egtest-processor', 'kotlin-example'
 
 rootProject.name = 'EgTest'
