@@ -23,6 +23,7 @@ public abstract class MatchExample implements EgItem<Annotation> {
         throw new IllegalArgumentException("Wrong class for "+annotation);
     }
 
+    @NotNull
     public List<String> constructorArgs() { return Arrays.asList(constructorArgArray()); }
 
     private String[] constructorArgArray() {

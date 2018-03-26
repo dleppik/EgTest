@@ -1,14 +1,10 @@
 package com.vocalabs.egtest.writer.kotlin
 
 import com.vocalabs.egtest.annotation.EgMatch
-import com.vocalabs.egtest.annotation.EgNoMatch
 import com.vocalabs.egtest.codegenerator.ClassBuilder
 import com.vocalabs.egtest.codegenerator.FileSourceFileBuilder
 import com.vocalabs.egtest.processor.MessageHandler
-import com.vocalabs.egtest.processor.data.EgItem
-import com.vocalabs.egtest.processor.data.IgnoredReader
-import com.vocalabs.egtest.processor.data.MatchExample
-import com.vocalabs.egtest.processor.data.PatternMatchExample
+import com.vocalabs.egtest.processor.data.*
 import com.vocalabs.egtest.writer.Constants
 import java.io.File
 import javax.lang.model.element.Element
@@ -39,24 +35,22 @@ object KotlinFileWriter {
         val itemsByElement = itemsForClass.groupBy { it.element }
 
         for ((element: Element, itemsForElement) in itemsByElement) {
-            writePatternMatch(element, itemsForElement.filterIsInstance<PatternMatchExample>(), cb, simpleClassToTestName)
+            writeMatchExample(element, itemsForElement.filterIsInstance<MatchExample>(), cb, simpleClassToTestName)
         }
-
         fb.build()
     }
 
 
-    private fun writePatternMatch(element: Element, egs: List<PatternMatchExample>, cb: ClassBuilder, classToTestName: String) {
+    private fun writeMatchExample(element: Element, egs: List<MatchExample>, cb: ClassBuilder, classToTestName: String) {
         val (matches, noMatches) = egs.partition { it.annotation is EgMatch }
-
-        writePatternMatch(element, "assertTrue", "EgMatch", matches, cb, classToTestName)
-        writePatternMatch(element, "assertFalse", "EgNoMatch", noMatches, cb, classToTestName)
+        writeMatchExample(element, "assertTrue", "EgMatch", matches, cb, classToTestName)
+        writeMatchExample(element, "assertFalse", "EgNoMatch", noMatches, cb, classToTestName)
     }
 
-    private fun writePatternMatch(element: Element,
+    private fun writeMatchExample(element: Element,
                                   assertion: String,
                                   matchType: String,
-                                  egs: List<PatternMatchExample>,
+                                  egs: List<MatchExample>,
                                   cb: ClassBuilder,
                                   classToTestName: String) {
         if (egs.isEmpty()) {
@@ -70,35 +64,25 @@ object KotlinFileWriter {
         val patternClassStr = element.asType().toString()
 
         for (eg in egs) {
-            val matchF = when (patternClassStr) {
-                "java.util.regex.Pattern" -> "matcher(\"${eg.toMatch()}\").matches()"
-                "kotlin.text.Regex" -> "matches(\"${eg.toMatch()}\")"
-                else -> throw IllegalArgumentException("Not a pattern: $patternClassStr")
+            val toMatch = eg.toMatch()
+            val matchF = when (eg) {
+                is PatternMatchExample -> when (patternClassStr) {
+                    "java.util.regex.Pattern" -> ".matcher(\"$toMatch\").matches()"
+                    "kotlin.text.Regex" -> ".matches(\"$toMatch\")"
+                    else -> throw IllegalArgumentException("Not a pattern: $patternClassStr")
+                }
+                is FunctionMatchExample -> "(\"$toMatch\")"
+                else -> throw IllegalArgumentException("Unknown MatchExample: $eg")
             }
             val constructor = constructorArgs(eg)
-            f.addLines("// ${eg.toMatch()} -- ${args(eg.annotation).asList()}")
-            f.addLines("$assertion(\"${eg.toMatch()}\", $classToTestName$constructor.$pattern.$matchF)")
+            f.addLines("$assertion(\"${eg.toMatch()}\", $classToTestName$constructor.$pattern$matchF)")
         }
     }
 
     private fun constructorArgs(eg: MatchExample): String {
-        return when (eg.element.modifiers.contains(Modifier.STATIC)) {
-            true -> ""
-            false -> {
-                val argList = args(eg.annotation)
-                "(${argList.joinToString(", ")})"
-            }
-        }
+        return if (eg.element.modifiers.contains(Modifier.STATIC)) ""
+        else "(${eg.constructorArgs().joinToString(", ")})"
     }
-
-    private fun args(a: Annotation): Array<String> {
-        return when (a) {
-            is EgMatch -> a.construct
-            is EgNoMatch -> a.construct
-            else -> arrayOf()
-        }
-    }
-
 
     private fun splitClassName(classToTestName: String): Pair<String, String> {
         val splitPos = classToTestName.lastIndexOf('.')
