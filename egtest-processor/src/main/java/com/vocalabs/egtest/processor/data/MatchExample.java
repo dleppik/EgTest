@@ -5,11 +5,9 @@ import com.vocalabs.egtest.annotation.EgNoMatch;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.List;
 
 /** Matches and NoMatch. */
-public abstract class MatchExample implements EgItem<Annotation> {
+public abstract class MatchExample implements Constructing<Annotation> {
     private final Annotation annotation;
 
     MatchExample(@NotNull Annotation annotation) {
@@ -20,15 +18,6 @@ public abstract class MatchExample implements EgItem<Annotation> {
     public String toMatch() {
         if (annotation instanceof EgMatch)   return ((EgMatch)   annotation).value();
         if (annotation instanceof EgNoMatch) return ((EgNoMatch) annotation).value();
-        throw new IllegalArgumentException("Wrong class for "+annotation);
-    }
-
-    @NotNull
-    public List<String> constructorArgs() { return Arrays.asList(constructorArgArray()); }
-
-    private String[] constructorArgArray() {
-        if (annotation instanceof EgMatch)   return ((EgMatch)   annotation).construct();
-        if (annotation instanceof EgNoMatch) return ((EgNoMatch) annotation).construct();
         throw new IllegalArgumentException("Wrong class for "+annotation);
     }
 

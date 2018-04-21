@@ -5,7 +5,7 @@ import com.vocalabs.egtest.annotation.Eg;
 import javax.lang.model.element.ExecutableElement;
 
 /** Eg tests of the form {@code  @Eg(given = {"1", "2"}, returns = "3") } */
-public class ReturnsExample implements EgItem<Eg> {
+public class ReturnsExample implements Constructing<Eg> {
     private final ExecutableElement element;
     private final Eg annotation;
 
