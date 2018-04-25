@@ -14,7 +14,7 @@ public class ReturnsWithDeltaExample extends ReturnsExample {
         super(element, annotation);
     }
 
-    /** Formats the delta as a float or double based on the return type. */
+    /** Formats the delta as a Java float or double based on the return type. */
     public String deltaString() {
         String returnType = getElement().getReturnType().toString();
         double delta = getAnnotation().delta();

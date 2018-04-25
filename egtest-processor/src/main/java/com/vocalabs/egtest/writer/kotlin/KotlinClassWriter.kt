@@ -98,17 +98,29 @@ class KotlinFileWriter(private val classToTestName: String,
         f.addAnnotation("Test")
 
         for (eg in egs) {
-            if (eg is ReturnsWithDeltaExample) {
-                TODO()
+            val given = eg.annotation.given.joinToString(", ")
+            val returns = eg.annotation.returns
+            val description = "(${eg.annotation.given.joinToString(", ")}) -> $returns".replace("\"", "\\\"")
+            val functionName = fullFunctionName(eg, element.simpleName.toString())
+            val comparison = when (eg) {
+                is ReturnsWithDeltaExample -> "$returns, $functionName($given), ${deltaString(eg)}"
+                else -> "$returns, $functionName($given)"
             }
-            else {
-                val given = eg.annotation.given.joinToString(", ")
-                val returns = eg.annotation.returns
-                val description = "(${eg.annotation.given.joinToString(", ")}) -> $returns".replace("\"", "\\\"")
-                val functionName = fullFunctionName(eg, element.simpleName.toString())
-                f.addLines("assertEquals(\"$description\", $returns, $functionName($given))")
-            }
+            f.addLines("assertEquals(\"$description\", $comparison)")
         }
+    }
+
+    private fun deltaString(eg: ReturnsWithDeltaExample): String {
+        val returnType = eg.element.returnType.toString()
+        val delta = eg.annotation.delta
+        val suffix = when (returnType) {
+            "double" -> ""
+            "java.lang.Double" -> ""
+            "float" -> delta.toString() + "f"
+            "java.lang.Float" -> delta.toString() + "f"
+            else -> throw IllegalArgumentException("Not a floating-point return type: $returnType")
+        }
+        return delta.toString() + suffix
     }
 
     private fun fullFunctionName(eg: Constructing<*>, simpleFunctionName: String): String {

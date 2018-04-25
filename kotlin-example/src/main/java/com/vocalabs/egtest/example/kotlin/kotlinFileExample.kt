@@ -20,3 +20,10 @@ fun vowels(words: Collection<String>): Collection<String> {
     val vowelSet = setOf('a', 'e', 'i', 'o', 'u')
     return words.map { s -> s.filter { vowelSet.contains(it.toLowerCase()) } }
 }
+
+// TODO add support for method overloading
+//@Eg(given = ["1.0f"], returns = "0.333f", delta = 0.01)
+//fun oneThird(num: Float): Float = num / 3.0f
+
+@Eg(given = ["1.0"], returns = "0.333", delta = 0.001)
+fun oneThird(num: Double): Double = num / 3.0

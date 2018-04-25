@@ -22,4 +22,7 @@ object KotlinStaticExample {
         val vowelSet = setOf('a', 'e', 'i', 'o', 'u')
         return words.map { s -> s.filter { vowelSet.contains(it.toLowerCase()) } }
     }
+
+    @Eg(given = ["1.0"], returns = "0.333", delta = 0.001)
+    fun oneThird(num: Double): Double = num / 3.0
 }
