@@ -1,6 +1,7 @@
 package com.vocalabs.egtest.example.kotlin
 
 import com.vocalabs.egtest.annotation.Eg
+import com.vocalabs.egtest.annotation.EgException
 import com.vocalabs.egtest.annotation.EgMatch
 import com.vocalabs.egtest.annotation.EgNoMatch
 
@@ -27,3 +28,7 @@ fun vowels(words: Collection<String>): Collection<String> {
 
 @Eg(given = ["1.0"], returns = "0.333", delta = 0.001)
 fun oneThird(num: Double): Double = num / 3.0
+
+@EgException(value = ["Double.NaN"])
+@EgException(value = ["null"], willThrow = NullPointerException::class)
+fun methodWhichCannotHandleNulls(d: Double?): Double = d!! + 1

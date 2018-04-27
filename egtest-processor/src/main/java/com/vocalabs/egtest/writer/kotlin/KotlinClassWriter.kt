@@ -39,18 +39,22 @@ class KotlinFileWriter(private val classToTestName: String,
         addImports(builder)
 
         val cb = builder.addClass(simpleClassToTestName+egSuffix)
-        cb.addAnnotation("Generated", "\"${Constants.GENERATED_BY}\"")
+        cb.addAnnotation("javax.annotation.Generated", "\"${Constants.GENERATED_BY}\"")
 
         val itemsByElement = itemsForClass.groupBy { it.element }
 
-        for ((element: Element, itemsForElement) in itemsByElement) {
-            writeMatchExample(element, itemsForElement.filterIsInstance<MatchExample>(), cb)
-            writeReturnsExample(element, itemsForElement.filterIsInstance<ReturnsExample>(), cb)
+        for ((el: Element, itemsForElement) in itemsByElement) {
+            writeMatchExample(    el, itemsForElement.filterIsInstance<MatchExample>(),     cb)
+            writeReturnsExample(  el, itemsForElement.filterIsInstance<ReturnsExample>(),   cb)
+            writeExceptionExample(el, itemsForElement.filterIsInstance<ExceptionExample>(), cb)
         }
         builder.build()
     }
 
-
+    private fun addImports(fb: FileSourceFileBuilder) {
+        fb.addImport("org.junit.Test")
+        fb.addImport("org.junit.Assert.*")  // We use JUnit because kotlin.assert doesn't have assertEquals with delta
+    }
 
     private fun writeMatchExample(element: Element, egs: List<MatchExample>, cb: ClassBuilder) {
         val (matches, noMatches) = egs.partition { it.annotation is EgMatch }
@@ -110,6 +114,36 @@ class KotlinFileWriter(private val classToTestName: String,
         }
     }
 
+    private fun writeExceptionExample(element: Element, egs: List<ExceptionExample>, cb: ClassBuilder) {
+        if (egs.isEmpty()) {
+            return
+        }
+        val testName = "${element.simpleName}_Eg"
+        val f = cb.addFunction(testName)
+        f.addAnnotation("Test")
+
+        for (eg in egs) {
+            val exTypeName: String = when(eg.exceptionType().toString()) {
+                "java.lang.Throwable" -> "Throwable"  // Default type for annotation
+                else -> eg.exceptionType().toString()
+            }
+            val given = eg.annotation.value.joinToString(", ")
+            val functionName = fullFunctionName(eg, element.simpleName.toString())
+            f.addLines(
+                    """try {
+                      |     $functionName($given)
+                      |     fail("should throw $exTypeName when given $given")
+                      |}
+                      |catch (_: $exTypeName) { }
+                      |""".trimMargin()
+            )
+        }
+
+        // Could use kotin.test.assertFails() or assertFailsWith()
+        // or wrap in try/catch
+        // TODO()
+    }
+
     private fun deltaString(eg: ReturnsWithDeltaExample): String {
         val returnType = eg.element.returnType.toString()
         val delta = eg.annotation.delta
@@ -167,6 +201,7 @@ class KotlinFileWriter(private val classToTestName: String,
      * Detect Kotlin class using private metadata check; there is no guarantee
      * that this will continue to work for future Kotlin versions.
      */
+    // TODO support @file:JvmName()
     private fun isKotlinClass(el: TypeElement)
             = el.annotationMirrors.any { it.annotationType.toString() == "kotlin.Metadata" }
 
@@ -175,11 +210,5 @@ class KotlinFileWriter(private val classToTestName: String,
         val packageName = classToTestName.substring(0, splitPos)
         val simpleClassName = classToTestName.substring(splitPos + 1)
         return Pair(packageName, simpleClassName)
-    }
-
-    private fun addImports(fb: FileSourceFileBuilder) {
-        fb.addImport("javax.annotation.Generated")
-        fb.addImport("org.junit.Test")
-        fb.addImport("org.junit.Assert.*")
     }
 }
