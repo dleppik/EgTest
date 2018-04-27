@@ -138,10 +138,6 @@ class KotlinFileWriter(private val classToTestName: String,
                       |""".trimMargin()
             )
         }
-
-        // Could use kotin.test.assertFails() or assertFailsWith()
-        // or wrap in try/catch
-        // TODO()
     }
 
     private fun deltaString(eg: ReturnsWithDeltaExample): String {

@@ -5,7 +5,7 @@ import org.junit.Assert.*
 
 
 /**
- * Hand-written tests for Example
+ * Hand-written tests to make sure generated code exists.
  */
 class KotlinFileExampleTest {
 
@@ -25,6 +25,19 @@ class KotlinFileExampleTest {
     @Test
     @Ignore
     fun overloadsWork() {
+        fail("Not written")
+    }
+
+    @Test
+    @Ignore
+    fun `functions with weird names are escaped properly`() {
+        fail("Not written")
+    }
+
+
+    @Test
+    @Ignore
+    fun filesWithJvmNameAnnotationWork() {
         fail("Not written")
     }
 }
